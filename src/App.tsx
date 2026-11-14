@@ -1,4 +1,4 @@
-// src/App.tsx — SkillMorph AI Main Application with Groq API & Custom Career Engine
+// src/App.tsx — SkillMorph AI Main Application with Daylight Enterprise System
 import { useState, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { TopNav } from './components/TopNav';
@@ -88,7 +88,9 @@ export default function App() {
     addLog({
       agent: 'Profiler-01',
       agentId: 1,
-      message: key ? 'Groq API Key activated (openai/gpt-oss-120b). Live neural mesh enabled.' : 'Groq API Key cleared. Defaulting to local deterministic simulation engine.',
+      message: key
+        ? 'Groq API Key activated (openai/gpt-oss-120b). Live neural mesh enabled.'
+        : 'Groq API Key cleared. Defaulting to local deterministic simulation engine.',
       type: 'info',
     });
   }
@@ -130,7 +132,7 @@ export default function App() {
       particleCount: 80,
       spread: 90,
       origin: { y: 0.5 },
-      colors: ['#a855f7', '#06b6d4', '#10b981'],
+      colors: ['#2563eb', '#06b6d4', '#10b981'],
     });
   }
 
@@ -217,7 +219,7 @@ export default function App() {
       particleCount: 60,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#10b981', '#06b6d4', '#a78bfa'],
+      colors: ['#10b981', '#2563eb', '#06b6d4'],
     });
   }
 
@@ -231,8 +233,8 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-slate-950 text-slate-200 flex flex-col overflow-hidden"
-      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+      className="min-h-screen bg-[#F5F7FA] text-slate-800 flex flex-col overflow-hidden antialiased"
+      style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}
     >
       {/* Top Navigation */}
       <TopNav
@@ -247,19 +249,30 @@ export default function App() {
         onOpenCustomCareerModal={() => setIsCustomCareerOpen(true)}
       />
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="flex-1 overflow-hidden">
         {viewMode === 'org' ? (
-          <div className="h-full overflow-y-auto p-4">
-            <OrgView />
+          <div className="h-full overflow-y-auto p-4 sm:p-6 max-w-7xl mx-auto">
+            <OrgView
+              onDeployCohortBridge={() => {
+                handleRemedialInjection();
+                setViewMode('learner');
+                addLog({
+                  agent: 'Profiler-01',
+                  agentId: 1,
+                  message: '🏛️ Institutional Dean Intervention: Deployed Cohort Bridge Module ("Async Promises & Event Loop") directly to Aarav Sharma\'s active DAG roadmap.',
+                  type: 'mutation',
+                });
+              }}
+            />
           </div>
         ) : (
           <div
-            className="h-full grid grid-cols-[280px_1fr_300px] gap-3 p-3 overflow-hidden"
-            style={{ height: 'calc(100vh - 48px)' }}
+            className="h-full grid grid-cols-[300px_1fr_320px] gap-4 p-4 overflow-hidden"
+            style={{ height: 'calc(100vh - 64px)' }}
           >
             {/* Left Panel */}
-            <aside className="overflow-y-auto scrollbar-thin">
+            <aside className="overflow-y-auto pr-1">
               <LeftPanel
                 skills={skills}
                 onSkillsChange={setSkills}
@@ -278,6 +291,7 @@ export default function App() {
               <CenterPanel
                 nodes={nodes}
                 edges={edges}
+                agents={agents}
                 onNodeMastered={handleNodeMastered}
                 onAgentLog={handleAgentLog}
                 onRemedialInjected={handleRemedialInjection}

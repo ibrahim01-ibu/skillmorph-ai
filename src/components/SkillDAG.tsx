@@ -1,32 +1,50 @@
-// src/components/SkillDAG.tsx — Custom SVG Interactive Skill DAG Roadmap
+// src/components/SkillDAG.tsx — Apple / Material 3 Spacious Interactive Skill DAG
 import { useMemo } from 'react';
-import { CheckCircle2, Lock, AlertTriangle, Zap, Circle } from 'lucide-react';
+import { CheckCircle2, Lock, AlertTriangle, Play, Sparkles } from 'lucide-react';
 import type { DAGNode, DAGEdge } from '../types';
 
-const STATUS_STYLES: Record<string, { bg: string; border: string; text: string; glow: string }> = {
+const STATUS_CONFIGS: Record<
+  string,
+  {
+    bg: string;
+    border: string;
+    text: string;
+    pillBg: string;
+    pillText: string;
+    shadow: string;
+  }
+> = {
   mastered: {
-    bg: 'rgba(16,185,129,0.15)',
-    border: 'rgba(16,185,129,0.6)',
-    text: '#6ee7b7',
-    glow: 'node-mastered',
+    bg: '#ffffff',
+    border: '#10b981',
+    text: '#0f172a',
+    pillBg: '#ecfdf5',
+    pillText: '#047857',
+    shadow: 'drop-shadow(0 2px 6px rgba(16, 185, 129, 0.12))',
   },
   active: {
-    bg: 'rgba(6,182,212,0.15)',
-    border: 'rgba(6,182,212,0.7)',
-    text: '#67e8f9',
-    glow: 'node-active',
+    bg: '#ffffff',
+    border: '#2563eb',
+    text: '#0f172a',
+    pillBg: '#eff6ff',
+    pillText: '#1d4ed8',
+    shadow: 'drop-shadow(0 4px 12px rgba(37, 99, 235, 0.18))',
   },
   locked: {
-    bg: 'rgba(30,41,59,0.6)',
-    border: 'rgba(51,65,85,0.5)',
+    bg: '#f8fafc',
+    border: '#e2e8f0',
     text: '#94a3b8',
-    glow: 'node-locked',
+    pillBg: '#f1f5f9',
+    pillText: '#64748b',
+    shadow: 'none',
   },
   remedial: {
-    bg: 'rgba(245,158,11,0.15)',
-    border: 'rgba(245,158,11,0.7)',
-    text: '#fcd34d',
-    glow: 'node-remedial',
+    bg: '#fffbeb',
+    border: '#f59e0b',
+    text: '#78350f',
+    pillBg: '#fef3c7',
+    pillText: '#b45309',
+    shadow: 'drop-shadow(0 4px 14px rgba(245, 158, 11, 0.2))',
   },
 };
 
@@ -37,20 +55,23 @@ interface SkillDAGProps {
   onNodeClick: (node: DAGNode) => void;
 }
 
-const NODE_W = 165;
-const NODE_H = 46;
-const SVG_W = 540;
-const SVG_H = 620;
+const NODE_W = 180;
+const NODE_H = 64;
+const SVG_W = 600;
+const SVG_H = 640;
 
 function getNodeCoord(node: DAGNode) {
-  const scaledX = 270 + (node.x - 240) * 1.7;
-  return { x: scaledX, y: node.y };
+  // Scale x positions with ample breathing room (center 300)
+  const scaledX = 300 + (node.x - 240) * 1.85;
+  return { x: scaledX, y: node.y + 10 };
 }
 
 export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAGProps) {
   const nodeMap = useMemo(() => {
     const m: Record<string, DAGNode> = {};
-    nodes.forEach((n) => { m[n.id] = n; });
+    nodes.forEach((n) => {
+      m[n.id] = n;
+    });
     return m;
   }, [nodes]);
 
@@ -66,69 +87,63 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl border border-slate-800" style={{ background: 'rgba(2,6,23,0.8)' }}>
-      {/* Title */}
-      <div className="absolute top-3 left-3 z-10">
-        <div className="text-[10px] text-slate-500 uppercase tracking-wider">Skill DAG Roadmap</div>
-        <div className="text-[9px] text-slate-600">Click any node to open Sprint Arena</div>
-      </div>
-
-      {/* Legend */}
-      <div className="absolute top-3 right-3 z-10 flex flex-col gap-1">
-        {[
-          { status: 'mastered', label: 'Mastered', color: '#6ee7b7' },
-          { status: 'active', label: 'In Progress', color: '#67e8f9' },
-          { status: 'locked', label: 'Locked', color: '#94a3b8' },
-          { status: 'remedial', label: 'Rescue Sprint', color: '#fcd34d' },
-        ].map((item) => (
-          <div key={item.status} className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-[9px] text-slate-500">{item.label}</span>
+    <div className="relative w-full overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm p-2">
+      {/* Canvas Top Bar */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 bg-slate-50/50 rounded-xl mb-1">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-blue-600" />
+          <div>
+            <span className="text-xs font-semibold text-slate-800">Adaptive Skill-DAG Roadmap</span>
+            <span className="text-[11px] text-slate-400 ml-2 hidden sm:inline">
+              Click any active node to launch the 90-second sprint
+            </span>
           </div>
-        ))}
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-[10px] text-slate-600">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Mastered
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px] text-slate-600">
+            <span className="w-2 h-2 rounded-full bg-blue-600 inline-block animate-pulse" /> Active
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px] text-slate-600">
+            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> Rescue
+          </div>
+        </div>
       </div>
 
+      {/* SVG Canvas */}
       <svg
         width="100%"
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-        className="block"
-        style={{ minHeight: 320, maxHeight: 440 }}
+        className="block select-none"
+        style={{ minHeight: 350, maxHeight: 460 }}
       >
         <defs>
-          <marker id="arrowhead-locked" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M1,1 L7,4 L1,7 Z" fill="rgba(71,85,105,0.5)" />
+          {/* Subtle Grid Dot Pattern */}
+          <pattern id="light-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="#cbd5e1" opacity="0.4" />
+          </pattern>
+
+          {/* Markers */}
+          <marker id="arrow-locked" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M1,1 L5,3 L1,5 Z" fill="#94a3b8" />
           </marker>
-          <marker id="arrowhead-active" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M1,1 L7,4 L1,7 Z" fill="rgba(6,182,212,0.6)" />
+          <marker id="arrow-active" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M1,1 L7,4 L1,7 Z" fill="#2563eb" />
           </marker>
-          <marker id="arrowhead-mastered" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M1,1 L7,4 L1,7 Z" fill="rgba(16,185,129,0.6)" />
+          <marker id="arrow-mastered" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M1,1 L5,3 L1,5 Z" fill="#059669" />
           </marker>
-          <marker id="arrowhead-remedial" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M1,1 L7,4 L1,7 Z" fill="rgba(245,158,11,0.7)" />
+          <marker id="arrow-remedial" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M1,1 L7,4 L1,7 Z" fill="#d97706" />
           </marker>
-          <filter id="glow-cyan">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <filter id="glow-emerald">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <filter id="glow-amber">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
+
+        {/* Canvas Background Grid */}
+        <rect width={SVG_W} height={SVG_H} fill="url(#light-grid)" />
 
         {/* Edges */}
         {edges.map((edge, i) => {
@@ -137,28 +152,32 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
           if (!from || !to) return null;
           const toStatus = to.status;
           const isRemedialEdge = to.isRemedial || from.isRemedial;
+
           const edgeColor = isRemedialEdge
-            ? 'rgba(245,158,11,0.5)'
+            ? '#d97706'
             : toStatus === 'mastered'
-            ? 'rgba(16,185,129,0.4)'
+            ? '#10b981'
             : toStatus === 'active'
-            ? 'rgba(6,182,212,0.5)'
-            : 'rgba(51,65,85,0.3)';
+            ? '#2563eb'
+            : '#cbd5e1';
+
           const markerId = isRemedialEdge
-            ? 'arrowhead-remedial'
+            ? 'arrow-remedial'
             : toStatus === 'mastered'
-            ? 'arrowhead-mastered'
+            ? 'arrow-mastered'
             : toStatus === 'active'
-            ? 'arrowhead-active'
-            : 'arrowhead-locked';
+            ? 'arrow-active'
+            : 'arrow-locked';
+
           return (
             <path
               key={i}
               d={getEdgePath(from, to)}
               fill="none"
               stroke={edgeColor}
-              strokeWidth={isRemedialEdge ? 2 : 1.5}
-              strokeDasharray={isRemedialEdge ? '6,3' : toStatus === 'locked' ? '4,4' : undefined}
+              strokeWidth={toStatus === 'active' || isRemedialEdge ? 2.5 : 1.75}
+              strokeDasharray={isRemedialEdge ? '6,4' : toStatus === 'active' ? '8,4' : undefined}
+              className={toStatus === 'active' ? 'animate-flow' : undefined}
               markerEnd={`url(#${markerId})`}
             />
           );
@@ -166,152 +185,117 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
 
         {/* Nodes */}
         {nodes.map((node) => {
-          const style = STATUS_STYLES[node.status];
+          const cfg = STATUS_CONFIGS[node.status] || STATUS_CONFIGS.locked;
           const isSelected = node.id === selectedNodeId;
           const pos = getNodeCoord(node);
           const halfW = NODE_W / 2;
           const halfH = NODE_H / 2;
-          const glowFilter =
-            node.status === 'remedial'
-              ? 'url(#glow-amber)'
-              : node.status === 'active'
-              ? 'url(#glow-cyan)'
-              : node.status === 'mastered'
-              ? 'url(#glow-emerald)'
-              : undefined;
 
           return (
             <g
               key={node.id}
               transform={`translate(${pos.x - halfW}, ${pos.y - halfH})`}
               onClick={() => node.status !== 'locked' && onNodeClick(node)}
-              style={{ cursor: node.status !== 'locked' ? 'pointer' : 'default' }}
-              filter={glowFilter}
+              style={{
+                cursor: node.status !== 'locked' ? 'pointer' : 'default',
+                filter: cfg.shadow,
+              }}
+              className="transition-transform duration-200 hover:-translate-y-0.5"
             >
-              {/* Selection ring */}
+              {/* Active Selection Glow Ring */}
               {isSelected && (
                 <rect
-                  x={-3}
-                  y={-3}
-                  width={NODE_W + 6}
-                  height={NODE_H + 6}
-                  rx={11}
+                  x={-4}
+                  y={-4}
+                  width={NODE_W + 8}
+                  height={NODE_H + 8}
+                  rx={16}
                   fill="none"
-                  stroke={node.status === 'remedial' ? 'rgba(245,158,11,0.8)' : 'rgba(6,182,212,0.8)'}
-                  strokeWidth="1.5"
-                  strokeDasharray={node.isRemedial ? '5,3' : undefined}
+                  stroke={node.status === 'remedial' ? '#f59e0b' : '#2563eb'}
+                  strokeWidth="2.5"
+                  opacity="0.8"
                 />
               )}
 
-              {/* Node body */}
+              {/* Node Card Body */}
               <rect
                 x={0}
                 y={0}
                 width={NODE_W}
                 height={NODE_H}
-                rx={8}
-                fill={style.bg}
-                stroke={isSelected ? style.border : style.border}
-                strokeWidth={isSelected ? 2 : 1}
+                rx={12}
+                fill={cfg.bg}
+                stroke={cfg.border}
+                strokeWidth={node.status === 'active' ? 2 : 1.25}
               />
 
-              {/* Status icon */}
-              <foreignObject x={8} y={12} width={18} height={18}>
-                <div className="flex items-center justify-center w-full h-full">
-                  {node.status === 'mastered' && <CheckCircle2 style={{ width: 14, height: 14, color: '#10b981' }} />}
-                  {node.status === 'active' && <Zap style={{ width: 14, height: 14, color: '#06b6d4' }} />}
-                  {node.status === 'locked' && <Lock style={{ width: 12, height: 12, color: '#475569' }} />}
-                  {node.status === 'remedial' && <AlertTriangle style={{ width: 14, height: 14, color: '#f59e0b' }} />}
+              {/* Left Color Accent Bar */}
+              <rect
+                x={0}
+                y={0}
+                width={5}
+                height={NODE_H}
+                rx={2}
+                fill={cfg.border}
+              />
+
+              {/* Status Icon */}
+              <foreignObject x={12} y={16} width={26} height={26}>
+                <div
+                  className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: cfg.pillBg }}
+                >
+                  {node.status === 'mastered' && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                  {node.status === 'active' && <Play className="w-4 h-4 text-blue-600 fill-blue-600" />}
+                  {node.status === 'locked' && <Lock className="w-3.5 h-3.5 text-slate-400" />}
+                  {node.status === 'remedial' && <AlertTriangle className="w-4 h-4 text-amber-600" />}
                 </div>
               </foreignObject>
 
-              {/* Label */}
+              {/* Node Label Title */}
               <text
-                x={30}
-                y={NODE_H / 2 - 3}
-                fontSize="10"
-                fontWeight="600"
-                fill={style.text}
+                x={46}
+                y={26}
+                fontSize="11.5"
+                fontWeight="700"
+                fill={cfg.text}
                 dominantBaseline="middle"
               >
-                {node.label.length > 25 ? node.label.slice(0, 24) + '…' : node.label}
+                {node.label}
               </text>
 
-              {/* Sublabel */}
-              {node.sublabel && (
-                <text x={30} y={NODE_H / 2 + 9} fontSize="8" fill="rgba(148,163,184,0.6)" dominantBaseline="middle">
-                  {node.sublabel.length > 28 ? node.sublabel.slice(0, 27) + '…' : node.sublabel}
-                </text>
-              )}
-
-              {/* Animated pulse for active/remedial */}
-              {(node.status === 'active' || node.status === 'remedial') && (
+              {/* Sublabel / Status Pill */}
+              <g transform="translate(46, 38)">
                 <rect
-                  x={-2}
-                  y={-2}
-                  width={NODE_W + 4}
-                  height={NODE_H + 4}
-                  rx={10}
-                  fill="none"
-                  stroke={node.status === 'remedial' ? 'rgba(245,158,11,0.3)' : 'rgba(6,182,212,0.25)'}
-                  strokeWidth="1"
-                  className="animate-pulse-glow"
+                  x={0}
+                  y={0}
+                  width={Math.min(125, (node.sublabel?.length || 0) * 6.5 + 16)}
+                  height={16}
+                  rx={4}
+                  fill={cfg.pillBg}
                 />
-              )}
+                <text
+                  x={8}
+                  y={11.5}
+                  fontSize="8.5"
+                  fontWeight="600"
+                  fill={cfg.pillText}
+                >
+                  {node.sublabel}
+                </text>
+              </g>
 
-              {/* Locked overlay */}
-              {node.status === 'locked' && (
-                <rect x={0} y={0} width={NODE_W} height={NODE_H} rx={8} fill="rgba(2,6,23,0.3)" />
+              {/* Institutional Priority Badge if remedial/injected */}
+              {node.isRemedial && (
+                <g transform={`translate(${NODE_W - 20}, 8)`}>
+                  <circle cx={6} cy={6} r={7} fill="#f59e0b" />
+                  <text x={6} y={9.5} textAnchor="middle" fontSize="9" fill="#ffffff" fontWeight="bold">!</text>
+                </g>
               )}
             </g>
           );
         })}
-
-        {/* "WAZE-STYLE" path highlight */}
-        {nodes.filter(n => n.status === 'active').map(activeNode => {
-          const masteredNodes = nodes.filter(n => n.status === 'mastered');
-          return masteredNodes.map(mn => {
-            const edge = edges.find(e => e.from === mn.id && e.to === activeNode.id);
-            if (!edge) return null;
-            return (
-              <path
-                key={`highlight-${mn.id}-${activeNode.id}`}
-                d={getEdgePath(mn, activeNode)}
-                fill="none"
-                stroke="rgba(6,182,212,0.15)"
-                strokeWidth="10"
-                strokeLinecap="round"
-              />
-            );
-          });
-        })}
-
-        {/* Circular progress indicator for active node */}
-        {nodes.filter(n => n.status === 'active').map(n => {
-          const pos = getNodeCoord(n);
-          return (
-            <circle
-              key={`progress-${n.id}`}
-              cx={pos.x + NODE_W / 2 - 10}
-              cy={pos.y - NODE_H / 2 + 5}
-              r={4}
-              fill="none"
-              stroke="rgba(6,182,212,0.6)"
-              strokeWidth="1.5"
-              strokeDasharray="12.6"
-              strokeDashoffset="8"
-              strokeLinecap="round"
-            />
-          );
-        })}
-
-        {/* Unused Circle reference to avoid lint */}
-        <circle cx={-100} cy={-100} r={0} fill="transparent" />
       </svg>
     </div>
   );
 }
-
-// suppress unused import warning
-const _Circle = Circle;
-void _Circle;

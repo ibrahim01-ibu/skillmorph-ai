@@ -1,17 +1,16 @@
-// src/components/TopNav.tsx
+// src/components/TopNav.tsx — Apple / Google Daylight Header & Enterprise Controls
 import { useState } from 'react';
 import {
   Zap,
   ChevronDown,
   RotateCcw,
   AlertTriangle,
-  Shuffle,
   Key,
   X,
   Eye,
   EyeOff,
   Sparkles,
-  Cpu,
+  SlidersHorizontal,
 } from 'lucide-react';
 import type { ViewMode, CareerPath } from '../types';
 
@@ -44,161 +43,198 @@ export function TopNav({
   onGroqKeyChange,
   onOpenCustomCareerModal,
 }: TopNavProps) {
-  const [showPivot, setShowPivot] = useState(false);
+  const [showChaosMenu, setShowChaosMenu] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [keyInput, setKeyInput] = useState(groqKey);
   const [showKey, setShowKey] = useState(false);
 
   return (
     <>
-      <nav className="glass border-b border-slate-800 px-4 py-2 flex items-center gap-3 flex-wrap">
-        {/* Brand */}
-        <div className="flex items-center gap-2 mr-2">
-          <div className="relative">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-6 py-2.5 transition-all">
+        <div className="max-w-[1720px] mx-auto flex items-center justify-between gap-4 flex-wrap">
+          {/* Brand */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20">
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          </div>
-          <div>
-            <div className="text-sm font-bold text-white leading-none">SkillMorph AI</div>
-            <div className="text-[10px] text-emerald-400 leading-none mt-0.5">4-Agent Autonomous Mesh Active</div>
-          </div>
-        </div>
-
-        {/* View Mode Toggle */}
-        <div className="flex rounded-lg overflow-hidden border border-slate-700 text-xs">
-          <button
-            onClick={() => onViewChange('learner')}
-            className={`px-3 py-1.5 transition-colors ${
-              viewMode === 'learner'
-                ? 'bg-cyan-500/20 text-cyan-300 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-            }`}
-          >
-            [1] Learner Autopilot
-          </button>
-          <button
-            onClick={() => onViewChange('org')}
-            className={`px-3 py-1.5 transition-colors ${
-              viewMode === 'org'
-                ? 'bg-emerald-500/20 text-emerald-300 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-            }`}
-          >
-            [2] University & Org Intel
-          </button>
-        </div>
-
-        {/* Custom AI Career Synthesis Button */}
-        <button
-          onClick={onOpenCustomCareerModal}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-violet-600/30 to-cyan-600/30 border border-violet-500/40 text-xs text-violet-200 hover:text-white hover:border-cyan-400 transition-all shadow-sm shadow-violet-500/20"
-          title="Synthesize any custom target career using 4-agent Groq mesh"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow" />
-          <span className="font-semibold">✨ Custom AI Career Synthesis</span>
-        </button>
-
-        {/* Chaos Controls */}
-        <div className="flex items-center gap-2 ml-auto flex-wrap">
-          <span className="text-[10px] text-slate-500 uppercase tracking-wider hidden sm:block">Judge Sandbox</span>
-
-          <button
-            onClick={onResetScenario}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-all"
-            title="Reset to Sample Scenario"
-          >
-            <RotateCcw className="w-3 h-3" />
-            <span className="hidden md:inline">Reset Scenario</span>
-          </button>
-
-          <button
-            onClick={onSimulateFailure}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 hover:bg-amber-500/20 transition-all neon-amber"
-            title="Simulate Assessment Failure"
-          >
-            <AlertTriangle className="w-3 h-3" />
-            <span className="hidden md:inline">Simulate Failure</span>
-          </button>
-
-          <div className="relative">
-            <button
-              onClick={() => setShowPivot(!showPivot)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/30 text-xs text-violet-300 hover:bg-violet-500/20 transition-all"
-            >
-              <Shuffle className="w-3 h-3" />
-              <span className="hidden md:inline">Pivot Career</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${showPivot ? 'rotate-180' : ''}`} />
-            </button>
-            {showPivot && (
-              <div className="absolute top-full right-0 mt-1 w-56 glass rounded-lg border border-slate-700 overflow-hidden z-50 animate-slide-in-up">
-                {PIVOT_PATHS.map((p) => (
-                  <button
-                    key={p.path}
-                    onClick={() => {
-                      onPivotCareer(p.path);
-                      setShowPivot(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs hover:bg-slate-700 transition-colors ${
-                      currentPath === p.path ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-300'
-                    }`}
-                  >
-                    {currentPath === p.path ? '✓ ' : ''}
-                    {p.label}
-                  </button>
-                ))}
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-slate-900 tracking-tight">SkillMorph AI</span>
+                <span className="text-[10px] bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200/80 rounded-full px-2 py-0.5 hidden sm:inline-flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  4-Agent Mesh Active
+                </span>
               </div>
-            )}
+              <div className="text-[11px] text-slate-500 font-medium">
+                Autonomous Career Autopilot & Skill-DAG Engine
+              </div>
+            </div>
           </div>
 
-          {/* Groq Key Modal Trigger */}
-          <button
-            onClick={() => {
-              setKeyInput(groqKey);
-              setShowKeyModal(true);
-            }}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-300 hover:text-white hover:bg-slate-700 transition-all"
-            title="Groq API Configuration"
-          >
-            <Key className="w-3 h-3 text-cyan-400" />
-            <span className={`text-xs ${groqKey ? 'text-emerald-400 font-medium' : 'text-slate-400'}`}>
-              {groqKey ? 'Groq Active (gpt-oss-120b)' : 'Groq Key'}
-            </span>
-          </button>
+          {/* Center Apple-Style Segmented View Switcher */}
+          <div className="bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 flex items-center gap-1 shadow-inner">
+            <button
+              onClick={() => onViewChange('learner')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'learner'
+                  ? 'bg-white text-blue-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              👨‍🎓 Learner Career Studio
+            </button>
+            <button
+              onClick={() => onViewChange('org')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'org'
+                  ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              🏛️ University & Enterprise Talent Cloud
+            </button>
+          </div>
+
+          {/* Right Actions & Judge Chaos Controls */}
+          <div className="flex items-center gap-2.5">
+            {/* Custom AI Career Synthesis Button */}
+            <button
+              onClick={onOpenCustomCareerModal}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-sm shadow-blue-500/20 transition-all hover:shadow-md"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Custom Career Synthesis</span>
+            </button>
+
+            {/* Collapsible Demo & Chaos Pill Bar */}
+            <div className="relative">
+              <button
+                onClick={() => setShowChaosMenu(!showChaosMenu)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
+                  showChaosMenu
+                    ? 'bg-slate-100 border-slate-300 text-slate-900'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                }`}
+                title="Judge instant testing tools"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
+                <span>Demo Controls</span>
+                <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${showChaosMenu ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showChaosMenu && (
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl border border-slate-200 shadow-xl p-3 z-50 animate-slide-in-up space-y-2">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                    Judge Sandbox Chaos Controls
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      onResetScenario();
+                      setShowChaosMenu(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-blue-600" />
+                    <div>
+                      <div className="font-semibold text-slate-900">Reset to Sample Scenario</div>
+                      <div className="text-[10px] text-slate-500">Python + SQL + HTML → Full Stack</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      onSimulateFailure();
+                      setShowChaosMenu(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-medium text-amber-900 bg-amber-50/60 hover:bg-amber-50 border border-amber-200/80 transition-colors"
+                  >
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                    <div>
+                      <div className="font-semibold text-amber-950">Simulate Assessment Failure</div>
+                      <div className="text-[10px] text-amber-700">Trigger AdaptiveMentor Amber Reroute</div>
+                    </div>
+                  </button>
+
+                  <div className="pt-1 border-t border-slate-100">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-1">
+                      Pivot Target Path
+                    </div>
+                    {PIVOT_PATHS.map((p) => (
+                      <button
+                        key={p.path}
+                        onClick={() => {
+                          onPivotCareer(p.path);
+                          setShowChaosMenu(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                          currentPath === p.path
+                            ? 'bg-blue-50 text-blue-700 font-semibold'
+                            : 'text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {currentPath === p.path ? '✓ ' : '  '}
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Groq Key Modal Trigger */}
+            <button
+              onClick={() => {
+                setKeyInput(groqKey);
+                setShowKeyModal(true);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors shadow-sm"
+              title="Groq API key configuration"
+            >
+              <Key className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="hidden md:inline font-mono text-[11px]">
+                {groqKey ? 'Groq Active' : 'API Key'}
+              </span>
+            </button>
+          </div>
         </div>
-      </nav>
+      </header>
 
       {/* Groq Key Modal */}
       {showKeyModal && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={() => setShowKeyModal(false)}
         >
           <div
-            className="glass rounded-xl border border-slate-700 p-6 w-full max-w-md animate-slide-in-up"
+            className="bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 w-full max-w-md animate-slide-in-up"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-cyan-400" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center">
+                  <Key className="w-4 h-4 text-indigo-600" />
+                </div>
                 <div>
-                  <h2 className="text-white font-semibold text-sm">Groq API Integration</h2>
-                  <p className="text-[11px] text-slate-400">Model: `openai/gpt-oss-120b` (LPUs ultra-low latency)</p>
+                  <h2 className="text-slate-900 font-bold text-sm">Groq API Configuration</h2>
+                  <p className="text-[11px] text-slate-500">Fast inference powered by `openai/gpt-oss-120b`</p>
                 </div>
               </div>
-              <button onClick={() => setShowKeyModal(false)} className="text-slate-500 hover:text-slate-200">
+              <button
+                onClick={() => setShowKeyModal(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 mb-4 text-xs text-emerald-300 leading-relaxed">
-              ⚡ <strong>Pre-Configured & Connected:</strong> Your live Groq API key is pre-loaded and ready for ultra-fast custom career graph generation & AI mentor responses.
+            <div className="bg-blue-50 border border-blue-200/80 rounded-2xl p-3.5 mb-4 text-xs text-blue-900 leading-relaxed">
+              ⚡ <strong>Zero Setup Required:</strong> A pre-configured demo key is active with runtime obfuscation. You can also plug in your personal Groq key (`gsk_...`) below.
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                Groq API Key
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                Personal Groq Key (Optional)
               </label>
               <div className="relative">
                 <input
@@ -206,29 +242,26 @@ export function TopNav({
                   value={keyInput}
                   onChange={(e) => setKeyInput(e.target.value)}
                   placeholder="Enter your Groq key..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 pr-10 font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white pr-10 font-mono transition-colors"
                 />
                 <button
                   onClick={() => setShowKey(!showKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  {showKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-[10px] text-slate-500">
-                Key is persisted securely to your browser&apos;s localStorage (`groq_api_key`).
-              </p>
             </div>
 
-            <div className="flex gap-2 mt-5">
+            <div className="flex gap-2.5 mt-6">
               <button
                 onClick={() => {
                   onGroqKeyChange(keyInput);
                   setShowKeyModal(false);
                 }}
-                className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors"
+                className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm"
               >
-                Save & Activate Groq
+                Save & Connect
               </button>
               {groqKey && (
                 <button
@@ -237,7 +270,7 @@ export function TopNav({
                     setKeyInput('');
                     setShowKeyModal(false);
                   }}
-                  className="px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 text-xs hover:bg-red-500/30 transition-colors"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium hover:bg-slate-200 transition-colors"
                 >
                   Clear Key
                 </button>

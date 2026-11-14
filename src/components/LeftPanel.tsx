@@ -1,14 +1,24 @@
-// src/components/LeftPanel.tsx — Learner Profile, GitHub Scanner, Skill Radar
+// src/components/LeftPanel.tsx — Apple / Material 3 Daylight Learner Profile & Skills
 import { useState, useEffect, useRef } from 'react';
-import { Github, Plus, X, ChevronDown, Loader2, TrendingUp, ShieldCheck, Sparkles } from 'lucide-react';
+import {
+  Github,
+  Plus,
+  X,
+  ChevronDown,
+  Loader2,
+  TrendingUp,
+  ShieldCheck,
+  Sparkles,
+  CheckCircle2,
+} from 'lucide-react';
 import type { Skill, SkillLevel, CareerPath, RadarData, AgentLog } from '../types';
 import { SkillRadar } from './SkillRadar';
 
 const SKILL_LEVEL_COLORS: Record<SkillLevel, string> = {
-  Foundation: 'bg-slate-700 text-slate-300 border-slate-600',
-  Intermediate: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
-  Advanced: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-  Expert: 'bg-violet-500/15 text-violet-300 border-violet-500/30',
+  Foundation: 'bg-slate-100 text-slate-700 border-slate-200',
+  Intermediate: 'bg-blue-50 text-blue-700 border-blue-200',
+  Advanced: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+  Expert: 'bg-indigo-50 text-indigo-800 border-indigo-200',
 };
 
 const TARGET_ROLES = [
@@ -59,10 +69,10 @@ export function LeftPanel({
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [addSkillName, setAddSkillName] = useState('');
   const [showAddSkill, setShowAddSkill] = useState(false);
-  const [displayedReadiness, setDisplayedReadiness] = useState(0);
+  const [displayedReadiness, setDisplayedReadiness] = useState(readiness);
   const [targetRole, setTargetRole] = useState(TARGET_ROLES[0]);
-  const displayedReadinessRef = useRef(0);
-  const prevReadinessRef = useRef(0);
+  const displayedReadinessRef = useRef(readiness);
+  const prevReadinessRef = useRef(readiness);
 
   useEffect(() => {
     displayedReadinessRef.current = displayedReadiness;
@@ -74,7 +84,7 @@ export function LeftPanel({
       const start = displayedReadinessRef.current;
       const end = readiness;
       const diff = end - start;
-      const duration = 1200;
+      const duration = 1000;
       const startTime = Date.now();
       const timer = setInterval(() => {
         const elapsed = Date.now() - startTime;
@@ -125,36 +135,36 @@ export function LeftPanel({
 
       if (newSkills.length > 0) {
         onSkillsChange([...skills, ...newSkills]);
-        setScanResult(`✅ Found ${repos.length} repos. Added ${newSkills.length} new skills: ${newSkills.map((s) => s.name).join(', ')}`);
+        setScanResult(`Added ${newSkills.length} verified skills: ${newSkills.map((s) => s.name).join(', ')}`);
         onAgentLog({
           agent: 'Profiler-01',
           agentId: 1,
-          message: `GitHub audit complete. ${repos.length} repos analysed. Injected ${newSkills.length} verified skills into skill vector. Handing to GapArchitect-02.`,
+          message: `GitHub audit complete. ${repos.length} repos analyzed. Injected ${newSkills.length} verified skills into profile.`,
           type: 'success',
           payload: JSON.stringify({ skills: newSkills.map((s) => s.name), langs: topLangs }),
         });
         onAgentLog({
           agent: 'GapArchitect-02',
           agentId: 2,
-          message: `Received updated skill vector from Profiler-01. Recalculating career delta for target role...`,
+          message: `Received updated skill vector. Recalculating career graph delta for ${targetRole}...`,
           type: 'handoff',
         });
       } else {
-        setScanResult(`✅ Scanned ${repos.length} repos — all detected languages already in your skill set!`);
+        setScanResult(`Scanned ${repos.length} repositories — all detected languages are already in your skill set!`);
         onAgentLog({
           agent: 'Profiler-01',
           agentId: 1,
-          message: `GitHub scan complete. No new skills to add — existing skill vector already covers detected languages.`,
+          message: `GitHub scan complete. Existing skill vector already covers detected repositories.`,
           type: 'info',
         });
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
-      setScanResult(`⚠️ ${msg === 'Rate limited' ? 'GitHub API rate-limited — using cached demo data.' : `Could not fetch: ${msg}`}`);
+      setScanResult(`${msg === 'Rate limited' ? 'GitHub API rate-limited — using cached profile data.' : `Could not fetch: ${msg}`}`);
       onAgentLog({
         agent: 'Profiler-01',
         agentId: 1,
-        message: `GitHub fetch failed: ${msg}. Falling back to cached skill inference.`,
+        message: `GitHub fetch note: ${msg}. Profile intact.`,
         type: 'warning',
       });
     } finally {
@@ -168,7 +178,7 @@ export function LeftPanel({
       id: `manual-${Date.now()}`,
       name: addSkillName.trim(),
       level: 'Foundation',
-      category: 'Other',
+      category: 'General',
     };
     onSkillsChange([...skills, newSkill]);
     setAddSkillName('');
@@ -179,86 +189,102 @@ export function LeftPanel({
     onSkillsChange(skills.filter((s) => s.id !== id));
   }
 
-  const readinessColor =
-    displayedReadiness >= 70 ? 'bg-emerald-500' : displayedReadiness >= 40 ? 'bg-cyan-500' : 'bg-amber-500';
-
   return (
-    <div className="flex flex-col gap-3 h-full overflow-y-auto">
-      {/* Profile Card */}
-      <div className="glass rounded-xl p-4 border border-slate-800">
-        <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+    <div className="flex flex-col gap-4 pb-6">
+      {/* Learner Profile Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
+        <div className="flex items-start gap-3.5 mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-md shadow-blue-500/20 flex-shrink-0">
             AS
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-white">Aarav Sharma</div>
-            <div className="text-xs text-slate-400">Final Year CS — IIT Bombay</div>
+            <div className="text-base font-bold text-slate-900 leading-tight">Aarav Sharma</div>
+            <div className="text-xs text-slate-500 font-medium">Final Year CS · IIT Bombay</div>
+            <div className="flex items-center gap-1.5 mt-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              <span className="text-[10px] text-emerald-700 font-semibold">Active Enrollment</span>
+            </div>
           </div>
         </div>
 
         {/* Target Role Selector */}
-        <div className="relative mb-3">
-          <label className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 block">Target Role</label>
+        <div className="mb-4">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">
+            Target Role Objective
+          </label>
           <div className="relative">
             <select
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white appearance-none focus:outline-none focus:border-cyan-500 cursor-pointer"
+              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 appearance-none focus:outline-none focus:border-blue-500 focus:bg-white cursor-pointer transition-colors pr-8"
             >
               {TARGET_ROLES.map((r) => (
-                <option key={r} value={r}>{r}</option>
+                <option key={r} value={r}>
+                  {r}
+                </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           </div>
         </div>
 
         {/* Readiness Meter */}
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider">Live Readiness</span>
-            <span className={`text-sm font-bold ${displayedReadiness >= 70 ? 'text-emerald-400' : displayedReadiness >= 40 ? 'text-cyan-400' : 'text-amber-400'}`}>
-              {displayedReadiness}%
-            </span>
+        <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-slate-700">Placement Readiness</span>
+            <span className="text-base font-bold text-blue-600">{displayedReadiness}%</span>
           </div>
-          <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+          <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
             <div
-              className={`h-full ${readinessColor} rounded-full progress-bar-animate`}
+              className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-700"
               style={{ width: `${displayedReadiness}%` }}
             />
           </div>
-          <div className="flex items-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3 text-emerald-400" />
-            <span className="text-[10px] text-emerald-400">+{Math.max(0, readiness - 42)}% from assessments</span>
+          <div className="flex items-center justify-between mt-2 text-[10px] text-slate-500 font-medium">
+            <span className="flex items-center gap-1 text-emerald-600">
+              <TrendingUp className="w-3 h-3" />
+              +{Math.max(0, readiness - 42)}% from assessment sprints
+            </span>
+            <span>Target Benchmark: 85%</span>
           </div>
         </div>
 
-        {/* Passport & Custom Career Buttons */}
-        <div className="flex flex-col gap-1.5 mt-3 pt-3 border-t border-slate-800">
+        {/* Actions */}
+        <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-100">
           <button
             onClick={onOpenPassport}
-            className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all shadow-sm shadow-emerald-500/10"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-800 text-xs font-semibold transition-all shadow-sm"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
             Export Verified Skill Passport
           </button>
           <button
             onClick={onOpenCustomCareerModal}
-            className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-violet-500/10 border border-violet-500/30 text-violet-300 hover:bg-violet-500/20 text-xs font-medium transition-all"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium transition-all"
           >
-            <Sparkles className="w-3 h-3 text-violet-400" />
-            ✨ Custom Career Synthesis
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+            Synthesize Custom Target Role
           </button>
         </div>
       </div>
 
-      {/* GitHub Scanner */}
-      <div className="glass rounded-xl p-4 border border-slate-800">
-        <div className="flex items-center gap-2 mb-3">
-          <Github className="w-4 h-4 text-slate-400" />
-          <span className="text-xs font-semibold text-slate-300">Live GitHub Scanner</span>
-          <span className="text-[9px] text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 rounded px-1.5 py-0.5">Profiler-01</span>
+      {/* Live GitHub Scanner */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700">
+              <Github className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-slate-900">Live GitHub Scanner</div>
+              <div className="text-[10px] text-slate-500">Autonomous repo code analyzer</div>
+            </div>
+          </div>
+          <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-md px-2 py-0.5">
+            Profiler-01
+          </span>
         </div>
+
         <div className="flex gap-2">
           <input
             type="text"
@@ -266,33 +292,38 @@ export function LeftPanel({
             onChange={(e) => setGithubUsername(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGithubScan()}
             placeholder="github-username"
-            className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
           />
           <button
             onClick={handleGithubScan}
             disabled={scanning || !githubUsername.trim()}
-            className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:bg-slate-700 disabled:text-slate-500 text-white text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-sm"
           >
             {scanning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Github className="w-3 h-3" />}
-            {scanning ? 'Scanning' : 'Scan'}
+            {scanning ? 'Auditing' : 'Scan'}
           </button>
         </div>
+
         {scanResult && (
-          <div className={`mt-2 p-2 rounded-lg text-[11px] ${scanResult.startsWith('✅') ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-300 border border-amber-500/20'}`}>
+          <div className="mt-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700 leading-relaxed">
             {scanResult}
           </div>
         )}
       </div>
 
       {/* Verified Skills */}
-      <div className="glass rounded-xl p-4 border border-slate-800">
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-slate-300">Verified Skills</span>
+          <div>
+            <div className="text-xs font-bold text-slate-900">Verified Competencies</div>
+            <div className="text-[10px] text-slate-500">{skills.length} certified skill nodes</div>
+          </div>
           <button
             onClick={() => setShowAddSkill(!showAddSkill)}
-            className="w-5 h-5 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+            className="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"
+            title="Add Skill"
           >
-            <Plus className="w-3 h-3 text-slate-300" />
+            <Plus className="w-3.5 h-3.5" />
           </button>
         </div>
 
@@ -303,11 +334,14 @@ export function LeftPanel({
               value={addSkillName}
               onChange={(e) => setAddSkillName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addSkill()}
-              placeholder="Add skill..."
+              placeholder="e.g. Docker, TypeScript"
               autoFocus
-              className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white"
             />
-            <button onClick={addSkill} className="px-2 py-1 rounded-lg bg-emerald-600 text-white text-xs hover:bg-emerald-500 transition-colors">
+            <button
+              onClick={addSkill}
+              className="px-3 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors"
+            >
               Add
             </button>
           </div>
@@ -317,32 +351,33 @@ export function LeftPanel({
           {skills.map((skill) => (
             <div
               key={skill.id}
-              className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] font-medium ${SKILL_LEVEL_COLORS[skill.level]}`}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                SKILL_LEVEL_COLORS[skill.level] || 'bg-slate-100 text-slate-700 border-slate-200'
+              }`}
             >
-              {skill.name}
+              <span>{skill.name}</span>
               <span className="text-[9px] opacity-60">[{skill.level.slice(0, 3)}]</span>
               <button
                 onClick={() => removeSkill(skill.id)}
-                className="ml-0.5 opacity-40 hover:opacity-100 transition-opacity"
+                className="opacity-40 hover:opacity-100 text-slate-600 transition-opacity"
               >
-                <X className="w-2.5 h-2.5" />
+                <X className="w-3 h-3" />
               </button>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Skill Radar */}
-      <div className="glass rounded-xl p-4 border border-slate-800">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-300">Skill Vector Radar</span>
-          <div className="flex items-center gap-3 text-[9px] text-slate-500">
-            <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-cyan-400 inline-block" />Current</span>
-            <span className="flex items-center gap-1"><span className="w-3 border-t border-dashed border-emerald-400 inline-block" />Target</span>
+      {/* Skill Radar Chart Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-1">
+          <div>
+            <div className="text-xs font-bold text-slate-900">Skill Competency Vector</div>
+            <div className="text-[10px] text-slate-500">Current Vector vs Target Benchmark</div>
           </div>
         </div>
-        <div className="flex justify-center">
-          <SkillRadar data={radarData} size={220} />
+        <div className="flex justify-center -my-2">
+          <SkillRadar data={radarData} size={240} />
         </div>
       </div>
     </div>

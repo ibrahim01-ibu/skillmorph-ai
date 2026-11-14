@@ -1,36 +1,37 @@
-// src/components/RightPanel.tsx — Live 4-Agent War Room & AI Mentor Chat
+// src/components/RightPanel.tsx — Apple / Fluent Daylight Agent Pipeline Stack & AI Mentor
 import { useState, useRef, useEffect } from 'react';
-import { Scan, GitBranch, Code2, Bot, Send, Loader2, Cpu } from 'lucide-react';
+import {
+  Scan,
+  GitBranch,
+  Code2,
+  Bot,
+  Send,
+  Loader2,
+  Cpu,
+  Terminal,
+} from 'lucide-react';
 import type { Agent, AgentLog, ChatMessage } from '../types';
 import { CHAT_RESPONSES } from '../data/scenarios';
 import { askMentorGroq } from '../services/groq';
 
 const AGENT_ICONS: Record<string, React.ReactNode> = {
-  scan: <Scan className="w-3.5 h-3.5" />,
-  'git-branch': <GitBranch className="w-3.5 h-3.5" />,
-  'code-2': <Code2 className="w-3.5 h-3.5" />,
-  bot: <Bot className="w-3.5 h-3.5" />,
+  scan: <Scan className="w-4 h-4 text-cyan-600" />,
+  'git-branch': <GitBranch className="w-4 h-4 text-emerald-600" />,
+  'code-2': <Code2 className="w-4 h-4 text-indigo-600" />,
+  bot: <Bot className="w-4 h-4 text-amber-600" />,
 };
 
-const AGENT_COLOR_CLASSES: Record<string, { bg: string; text: string; border: string; pill: string }> = {
-  cyan: { bg: 'bg-cyan-500/15', text: 'text-cyan-300', border: 'border-cyan-500/30', pill: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' },
-  emerald: { bg: 'bg-emerald-500/15', text: 'text-emerald-300', border: 'border-emerald-500/30', pill: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
-  violet: { bg: 'bg-violet-500/15', text: 'text-violet-300', border: 'border-violet-500/30', pill: 'bg-violet-500/20 text-violet-300 border-violet-500/30' },
-  amber: { bg: 'bg-amber-500/15', text: 'text-amber-300', border: 'border-amber-500/30', pill: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+const AGENT_COLORS: Record<string, { bg: string; border: string; pill: string }> = {
+  cyan: { bg: 'bg-cyan-50/50', border: 'border-cyan-200', pill: 'bg-cyan-100 text-cyan-800' },
+  emerald: { bg: 'bg-emerald-50/50', border: 'border-emerald-200', pill: 'bg-emerald-100 text-emerald-800' },
+  violet: { bg: 'bg-indigo-50/50', border: 'border-indigo-200', pill: 'bg-indigo-100 text-indigo-800' },
+  amber: { bg: 'bg-amber-50/50', border: 'border-amber-200', pill: 'bg-amber-100 text-amber-800' },
 };
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  idle: { label: 'Idle', color: 'bg-slate-600 text-slate-300' },
-  thinking: { label: 'Thinking', color: 'bg-blue-500/20 text-blue-300' },
-  mutating: { label: 'Mutating Graph', color: 'bg-amber-500/20 text-amber-300 animate-pulse' },
-};
-
-const LOG_TYPE_STYLES: Record<string, string> = {
-  info: 'text-slate-400',
-  success: 'text-emerald-400',
-  warning: 'text-amber-400',
-  mutation: 'text-violet-400',
-  handoff: 'text-cyan-400',
+const STATUS_PILLS: Record<string, { label: string; style: string }> = {
+  idle: { label: 'Idle / Ready', style: 'bg-slate-100 text-slate-600' },
+  thinking: { label: 'Active Turn', style: 'bg-blue-50 text-blue-700 animate-pulse font-semibold' },
+  mutating: { label: 'Mutating DAG', style: 'bg-amber-50 text-amber-800 animate-pulse font-bold' },
 };
 
 function getSmartResponse(query: string): string {
@@ -54,7 +55,8 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: '0',
     role: 'assistant',
-    content: 'Hi Aarav! 👋 I\'m your AI Mentor powered by the 4-agent Groq mesh. Ask me anything — "Explain React state using Python analogies", "How do I prep for a Full Stack interview?", or "What\'s the JS equivalent of asyncio.gather?"',
+    content:
+      'Hi Aarav! 👋 I\'m your AI Career Coach powered by the 4-agent Groq mesh. Ask me anything — "Explain React state using Python analogies", "How do I prep for a Full Stack interview?", or "What\'s the JS equivalent of asyncio.gather?"',
     timestamp: '10:00 AM',
   },
 ];
@@ -87,7 +89,7 @@ export function RightPanel({
       id: Date.now().toString(),
       role: 'user',
       content: chatInput.trim(),
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
     setMessages((prev) => [...prev, userMsg]);
     const query = chatInput.trim();
@@ -111,18 +113,18 @@ export function RightPanel({
             id: Date.now().toString(),
             role: 'assistant',
             content: text,
-            timestamp: new Date().toLocaleTimeString(),
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           },
         ]);
       } catch (err) {
-        console.warn('Groq mentor failed, falling back:', err);
+        console.warn('Groq mentor note:', err);
         setMessages((prev) => [
           ...prev,
           {
             id: Date.now().toString(),
             role: 'assistant',
             content: getSmartResponse(query),
-            timestamp: new Date().toLocaleTimeString(),
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           },
         ]);
       }
@@ -134,7 +136,7 @@ export function RightPanel({
           id: Date.now().toString(),
           role: 'assistant',
           content: getSmartResponse(query),
-          timestamp: new Date().toLocaleTimeString(),
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
     }
@@ -142,29 +144,46 @@ export function RightPanel({
   }
 
   return (
-    <div className="flex flex-col gap-3 h-full overflow-hidden">
-      {/* Agent Status Cards */}
-      <div className="glass rounded-xl p-3 border border-slate-800 flex-shrink-0">
-        <div className="flex items-center gap-2 mb-3">
-          <Cpu className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-xs font-semibold text-slate-300">4-Agent Collaboration War Room</span>
-          <div className="ml-auto flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-emerald-400">Mesh Active</span>
+    <div className="flex flex-col gap-4 h-full pb-6">
+      {/* 4-Agent Pipeline Stack */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <Cpu className="w-4 h-4 text-indigo-600" />
+            <div>
+              <div className="text-xs font-bold text-slate-900">Autonomous 4-Agent Pipeline</div>
+              <div className="text-[10px] text-slate-500">Continuous collaborative mesh</div>
+            </div>
           </div>
+          <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Active
+          </span>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+
+        {/* Vertical Pipeline Stack */}
+        <div className="space-y-2">
           {agents.map((agent) => {
-            const colors = AGENT_COLOR_CLASSES[agent.color];
-            const statusInfo = STATUS_LABELS[agent.status];
+            const colors = AGENT_COLORS[agent.color] || AGENT_COLORS.violet;
+            const statusInfo = STATUS_PILLS[agent.status] || STATUS_PILLS.idle;
             return (
-              <div key={agent.id} className={`rounded-lg p-2.5 border ${colors.bg} ${colors.border}`}>
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className={colors.text}>{AGENT_ICONS[agent.icon]}</span>
-                  <span className="text-[11px] font-mono font-semibold text-white whitespace-nowrap">{agent.name}</span>
+              <div
+                key={agent.id}
+                className={`flex items-center justify-between p-2.5 rounded-xl border ${colors.bg} ${colors.border} transition-all`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0 shadow-xs">
+                    {AGENT_ICONS[agent.icon]}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold font-mono text-slate-900 truncate">
+                      {agent.name}
+                    </div>
+                    <div className="text-[10px] text-slate-500 truncate">{agent.role}</div>
+                  </div>
                 </div>
-                <div className="text-[9px] text-slate-500 leading-tight mb-1.5">{agent.role}</div>
-                <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded border ${statusInfo.color}`}>
+
+                <span className={`text-[10px] px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0 ml-2 ${statusInfo.style}`}>
                   {statusInfo.label}
                 </span>
               </div>
@@ -174,69 +193,108 @@ export function RightPanel({
       </div>
 
       {/* Live Collaboration Stream */}
-      <div className="glass rounded-xl border border-slate-800 flex flex-col flex-shrink-0" style={{ maxHeight: '220px' }}>
-        <div className="px-3 py-2 border-b border-slate-800 flex items-center gap-2 flex-shrink-0">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[11px] font-semibold text-slate-300">Live Agent Collaboration Stream</span>
+      <div className="bg-white rounded-2xl border border-slate-200/90 flex flex-col flex-shrink-0 shadow-sm overflow-hidden" style={{ maxHeight: '210px' }}>
+        <div className="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-2">
+            <Terminal className="w-3.5 h-3.5 text-slate-600" />
+            <span className="text-xs font-bold text-slate-800">Agent Collaboration Log</span>
+          </div>
+          <span className="text-[10px] text-slate-400 font-mono">{logs.length} events</span>
         </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-1 font-mono">
+
+        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 font-mono bg-slate-50/30">
           {logs.length === 0 && (
-            <div className="text-[10px] text-slate-600 p-2 text-center">Agents on standby — interact with the DAG to activate...</div>
+            <div className="text-[11px] text-slate-400 p-3 text-center">
+              Agent mesh standby — click DAG nodes or scan repos to stream events...
+            </div>
           )}
-          {logs.map((log) => {
-            const color = AGENT_COLOR_CLASSES[agents.find(a => a.id === log.agentId)?.color ?? 'cyan'];
-            return (
-              <div key={log.id} className="flex gap-2 items-start animate-slide-in-up">
-                <span className="text-[9px] text-slate-600 flex-shrink-0 mt-0.5">{log.timestamp}</span>
-                <span className={`text-[9px] font-semibold flex-shrink-0 ${color.text}`}>[{log.agent}]</span>
-                <span className={`text-[9px] leading-relaxed ${LOG_TYPE_STYLES[log.type]}`}>{log.message}</span>
-                {log.payload && (
-                  <details className="text-[8px] text-slate-600 ml-auto flex-shrink-0">
-                    <summary className="cursor-pointer hover:text-slate-400">JSON</summary>
-                    <pre className="bg-slate-900 rounded p-1 mt-1 text-[8px] text-slate-500 max-w-xs overflow-x-auto">{JSON.stringify(JSON.parse(log.payload), null, 2)}</pre>
-                  </details>
-                )}
-              </div>
-            );
-          })}
+          {logs.map((log) => (
+            <div key={log.id} className="text-[10px] text-slate-700 leading-relaxed border-b border-slate-100 pb-1">
+              <span className="text-slate-400 mr-1.5">{log.timestamp}</span>
+              <span className="font-bold text-blue-700 mr-1.5">[{log.agent}]</span>
+              <span>{log.message}</span>
+              {log.payload && (
+                <details className="mt-0.5 text-slate-500">
+                  <summary className="cursor-pointer hover:text-slate-800 text-[9px] text-blue-600">
+                    Inspect JSON Handoff
+                  </summary>
+                  <pre className="bg-white p-2 rounded-lg border border-slate-200 text-[9px] mt-1 overflow-x-auto text-slate-700">
+                    {JSON.stringify(JSON.parse(log.payload), null, 2)}
+                  </pre>
+                </details>
+              )}
+            </div>
+          ))}
           <div ref={logsEndRef} />
         </div>
       </div>
 
       {/* AI Mentor Chat */}
-      <div className="glass rounded-xl border border-slate-800 flex flex-col flex-1 overflow-hidden">
-        <div className="px-3 py-2 border-b border-slate-800 flex items-center gap-2 flex-shrink-0">
-          <Bot className="w-3.5 h-3.5 text-violet-400" />
-          <span className="text-[11px] font-semibold text-slate-300">AI Mentor Chat</span>
-          <span className={`ml-auto text-[9px] px-1.5 py-0.5 rounded border ${groqKey ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' : 'bg-slate-700 text-slate-400 border-slate-600'}`}>
-            {groqKey ? 'Groq Live (gpt-oss-120b)' : 'Simulation Engine'}
+      <div className="bg-white rounded-2xl border border-slate-200/90 flex flex-col flex-1 shadow-sm overflow-hidden min-h-[340px]">
+        <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center">
+              <Bot className="w-3.5 h-3.5 text-indigo-600" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-slate-900">AI Mentor Coach</div>
+              <div className="text-[10px] text-slate-500">Polyglot mental model tutor</div>
+            </div>
+          </div>
+          <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-md px-2 py-0.5">
+            {groqKey ? 'Groq LPU Active' : 'Deterministic Engine'}
           </span>
         </div>
-        <div className="flex-1 overflow-y-auto p-3 space-y-3">
+
+        {/* Chat History */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-slide-in-up`}>
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold ${msg.role === 'user' ? 'bg-cyan-600' : 'bg-violet-600'}`}>
-                {msg.role === 'user' ? 'A' : '🤖'}
+            <div
+              key={msg.id}
+              className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-slide-in-up`}
+            >
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                  msg.role === 'user'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                }`}
+              >
+                {msg.role === 'user' ? 'AS' : '🤖'}
               </div>
-              <div className={`max-w-[85%] rounded-xl px-3 py-2 ${msg.role === 'user' ? 'bg-cyan-500/15 border border-cyan-500/20 text-cyan-100' : 'bg-slate-800 border border-slate-700 text-slate-300'}`}>
-                <div className="text-[11px] leading-relaxed whitespace-pre-wrap">{msg.content}</div>
-                <div className="text-[9px] text-slate-600 mt-1">{msg.timestamp}</div>
+              <div
+                className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
+                  msg.role === 'user'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-50 border border-slate-200/90 text-slate-800'
+                }`}
+              >
+                <div className="whitespace-pre-wrap">{msg.content}</div>
+                <div
+                  className={`text-[9px] mt-1 ${
+                    msg.role === 'user' ? 'text-blue-100 text-right' : 'text-slate-400'
+                  }`}
+                >
+                  {msg.timestamp}
+                </div>
               </div>
             </div>
           ))}
           {chatLoading && (
-            <div className="flex gap-2 items-center animate-slide-in-up">
-              <div className="w-6 h-6 rounded-lg bg-violet-600 flex items-center justify-center text-[10px]">🤖</div>
-              <div className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2">
-                <Loader2 className="w-3 h-3 text-violet-400 animate-spin" />
+            <div className="flex gap-2.5 items-center">
+              <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center text-xs">
+                🤖
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2">
+                <Loader2 className="w-3.5 h-3.5 text-indigo-600 animate-spin" />
               </div>
             </div>
           )}
           <div ref={chatEndRef} />
         </div>
 
-        {/* Quick prompts */}
-        <div className="px-3 pb-2 flex gap-1.5 flex-wrap flex-shrink-0">
+        {/* Prompt shortcuts */}
+        <div className="px-4 py-2 flex gap-1.5 flex-wrap border-t border-slate-100 bg-slate-50/30">
           {[
             'Explain React state via Python',
             'Full Stack interview prep',
@@ -244,29 +302,29 @@ export function RightPanel({
           ].map((prompt) => (
             <button
               key={prompt}
-              onClick={() => { setChatInput(prompt); }}
-              className="text-[9px] px-2 py-1 rounded border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-600 transition-colors"
+              onClick={() => setChatInput(prompt)}
+              className="text-[10px] px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors shadow-2xs"
             >
               {prompt}
             </button>
           ))}
         </div>
 
-        {/* Input */}
-        <div className="px-3 pb-3 flex-shrink-0">
+        {/* Input bar */}
+        <div className="p-3 border-t border-slate-100 bg-white">
           <div className="flex gap-2">
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-              placeholder="Ask your AI mentor..."
-              className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-violet-500"
+              placeholder="Ask your mentor anything..."
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white transition-colors"
             />
             <button
               onClick={sendMessage}
               disabled={!chatInput.trim() || chatLoading}
-              className="w-8 h-8 rounded-lg bg-violet-600 hover:bg-violet-500 disabled:bg-slate-700 disabled:text-slate-500 text-white flex items-center justify-center transition-colors flex-shrink-0"
+              className="w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white flex items-center justify-center transition-colors flex-shrink-0 shadow-sm"
             >
               <Send className="w-3.5 h-3.5" />
             </button>

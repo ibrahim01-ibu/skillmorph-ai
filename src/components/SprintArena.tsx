@@ -1,4 +1,4 @@
-// src/components/SprintArena.tsx — 90-Second Skill Sprint Arena with Live Code Patch & Boss Fight
+// src/components/SprintArena.tsx — Apple / Material 3 Daylight 90-Second Skill Sprint Arena
 import { useState } from 'react';
 import {
   X,
@@ -13,6 +13,7 @@ import {
   Play,
   Check,
   AlertCircle,
+  Sparkles,
 } from 'lucide-react';
 import type { DAGNode, NodeContent, AgentLog } from '../types';
 
@@ -85,7 +86,7 @@ function updateUserEmail(newEmail: string) {`,
   },
   default: {
     contextBefore: `// Scenario: Async error boundary handling
-async function handleRequest(req, res) {`,
+async function handleRequest(req: Request, res: Response) {`,
     buggyLine: `  const data = fetchBackendData(); res.send(data);`,
     contextAfter: `}`,
     correctPatchPattern: /await/i,
@@ -133,14 +134,14 @@ export function SprintArena({
       onAgentLog({
         agent: 'AdaptiveMentor-04',
         agentId: 4,
-        message: `Assessment PASSED for "${node.label}". Marking node as Mastered. Unlocking downstream nodes. Career match +8%. Handing unlock event to GapArchitect-02.`,
+        message: `Assessment PASSED for "${node.label}". Marking node as Mastered. Unlocking downstream nodes. Career readiness +8%.`,
         type: 'success',
         payload: JSON.stringify({ nodeId: node.id, result: 'pass', readinessDelta: 8 }),
       });
       onAgentLog({
         agent: 'GapArchitect-02',
         agentId: 2,
-        message: `Received mastery unlock for "${node.label}". Recalculating career DAG. Next recommended node: ${getNextNodeLabel(node.id)}`,
+        message: `Received mastery unlock for "${node.label}". Recalculating career DAG roadmap.`,
         type: 'handoff',
       });
       setTimeout(() => onNodeMastered(node.id), 800);
@@ -148,7 +149,7 @@ export function SprintArena({
       onAgentLog({
         agent: 'AdaptiveMentor-04',
         agentId: 4,
-        message: `Assessment FAILED for "${node.label}". Injecting Socratic remedial bridge. Rerouting via Python-to-JS analogy module.`,
+        message: `Assessment FAILED for "${node.label}". Socratic remedial bridge injected.`,
         type: 'warning',
         payload: JSON.stringify({ nodeId: node.id, result: 'fail', intervention: 'remedial_node_injection' }),
       });
@@ -175,7 +176,7 @@ export function SprintArena({
       onAgentLog({
         agent: 'AdaptiveMentor-04',
         agentId: 4,
-        message: `1-Line Live Code Patch PASSED with all unit tests green for "${node.label}". Marking node as Mastered!`,
+        message: `1-Line Live Code Patch PASSED with all unit tests green for "${node.label}". Node verified!`,
         type: 'success',
         payload: JSON.stringify({ nodeId: node.id, testCount: results.length }),
       });
@@ -184,7 +185,7 @@ export function SprintArena({
       onAgentLog({
         agent: 'AdaptiveMentor-04',
         agentId: 4,
-        message: `1-Line Live Code Patch FAILED unit test suite. Socratic debugging advice dispatched.`,
+        message: `1-Line Live Code Patch FAILED unit tests. Socratic hint available.`,
         type: 'warning',
       });
     }
@@ -201,203 +202,238 @@ export function SprintArena({
   }
 
   return (
-    <div className="glass-bright rounded-xl border border-slate-700 overflow-hidden animate-slide-in-up">
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-md overflow-hidden animate-slide-in-up mt-3">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-2 h-2 rounded-full ${
-              node.status === 'remedial' ? 'bg-amber-400' : 'bg-cyan-400'
-            } animate-pulse`}
-          />
-          <span className="text-sm font-semibold text-white">90-Second Sprint Arena</span>
-          <span className="text-xs text-slate-400">— {node.label}</span>
-          {node.isRemedial && (
-            <span className="text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded px-1.5 py-0.5">
-              🚑 Rescue Mode
-            </span>
-          )}
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/60">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-slate-900">90-Second Skill Sprint</span>
+              <span className="text-xs text-slate-500 font-medium">— {node.label}</span>
+              {node.isRemedial && (
+                <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold rounded-md px-2 py-0.5">
+                  🚑 Rescue Bridge
+                </span>
+              )}
+            </div>
+            <div className="text-[11px] text-slate-500">Accelerated micro-learning & interactive verification</div>
+          </div>
         </div>
-        <button onClick={onClose} className="text-slate-500 hover:text-slate-200 transition-colors">
+
+        <button
+          onClick={onClose}
+          className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+        >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-slate-700">
+      {/* Segmented Sprint Tabs */}
+      <div className="flex border-b border-slate-200/80 bg-slate-50/30 px-3 pt-2">
         {[
-          { id: 'braindiff' as Tab, label: 'Polyglot Brain Diff', emoji: '🧠' },
-          { id: 'resources' as Tab, label: 'Resources & Mini-Build', emoji: '📦' },
-          { id: 'assessment' as Tab, label: '60s Boss Fight & Live Patch', emoji: '⚔️' },
+          { id: 'braindiff' as Tab, label: 'Polyglot Brain Diff (30s)', icon: '🧠' },
+          { id: 'resources' as Tab, label: 'Curated Mini-Build (15m)', icon: '📦' },
+          { id: 'assessment' as Tab, label: 'Boss Fight & Live Patch (60s)', icon: '⚔️' },
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 px-3 py-2.5 text-xs font-medium transition-colors border-b-2 ${
+            className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-all border-b-2 flex items-center gap-1.5 ${
               activeTab === tab.id
-                ? 'border-cyan-500 text-cyan-300 bg-cyan-500/5'
-                : 'border-transparent text-slate-500 hover:text-slate-300'
+                ? 'border-blue-600 text-blue-700 bg-white shadow-xs'
+                : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
-            {tab.emoji} {tab.label}
+            <span>{tab.icon}</span>
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Tab Content */}
-      <div className="p-4 max-h-96 overflow-y-auto">
-        {/* TAB 1: Brain Diff */}
+      {/* Tab Body */}
+      <div className="p-5 max-h-[420px] overflow-y-auto">
+        {/* TAB 1: Polyglot Brain Diff */}
         {activeTab === 'braindiff' && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="text-xs text-slate-400">
-                <span className="text-cyan-400 font-mono">{content.brainDiff.existingLang}</span>
-                <ChevronRight className="w-3 h-3 inline mx-1" />
-                <span className="text-emerald-400 font-mono">{content.brainDiff.newLang}</span>
-                <span className="ml-2 text-slate-500">— {content.brainDiff.concept}</span>
-              </div>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+              <span className="font-semibold text-slate-900">Transfer Learning Insight:</span>
+              <span className="text-blue-700 font-mono font-medium">{content.brainDiff.existingLang}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <span className="text-emerald-700 font-mono font-medium">{content.brainDiff.newLang}</span>
+              <span className="text-slate-400">|</span>
+              <span className="text-slate-600 font-medium">{content.brainDiff.concept}</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-lg overflow-hidden border border-slate-700">
-                <div className="bg-slate-800 px-3 py-1.5 flex items-center gap-2 border-b border-slate-700">
-                  <div className="w-2 h-2 rounded-full bg-blue-400" />
-                  <span className="text-[11px] font-mono text-blue-300">
-                    {content.brainDiff.existingLang} (You Know This)
-                  </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Existing Language */}
+              <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                <div className="bg-slate-100/90 px-3.5 py-2 flex items-center justify-between border-b border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                    <span className="text-xs font-bold text-slate-800">
+                      {content.brainDiff.existingLang} (You Know This)
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-medium">Existing Mental Model</span>
                 </div>
-                <pre className="p-3 text-[10px] font-mono text-slate-300 overflow-x-auto leading-relaxed bg-slate-900">
+                <pre className="p-3.5 text-xs font-mono text-slate-800 overflow-x-auto leading-relaxed bg-white">
                   <code>{content.brainDiff.existingCode}</code>
                 </pre>
               </div>
 
-              <div className="rounded-lg overflow-hidden border border-emerald-500/30">
-                <div className="bg-emerald-900/20 px-3 py-1.5 flex items-center gap-2 border-b border-emerald-500/20">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span className="text-[11px] font-mono text-emerald-300">
-                    {content.brainDiff.newLang} (New Target)
-                  </span>
+              {/* New Target Language */}
+              <div className="rounded-xl overflow-hidden border border-emerald-200 bg-emerald-50/20">
+                <div className="bg-emerald-50 px-3.5 py-2 flex items-center justify-between border-b border-emerald-200/80">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    <span className="text-xs font-bold text-emerald-950">
+                      {content.brainDiff.newLang} (New Target)
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-emerald-700 font-semibold">1:1 Syntax Mapping</span>
                 </div>
-                <pre className="p-3 text-[10px] font-mono text-slate-300 overflow-x-auto leading-relaxed bg-slate-900">
+                <pre className="p-3.5 text-xs font-mono text-slate-800 overflow-x-auto leading-relaxed bg-white">
                   <code>{content.brainDiff.newCode}</code>
                 </pre>
               </div>
             </div>
 
-            <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <Lightbulb className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-cyan-200">{content.brainDiff.explanation}</p>
+            <div className="bg-blue-50 border border-blue-200/80 rounded-2xl p-4 flex items-start gap-3">
+              <Lightbulb className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-blue-900 leading-relaxed font-medium">
+                {content.brainDiff.explanation}
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 2: Resources & Mini-Build */}
+        {/* TAB 2: Resources & Output Micro-Spec */}
         {activeTab === 'resources' && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-2">Curated Resources</div>
-              {content.resources.map((r, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 hover:border-slate-600 bg-slate-900/50 mb-2 group"
-                >
+              <div className="text-xs font-bold text-slate-900 mb-2.5">Curated High-Signal Learning Artifacts</div>
+              <div className="space-y-2">
+                {content.resources.map((r, i) => (
                   <div
-                    className={`w-6 h-6 rounded flex items-center justify-center flex-shrink-0 ${
-                      r.type === 'video'
-                        ? 'bg-red-500/20 text-red-400'
-                        : r.type === 'interactive'
-                        ? 'bg-violet-500/20 text-violet-400'
-                        : 'bg-blue-500/20 text-blue-400'
-                    }`}
+                    key={i}
+                    className="flex items-center gap-3.5 p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50/50 transition-colors group shadow-2xs"
                   >
-                    <span className="text-[10px]">{r.type === 'video' ? '▶' : r.type === 'interactive' ? '⚡' : '📄'}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-white font-medium truncate">{r.title}</div>
-                    <div className="text-[10px] text-slate-500">
-                      {r.source} · {r.duration}
+                    <div
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-bold ${
+                        r.type === 'video'
+                          ? 'bg-red-50 text-red-600 border border-red-200'
+                          : r.type === 'interactive'
+                          ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                          : 'bg-blue-50 text-blue-600 border border-blue-200'
+                      }`}
+                    >
+                      {r.type === 'video' ? '▶' : r.type === 'interactive' ? '⚡' : '📄'}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                        {r.title}
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-medium">
+                        {r.source} · {r.duration}
+                      </div>
+                    </div>
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 group-hover:text-slate-700 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
                   </div>
-                  <a href={r.url} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                  </a>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            <div className="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-lg p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Package className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-semibold text-emerald-300">Output Micro-Spec</span>
-                <div className="flex items-center gap-1 ml-auto">
+            {/* Micro-Spec Card */}
+            <div className="bg-gradient-to-tr from-emerald-50/60 to-blue-50/60 border border-emerald-200/80 rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Package className="w-4 h-4 text-emerald-700" />
+                  <span className="text-xs font-bold text-emerald-950">Hands-on Portfolio Micro-Spec</span>
+                </div>
+                <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-full border border-slate-200">
                   <Clock className="w-3 h-3 text-slate-500" />
-                  <span className="text-[10px] text-slate-400">{content.microSpec.timeEstimate}</span>
+                  <span>{content.microSpec.timeEstimate}</span>
                 </div>
               </div>
-              <div className="text-sm font-medium text-white mb-1">{content.microSpec.title}</div>
-              <p className="text-xs text-slate-300 mb-2">{content.microSpec.description}</p>
-              <div className="bg-slate-900/60 rounded-lg px-3 py-2">
-                <span className="text-[9px] text-slate-500 uppercase tracking-wider">Portfolio Artifact: </span>
-                <span className="text-[11px] text-cyan-300 font-mono">{content.microSpec.artifact}</span>
+
+              <div className="text-sm font-bold text-slate-900 mb-1">{content.microSpec.title}</div>
+              <p className="text-xs text-slate-600 leading-relaxed mb-3">{content.microSpec.description}</p>
+
+              <div className="bg-white rounded-xl p-3 border border-slate-200/80">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                  Verified Portfolio Deliverable:
+                </span>
+                <span className="text-xs text-blue-700 font-mono font-semibold">{content.microSpec.artifact}</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 3: Boss Fight & Live Code Patch */}
+        {/* TAB 3: Boss Fight & 1-Line Live Code Patch */}
         {activeTab === 'assessment' && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {/* Mode Switcher */}
-            <div className="flex rounded-lg overflow-hidden border border-slate-700 text-xs mb-2">
+            <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200/80 max-w-sm">
               <button
                 onClick={() => setAssessmentMode('mcq')}
-                className={`flex-1 py-1 text-center font-medium transition-colors ${
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   assessmentMode === 'mcq'
-                    ? 'bg-cyan-500/20 text-cyan-300 border-r border-cyan-500/30'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 [1] Concept Boss Fight
               </button>
               <button
                 onClick={() => setAssessmentMode('codepatch')}
-                className={`flex-1 py-1 text-center font-medium transition-colors flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
                   assessmentMode === 'codepatch'
-                    ? 'bg-violet-500/20 text-violet-300'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-white text-blue-700 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Terminal className="w-3 h-3" />
-                [2] 1-Line Live Code Patch
+                <Terminal className="w-3.5 h-3.5" />
+                [2] 1-Line Code Patch
               </button>
             </div>
 
-            {/* MODE A: MCQ */}
+            {/* Assessment Mode A: MCQ */}
             {assessmentMode === 'mcq' && (
-              <div className="space-y-3">
-                <div className="text-xs font-medium text-white leading-relaxed">{content.assessment.question}</div>
+              <div className="space-y-3.5">
+                <div className="text-xs font-semibold text-slate-900 leading-relaxed">
+                  {content.assessment.question}
+                </div>
 
                 {content.assessment.code && (
-                  <pre className="bg-slate-900 border border-slate-700 rounded-lg p-3 text-[10px] font-mono text-slate-300 overflow-x-auto leading-relaxed">
+                  <pre className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs font-mono text-slate-800 overflow-x-auto leading-relaxed">
                     <code>{content.assessment.code}</code>
                   </pre>
                 )}
 
                 <div className="space-y-2">
                   {content.assessment.options.map((opt, i) => {
-                    let optStyle = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
+                    let optStyle =
+                      'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50';
                     if (submitted) {
                       if (i === content.assessment.correctIndex) {
-                        optStyle = 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300';
+                        optStyle = 'border-emerald-300 bg-emerald-50 text-emerald-900 font-semibold';
                       } else if (i === selectedAnswer && !correct) {
-                        optStyle = 'border-red-500/50 bg-red-500/10 text-red-300';
+                        optStyle = 'border-red-300 bg-red-50 text-red-900';
                       } else {
-                        optStyle = 'border-slate-800 text-slate-500';
+                        optStyle = 'border-slate-200 bg-slate-50 text-slate-400';
                       }
                     } else if (selectedAnswer === i) {
-                      optStyle = 'border-cyan-500/50 bg-cyan-500/10 text-cyan-300';
+                      optStyle = 'border-blue-500 bg-blue-50 text-blue-900 font-semibold';
                     }
 
                     return (
@@ -405,15 +441,19 @@ export function SprintArena({
                         key={i}
                         onClick={() => !submitted && setSelectedAnswer(i)}
                         disabled={submitted}
-                        className={`w-full text-left px-3 py-2.5 rounded-lg border text-xs transition-all ${optStyle}`}
+                        className={`w-full text-left px-4 py-3 rounded-xl border text-xs transition-all flex items-center justify-between ${optStyle}`}
                       >
-                        <span className="text-slate-500 mr-2 font-mono">{String.fromCharCode(65 + i)}.</span>
-                        <span className="font-mono">{opt}</span>
+                        <div className="flex items-center gap-2.5">
+                          <span className="w-5 h-5 rounded-md bg-slate-100 flex items-center justify-center text-[10px] font-mono font-bold text-slate-600">
+                            {String.fromCharCode(65 + i)}
+                          </span>
+                          <span className="font-mono text-[11.5px]">{opt}</span>
+                        </div>
                         {submitted && i === content.assessment.correctIndex && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline ml-2" />
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                         )}
                         {submitted && i === selectedAnswer && !correct && (
-                          <XCircle className="w-3.5 h-3.5 text-red-400 inline ml-2" />
+                          <XCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
                         )}
                       </button>
                     );
@@ -423,42 +463,44 @@ export function SprintArena({
                 {!submitted && (
                   <button
                     onClick={() => setShowHint(!showHint)}
-                    className="text-xs text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1"
+                    className="text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5"
                   >
-                    <Lightbulb className="w-3 h-3" />
-                    {showHint ? 'Hide hint' : 'Show Socratic hint'}
+                    <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                    <span>{showHint ? 'Hide Socratic Hint' : 'Show Socratic Hint'}</span>
                   </button>
                 )}
                 {showHint && !submitted && (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 animate-slide-in-up">
-                    <p className="text-xs text-amber-300">{content.assessment.hint}</p>
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 leading-relaxed animate-slide-in-up">
+                    {content.assessment.hint}
                   </div>
                 )}
 
                 {submitted && (
                   <div
-                    className={`rounded-lg p-3 border ${
-                      correct ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
-                    } animate-slide-in-up`}
+                    className={`rounded-xl p-4 border text-xs animate-slide-in-up ${
+                      correct
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                        : 'bg-red-50 border-red-200 text-red-900'
+                    }`}
                   >
                     {correct ? (
                       <div>
-                        <div className="text-xs font-semibold text-emerald-300 mb-1">✅ Correct! Node Mastered!</div>
-                        <div className="text-[11px] text-emerald-200/80">Career readiness +8%. Next node unlocked.</div>
+                        <div className="font-bold text-emerald-950 mb-0.5">✅ Assessment Mastered!</div>
+                        <div>Node marked verified. Career placement readiness +8%. Downstream milestones unlocked!</div>
                       </div>
                     ) : (
                       <div>
-                        <div className="text-xs font-semibold text-red-300 mb-1">
-                          ❌ Not quite — AdaptiveMentor-04 routing rescue sprint...
+                        <div className="font-bold text-red-950 mb-1">
+                          ❌ Not quite — AdaptiveMentor-04 rerouting via rescue sprint...
                         </div>
-                        <div className="text-[11px] text-red-200/80 mb-1">{content.assessment.wrongHint}</div>
+                        <div className="mb-2 leading-relaxed">{content.assessment.wrongHint}</div>
                         <button
                           onClick={() => {
                             setSelectedAnswer(null);
                             setSubmitted(false);
                             setCorrect(null);
                           }}
-                          className="text-[11px] text-cyan-400 hover:text-cyan-300 underline"
+                          className="text-xs font-bold text-blue-600 hover:underline"
                         >
                           Try again
                         </button>
@@ -468,16 +510,16 @@ export function SprintArena({
                 )}
 
                 {!submitted && (
-                  <div className="flex gap-2 pt-1">
+                  <div className="flex gap-2.5 pt-2">
                     <button
                       onClick={() => handleMcqSubmit(1)}
-                      className="flex-1 py-2 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs hover:bg-amber-500/20 transition-colors"
+                      className="flex-1 py-2.5 rounded-xl border border-amber-300 bg-amber-50/70 hover:bg-amber-100/70 text-amber-900 text-xs font-semibold transition-colors shadow-2xs"
                     >
                       Simulate Wrong Answer (Test Adaptive AI)
                     </button>
                     <button
                       onClick={() => handleMcqSubmit(content.assessment.correctIndex)}
-                      className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors"
+                      className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm"
                     >
                       Submit Correct Fix ✓
                     </button>
@@ -486,72 +528,73 @@ export function SprintArena({
               </div>
             )}
 
-            {/* MODE B: 1-Line Live Code Patch */}
+            {/* Assessment Mode B: 1-Line Live Code Patch */}
             {assessmentMode === 'codepatch' && (
-              <div className="space-y-3">
-                <div className="text-xs text-slate-300 leading-relaxed">
-                  <strong>Task:</strong> Inspect the buggy code below. Fix the highlighted line with a valid 1-line patch to satisfy the unit test harness.
+              <div className="space-y-3.5">
+                <div className="text-xs text-slate-700 leading-relaxed">
+                  <strong>Task:</strong> Inspect the buggy code below. Repair the highlighted line with a valid 1-line patch to satisfy the automated test suite.
                 </div>
 
-                {/* Code Window */}
-                <div className="rounded-lg overflow-hidden border border-slate-700 bg-slate-950 font-mono text-[11px]">
-                  <div className="bg-slate-900 px-3 py-1.5 flex items-center justify-between border-b border-slate-800">
+                <div className="rounded-xl overflow-hidden border border-slate-300 bg-slate-900 font-mono text-xs shadow-inner">
+                  <div className="bg-slate-800/90 px-3.5 py-2 flex items-center justify-between border-b border-slate-700 text-slate-300">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
-                      <span className="text-[10px] text-slate-400 ml-2">hotfix.ts — Live Patch Arena</span>
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                      <span className="text-[11px] text-slate-400 ml-2">hotfix.ts — Live Patch Arena</span>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2.5 text-[11px]">
                       <button
                         onClick={applyRecommendedPatch}
-                        className="text-[10px] text-emerald-400 hover:underline"
+                        className="text-emerald-400 hover:underline font-sans font-medium"
                       >
                         Auto-fill Correct Patch
                       </button>
-                      <button onClick={resetPatch} className="text-[10px] text-slate-500 hover:underline">
+                      <button onClick={resetPatch} className="text-slate-400 hover:underline font-sans font-medium">
                         Reset Bug
                       </button>
                     </div>
                   </div>
 
-                  <div className="p-3 text-slate-400 leading-relaxed overflow-x-auto">
-                    <div className="opacity-70">{patchSnippet.contextBefore}</div>
-                    <div className="my-2 p-1 rounded bg-red-500/10 border border-red-500/20">
-                      <div className="text-[9px] text-red-400 font-sans mb-1 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" /> Edit this 1-line patch:
+                  <div className="p-4 text-slate-300 leading-relaxed overflow-x-auto">
+                    <div className="opacity-60">{patchSnippet.contextBefore}</div>
+                    <div className="my-2 p-1.5 rounded-lg bg-red-950/60 border border-red-500/40">
+                      <div className="text-[10px] text-red-300 font-sans mb-1 flex items-center gap-1 font-semibold">
+                        <AlertCircle className="w-3.5 h-3.5" /> Edit this 1-line patch:
                       </div>
                       <input
                         type="text"
                         value={userPatch}
                         onChange={(e) => setUserPatch(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-emerald-300 font-mono text-[11px] focus:outline-none focus:border-cyan-500"
+                        className="w-full bg-slate-950 border border-slate-600 rounded-md px-2.5 py-1 text-emerald-400 font-mono text-xs focus:outline-none focus:border-cyan-400"
                       />
                     </div>
-                    <div className="opacity-70">{patchSnippet.contextAfter}</div>
+                    <div className="opacity-60">{patchSnippet.contextAfter}</div>
                   </div>
                 </div>
 
-                {/* Test Results Output */}
+                {/* Automated Test Results */}
                 {testResults && (
-                  <div className="space-y-1.5 p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
-                    <div className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+                  <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
                       Automated Test Runner Output:
                     </div>
                     {testResults.map((tr, idx) => (
                       <div
                         key={idx}
-                        className={`flex items-start gap-2 p-1.5 rounded ${
-                          tr.passed ? 'bg-emerald-500/10 text-emerald-300' : 'bg-red-500/10 text-red-300'
+                        className={`flex items-start gap-2 p-2 rounded-lg text-[11.5px] ${
+                          tr.passed
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-red-50 text-red-800 border border-red-200'
                         }`}
                       >
                         {tr.passed ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                          <Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
                         ) : (
-                          <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+                          <XCircle className="w-3.5 h-3.5 text-red-600 flex-shrink-0 mt-0.5" />
                         )}
                         <div>
-                          <span className="font-semibold">{tr.name}: </span>
+                          <span className="font-bold">{tr.name}: </span>
                           <span>{tr.passed ? 'PASS' : tr.msg}</span>
                         </div>
                       </div>
@@ -559,15 +602,12 @@ export function SprintArena({
                   </div>
                 )}
 
-                {/* Action Buttons */}
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleRunCodeTests}
-                    className="flex-1 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/20"
-                  >
-                    <Play className="w-3 h-3" /> Run Unit Test Suite
-                  </button>
-                </div>
+                <button
+                  onClick={handleRunCodeTests}
+                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
+                >
+                  <Play className="w-3.5 h-3.5" /> Run Automated Test Suite
+                </button>
               </div>
             )}
           </div>
@@ -575,17 +615,4 @@ export function SprintArena({
       </div>
     </div>
   );
-}
-
-function getNextNodeLabel(nodeId: string): string {
-  const next: Record<string, string> = {
-    js: 'React UI Architecture',
-    react: 'Full Stack Capstone',
-    node: 'Full Stack Capstone',
-    numpy: 'ML Fundamentals',
-    ml: 'PyTorch Deep Learning',
-    linux: 'Docker & Containers',
-    docker: 'Kubernetes Orchestration',
-  };
-  return next[nodeId] || 'next milestone';
 }
