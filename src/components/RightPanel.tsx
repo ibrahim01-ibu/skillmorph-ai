@@ -161,7 +161,7 @@ export function RightPanel({
               <div key={agent.id} className={`rounded-lg p-2.5 border ${colors.bg} ${colors.border}`}>
                 <div className="flex items-center gap-1.5 mb-1">
                   <span className={colors.text}>{AGENT_ICONS[agent.icon]}</span>
-                  <span className="text-[10px] font-mono font-semibold text-white truncate">{agent.name}</span>
+                  <span className="text-[11px] font-mono font-semibold text-white whitespace-nowrap">{agent.name}</span>
                 </div>
                 <div className="text-[9px] text-slate-500 leading-tight mb-1.5">{agent.role}</div>
                 <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded border ${statusInfo.color}`}>

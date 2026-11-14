@@ -58,7 +58,7 @@ export function SkillRadar({ data, size = 220 }: SkillRadarProps) {
   );
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="select-none">
+    <svg width={size} height={size} viewBox={`-35 -10 ${size + 70} ${size + 20}`} className="select-none overflow-visible">
       {/* Grid circles */}
       {gridPolygons.map((d, i) => (
         <path key={i} d={d} fill="none" stroke="rgba(71,85,105,0.3)" strokeWidth="0.5" />

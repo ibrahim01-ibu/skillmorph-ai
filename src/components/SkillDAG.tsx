@@ -37,10 +37,15 @@ interface SkillDAGProps {
   onNodeClick: (node: DAGNode) => void;
 }
 
-const NODE_W = 120;
-const NODE_H = 44;
-const SVG_W = 480;
+const NODE_W = 165;
+const NODE_H = 46;
+const SVG_W = 540;
 const SVG_H = 620;
+
+function getNodeCoord(node: DAGNode) {
+  const scaledX = 270 + (node.x - 240) * 1.7;
+  return { x: scaledX, y: node.y };
+}
 
 export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAGProps) {
   const nodeMap = useMemo(() => {
@@ -50,10 +55,12 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
   }, [nodes]);
 
   function getEdgePath(from: DAGNode, to: DAGNode) {
-    const x1 = from.x;
-    const y1 = from.y + NODE_H / 2;
-    const x2 = to.x;
-    const y2 = to.y - NODE_H / 2;
+    const fromPos = getNodeCoord(from);
+    const toPos = getNodeCoord(to);
+    const x1 = fromPos.x;
+    const y1 = fromPos.y + NODE_H / 2;
+    const x2 = toPos.x;
+    const y2 = toPos.y - NODE_H / 2;
     const midY = (y1 + y2) / 2;
     return `M${x1},${y1} C${x1},${midY} ${x2},${midY} ${x2},${y2}`;
   }
@@ -161,6 +168,7 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
         {nodes.map((node) => {
           const style = STATUS_STYLES[node.status];
           const isSelected = node.id === selectedNodeId;
+          const pos = getNodeCoord(node);
           const halfW = NODE_W / 2;
           const halfH = NODE_H / 2;
           const glowFilter =
@@ -175,7 +183,7 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
           return (
             <g
               key={node.id}
-              transform={`translate(${node.x - halfW}, ${node.y - halfH})`}
+              transform={`translate(${pos.x - halfW}, ${pos.y - halfH})`}
               onClick={() => node.status !== 'locked' && onNodeClick(node)}
               style={{ cursor: node.status !== 'locked' ? 'pointer' : 'default' }}
               filter={glowFilter}
@@ -226,13 +234,13 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
                 fill={style.text}
                 dominantBaseline="middle"
               >
-                {node.label.length > 14 ? node.label.slice(0, 13) + '…' : node.label}
+                {node.label.length > 25 ? node.label.slice(0, 24) + '…' : node.label}
               </text>
 
               {/* Sublabel */}
               {node.sublabel && (
                 <text x={30} y={NODE_H / 2 + 9} fontSize="8" fill="rgba(148,163,184,0.6)" dominantBaseline="middle">
-                  {node.sublabel.length > 18 ? node.sublabel.slice(0, 17) + '…' : node.sublabel}
+                  {node.sublabel.length > 28 ? node.sublabel.slice(0, 27) + '…' : node.sublabel}
                 </text>
               )}
 
@@ -279,20 +287,23 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
         })}
 
         {/* Circular progress indicator for active node */}
-        {nodes.filter(n => n.status === 'active').map(n => (
-          <circle
-            key={`progress-${n.id}`}
-            cx={n.x + NODE_W / 2 - 10}
-            cy={n.y - NODE_H / 2 + 5}
-            r={4}
-            fill="none"
-            stroke="rgba(6,182,212,0.6)"
-            strokeWidth="1.5"
-            strokeDasharray="12.6"
-            strokeDashoffset="8"
-            strokeLinecap="round"
-          />
-        ))}
+        {nodes.filter(n => n.status === 'active').map(n => {
+          const pos = getNodeCoord(n);
+          return (
+            <circle
+              key={`progress-${n.id}`}
+              cx={pos.x + NODE_W / 2 - 10}
+              cy={pos.y - NODE_H / 2 + 5}
+              r={4}
+              fill="none"
+              stroke="rgba(6,182,212,0.6)"
+              strokeWidth="1.5"
+              strokeDasharray="12.6"
+              strokeDashoffset="8"
+              strokeLinecap="round"
+            />
+          );
+        })}
 
         {/* Unused Circle reference to avoid lint */}
         <circle cx={-100} cy={-100} r={0} fill="transparent" />

@@ -1,5 +1,7 @@
 # SkillMorph AI — Autonomous Multi-Agent Career Autopilot & Skill-DAG Engine
 
+🚀 **Live Production Application**: [https://skillmorph-ai.vercel.app](https://skillmorph-ai.vercel.app)
+
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-19.3-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
