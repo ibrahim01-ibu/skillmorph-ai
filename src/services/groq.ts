@@ -27,6 +27,11 @@ function resolveRuntimeFallbackKey(): string {
   }
 }
 
+/**
+ * Retrieves the currently active Groq API key from localStorage,
+ * environment variables, or secure obfuscated runtime fallback.
+ * @returns Decoded Groq API key string
+ */
 export function getStoredGroqKey(): string {
   if (typeof window === 'undefined') return '';
   const fromStorage = localStorage.getItem('groq_api_key');
@@ -38,6 +43,10 @@ export function getStoredGroqKey(): string {
   return resolveRuntimeFallbackKey();
 }
 
+/**
+ * Persists a user-configured Groq API key to localStorage.
+ * @param key Groq API key provided by the user
+ */
 export function setStoredGroqKey(key: string): void {
   if (typeof window !== 'undefined') {
     localStorage.setItem('groq_api_key', key.trim());
@@ -136,6 +145,12 @@ export const AGENT_REGISTRY: Record<AgentKey, AgentDomainInfo> = {
   },
 };
 
+/**
+ * Checks whether an incoming message is a simple conversational greeting or status check,
+ * preventing unsolicited verbose code dumps.
+ * @param text User query string
+ * @returns boolean indicating whether the message is a greeting/status query
+ */
 export function isGreetingOrStatusQuery(text: string): boolean {
   if (!text) return false;
   const trimmed = text.trim().toLowerCase();
@@ -179,6 +194,12 @@ export function isGreetingOrStatusQuery(text: string): boolean {
   return false;
 }
 
+/**
+ * Multi-Agent Domain Router: classifies user intent into one of the 4 autonomous agents
+ * (Profiler-01, GapArchitect-02, PolyglotCurator-03, AdaptiveMentor-04).
+ * @param query Incoming user question or prompt
+ * @returns Metadata describing the assigned agent domain
+ */
 export function classifyAgentIntent(query: string): AgentDomainInfo {
   if (!query) return AGENT_REGISTRY.adaptiveMentor;
   const q = query.toLowerCase();
@@ -326,6 +347,13 @@ export function classifyAgentIntent(query: string): AgentDomainInfo {
   return AGENT_REGISTRY.adaptiveMentor;
 }
 
+/**
+ * Generates a concise, context-aware 2-sentence conversational greeting
+ * based on live learner readiness metrics and active remediation flags.
+ * @param _agent Target agent domain metadata
+ * @param ctx Learner state context (name, target role, readiness %, remediation)
+ * @returns 2-sentence conversational greeting string
+ */
 export function generateLiveStateGreeting(
   _agent: AgentDomainInfo,
   ctx: StudentStateContext
@@ -337,6 +365,12 @@ export function generateLiveStateGreeting(
   return `Hello ${firstName}, your ${ctx.targetRole} readiness is currently at ${ctx.readiness}%${remediationClause}. Would you like Profiler-01 to audit your skills, GapArchitect-02 to review your career delta, or PolyglotCurator-03 to walk through a code concept?`;
 }
 
+/**
+ * Strips all Unicode emojis, pictographs, flags, and surrogate sequences from text
+ * to enforce enterprise typography standards.
+ * @param text Raw LLM or user text
+ * @returns Sanitized emoji-free text
+ */
 export function sanitizeAiResponse(text: string): string {
   if (!text) return '';
   return text
@@ -410,6 +444,11 @@ function getDomainFallbackReply(
   }
 }
 
+/**
+ * Sends a query to the autonomous AI Mentor mesh powered by Groq LPU inference.
+ * Implements intelligent 4-agent domain routing, live state grounding, and
+ * fallback gracefully to deterministic domain engines when offline.
+ */
 export async function askMentorGroq(
   query: string,
   context: StudentStateContext | { currentSkills: string[]; targetRole: string; readiness: number },
@@ -609,6 +648,13 @@ export interface DiagnosticPipelineResult {
   adaptiveMentor: { initialReadiness: number; targetMilestones: string[]; json: string };
 }
 
+/**
+ * Runs a simulated or live 4-agent diagnostic pipeline across
+ * Profiler-01, GapArchitect-02, PolyglotCurator-03, and AdaptiveMentor-04.
+ * @param profile Learner profile and target role
+ * @param apiKey Groq API key
+ * @returns Diagnostic outputs per agent
+ */
 export async function runDiagnosticPipelineWithGroq(
   profile: { name: string; skills: string[]; targetRole: string; projects: string[] },
   apiKey: string
@@ -686,6 +732,14 @@ Return STRICT JSON with the actions of all 4 agents:
   };
 }
 
+/**
+ * Dynamically synthesizes a complete career roadmap (nodes, edges, radar data, and Brain-Diff)
+ * for ANY target role using the 4-agent Groq pipeline with deterministic fallback.
+ * @param currentSkills Array of existing skills
+ * @param targetRole Target career title
+ * @param apiKey Groq API key
+ * @returns Synthesized career DAG roadmap
+ */
 export async function synthesizeCareerWithGroq(
   currentSkills: string[],
   targetRole: string,
