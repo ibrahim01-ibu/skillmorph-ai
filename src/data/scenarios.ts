@@ -116,7 +116,7 @@ export const SCENARIOS: Record<string, ScenarioConfig> = {
 // ─── REMEDIAL NODE TEMPLATE ───────────────────────────────────
 export const REMEDIAL_NODE = {
   id: 'remedial-async',
-  label: '🚑 Rescue Sprint',
+  label: 'Remedial Module: Async Execution',
   sublabel: 'Async Promises via Python Asyncio Analogy',
   status: 'remedial' as const,
   x: 350,
@@ -692,7 +692,7 @@ export const CHAT_RESPONSES: Record<string, string> = {
 
 **Next concrete step:** Complete the JavaScript ES6+ node assessment to unlock React and Node.js simultaneously. Focus on the async module — it's the highest-ROI concept given your asyncio experience.`,
 
-  react: `**Explaining React State via Python Analogies** 🐍→⚛️
+  react: `**Explaining React State via Python Analogies** (Python to React)
 
 Think of React \`useState\` as a Python class attribute with an automatic re-render callback:
 
@@ -715,7 +715,7 @@ const [count, setCount] = useState(0);
 
 The magic: React's reconciler (like a smart \`re_render()\`) only updates the DOM parts that actually changed — using a "virtual DOM diff" similar to Python's \`deepdiff\` library.`,
 
-  interview: `**Full Stack Interview Prep Roadmap** 📋
+  interview: `**Full Stack Interview Prep Roadmap**
 
 Based on your skill vector, focus on these in priority order:
 
@@ -738,7 +738,7 @@ Based on your skill vector, focus on these in priority order:
 
 **Mock Question:** "Build a React component that fetches user data and handles loading/error states." → This tests: useEffect, useState, conditional rendering.`,
 
-  async: `**Async JS via Your Python asyncio Knowledge** ⚡
+  async: `**Async JS via Your Python asyncio Knowledge**
 
 You already know asyncio — here's the 1:1 mapping:
 

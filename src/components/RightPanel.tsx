@@ -56,7 +56,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
     id: '0',
     role: 'assistant',
     content:
-      'Hi Aarav! 👋 I\'m your AI Career Coach powered by the 4-agent Groq mesh. Ask me anything — "Explain React state using Python analogies", "How do I prep for a Full Stack interview?", or "What\'s the JS equivalent of asyncio.gather?"',
+      'Hi Aarav, I\'m your AI Career Coach powered by the 4-agent Groq mesh. Ask me anything — "Explain React state using Python analogies", "How do I prep for a Full Stack interview?", or "What\'s the JS equivalent of asyncio.gather?"',
     timestamp: '10:00 AM',
   },
 ];
@@ -254,13 +254,13 @@ export function RightPanel({
               className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-slide-in-up`}
             >
               <div
-                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                className={`w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold font-mono flex-shrink-0 ${
                   msg.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-indigo-100 text-indigo-800 border border-indigo-200'
+                    ? 'bg-zinc-900 text-white'
+                    : 'bg-zinc-100 text-zinc-800 border border-zinc-300'
                 }`}
               >
-                {msg.role === 'user' ? 'AS' : '🤖'}
+                {msg.role === 'user' ? 'AS' : 'AI'}
               </div>
               <div
                 className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
@@ -282,11 +282,11 @@ export function RightPanel({
           ))}
           {chatLoading && (
             <div className="flex gap-2.5 items-center">
-              <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center text-xs">
-                🤖
+              <div className="w-7 h-7 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-300 flex items-center justify-center text-[11px] font-bold font-mono">
+                AI
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2">
-                <Loader2 className="w-3.5 h-3.5 text-indigo-600 animate-spin" />
+              <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <Loader2 className="w-3.5 h-3.5 text-zinc-700 animate-spin" />
               </div>
             </div>
           )}

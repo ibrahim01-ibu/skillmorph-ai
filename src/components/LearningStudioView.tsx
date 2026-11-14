@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import confetti from 'canvas-confetti';
 import {
-  Sparkles,
   ArrowRight,
   RotateCw,
   CheckCircle2,
@@ -16,6 +15,7 @@ import {
   ArrowLeft,
   AlertTriangle,
   Loader2,
+  Cpu,
 } from 'lucide-react';
 import type { DAGNode, NodeContent, AgentLog, BrainDiff } from '../types';
 import {
@@ -50,7 +50,7 @@ export function LearningStudioView({
   // Code Sandbox state
   const defaultCode =
     content.assessment.code ||
-    `// Challenge: Transform array using functional immutable mapping\nconst numbers = [1, 2, 3, 4];\n// Fix: Replace forEach with pure .map() transformation\nconst doubled = numbers.map(n => n * 2);\nconsole.log(doubled);`;
+    `// Challenge: Transform array using functional immutable mapping\nconst numbers = [1, 2, 3, 4];\n\n// Fix: Replace imperative loop with pure .map() transformation\nconst doubled = numbers.map(function(n) {\n  return n * 2;\n});\n\nconsole.log(doubled);`;
   const [studentCode, setStudentCode] = useState(defaultCode);
   const [sandboxOutput, setSandboxOutput] = useState<string | null>(null);
   const [testPassed, setTestPassed] = useState<boolean | null>(null);
@@ -73,13 +73,11 @@ export function LearningStudioView({
         },
       };
 
-      // Safe evaluation
       const runner = new Function('console', studentCode);
       runner(customConsole);
 
-      setSandboxOutput(captured || 'Program executed successfully with zero errors.');
+      setSandboxOutput(captured || 'Program executed successfully with zero runtime errors.');
 
-      // Check verification rules
       const passed =
         studentCode.includes('map') ||
         studentCode.includes('return') ||
@@ -131,7 +129,7 @@ export function LearningStudioView({
         onAgentLog({
           agent: 'AdaptiveMentor-04',
           agentId: 4,
-          message: `Groq AI Grade: Revision Needed (${result.score}/100). Socratic hint provided.`,
+          message: `Groq AI Grade: Revision Needed (${result.score}/100). Socratic guidance provided.`,
           type: 'warning',
         });
       }
@@ -180,16 +178,16 @@ export function LearningStudioView({
 
     if (isCorrect) {
       confetti({
-        particleCount: 80,
-        spread: 80,
+        particleCount: 70,
+        spread: 70,
         origin: { y: 0.6 },
-        colors: ['#0F766E', '#EA580C', '#2563EB'],
+        colors: ['#18181B', '#0F766E', '#2563EB'],
       });
       onNodeMastered(node.id);
       onAgentLog({
         agent: 'AdaptiveMentor-04',
         agentId: 4,
-        message: `🏆 Boss Fight Mastered for "${node.label}". Node verified & unlocked downstream dependencies.`,
+        message: `Boss Fight Mastered for "${node.label}". Node verified & unlocked downstream dependencies.`,
         type: 'success',
       });
     } else {
@@ -204,45 +202,46 @@ export function LearningStudioView({
   }
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+    <div className="space-y-5 max-w-6xl mx-auto">
       {/* Studio Header Bar */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
           <button
             onClick={onBackToRoadmap}
-            className="w-10 h-10 rounded-2xl bg-[#FAF8F5] hover:bg-[#F3F1EC] border border-[#E6E4DD] flex items-center justify-center text-zinc-600 hover:text-[#18181B] transition-colors"
+            className="w-8 h-8 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 flex items-center justify-center text-zinc-700 transition-colors"
+            title="Back to Roadmap"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft size={15} strokeWidth={1.75} />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">
-                90-Second Anti-Doomscroll Studio
+              <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                90-Second Learning Studio
               </span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]">
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
                 Target Milestone
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-[#18181B] mt-0.5">{node.label}</h1>
+            <h1 className="text-xl font-bold text-zinc-900 mt-0.5">{node.label}</h1>
           </div>
         </div>
 
-        {/* Quick Simulator Failure Button for Judges */}
-        <div className="flex items-center gap-2.5">
+        {/* Action Controls */}
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
               setSelectedOption((content.assessment.correctIndex + 1) % content.assessment.options.length);
               setQuizSubmitted(true);
               onRemedialInjected();
             }}
-            className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-md bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-medium flex items-center gap-1.5 transition-colors"
           >
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-            <span>Simulate Poor Performance (Trigger Reroute)</span>
+            <AlertTriangle size={13} strokeWidth={1.75} className="text-amber-700" />
+            <span>Simulate Failure (Trigger Reroute)</span>
           </button>
           <button
             onClick={onBackToRoadmap}
-            className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold transition-colors"
+            className="px-3.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition-colors"
           >
             Back to DAG
           </button>
@@ -250,94 +249,94 @@ export function LearningStudioView({
       </div>
 
       {/* SECTION A: POLYGLOT TRANSFER-LEARNING LESSON */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E6E4DD] pb-4">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 border-b border-zinc-200 pb-3.5">
           <div>
-            <div className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">
+            <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
               Step 1 • Polyglot Brain-Diff Architecture
             </div>
-            <h2 className="text-xl font-bold text-[#18181B] mt-0.5">
+            <h2 className="text-lg font-bold text-zinc-900 mt-0.5">
               Transfer Learning: {brainDiff.concept || node.label}
             </h2>
-            <p className="text-xs text-zinc-500 mt-1">
-              Leveraging what you already know ({brainDiff.existingLang}) to master ({brainDiff.newLang}) 4x faster with zero doomscrolling.
+            <p className="text-xs text-zinc-500 mt-0.5">
+              Leveraging {brainDiff.existingLang} mental models to master {brainDiff.newLang} without doomscrolling.
             </p>
           </div>
 
           <button
             onClick={handleRegenerateExplanation}
             disabled={regeneratingDiff}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 border border-indigo-200 text-indigo-700 text-xs font-bold flex items-center gap-2 transition-all self-start sm:self-auto"
+            className="px-3 py-1.5 rounded-md bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors self-start sm:self-auto"
           >
-            <RotateCw className={`w-3.5 h-3.5 ${regeneratingDiff ? 'animate-spin' : ''}`} />
-            <span>{regeneratingDiff ? 'Streaming from Groq...' : '🔄 Regenerate Custom Explanation via Groq'}</span>
+            <RotateCw size={13} strokeWidth={1.75} className={regeneratingDiff ? 'animate-spin' : ''} />
+            <span>{regeneratingDiff ? 'Streaming from Groq...' : 'Regenerate Explanation via Groq'}</span>
           </button>
         </div>
 
-        {/* Side-by-Side Dark Obsidian Code Comparison */}
-        <div className="grid md:grid-cols-2 gap-4">
+        {/* Side-by-Side Dark Obsidian Code Comparison (No Horizontal Scrollbars) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* What you know */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-semibold px-1">
-              <span className="text-zinc-500">What You Know: <strong className="text-[#18181B]">{brainDiff.existingLang}</strong></span>
-              <span className="text-[11px] font-mono text-[#0F766E] bg-[#F0FDFA] px-2 py-0.5 rounded border border-[#99F6E4]">Verified Base</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-medium px-0.5">
+              <span className="text-zinc-500">Known Stack: <strong className="text-zinc-900">{brainDiff.existingLang}</strong></span>
+              <span className="text-[10px] font-mono text-zinc-600 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200">Verified Base</span>
             </div>
-            <div className="bg-[#18181B] text-zinc-100 rounded-2xl p-4 font-mono text-sm leading-relaxed border border-zinc-800 shadow-inner overflow-x-auto min-h-[140px]">
-              <pre>{brainDiff.existingCode}</pre>
+            <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap break-words min-h-[140px]">
+              <pre className="font-mono whitespace-pre-wrap break-words">{brainDiff.existingCode}</pre>
             </div>
           </div>
 
           {/* New counter-part */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-semibold px-1">
-              <span className="text-zinc-500">New Target Concept: <strong className="text-[#EA580C]">{brainDiff.newLang}</strong></span>
-              <span className="text-[11px] font-mono text-[#EA580C] bg-orange-50 px-2 py-0.5 rounded border border-orange-200">Active Gap</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-medium px-0.5">
+              <span className="text-zinc-500">New Target Concept: <strong className="text-zinc-900">{brainDiff.newLang}</strong></span>
+              <span className="text-[10px] font-mono text-zinc-600 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200">Active Gap</span>
             </div>
-            <div className="bg-[#18181B] text-zinc-100 rounded-2xl p-4 font-mono text-sm leading-relaxed border border-zinc-800 shadow-inner overflow-x-auto min-h-[140px]">
-              <pre>{brainDiff.newCode}</pre>
+            <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap break-words min-h-[140px]">
+              <pre className="font-mono whitespace-pre-wrap break-words">{brainDiff.newCode}</pre>
             </div>
           </div>
         </div>
 
         {/* Conceptual Mental Bridge Summary */}
-        <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E6E4DD] flex items-start gap-3">
-          <Lightbulb className="w-5 h-5 text-[#EA580C] flex-shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 flex items-start gap-2.5">
+          <Lightbulb size={16} strokeWidth={1.75} className="text-zinc-600 flex-shrink-0 mt-0.5" />
           <div className="text-xs text-zinc-700 leading-relaxed">
-            <span className="font-bold text-[#18181B]">Mental Model Bridge: </span>
+            <span className="font-semibold text-zinc-900">Mental Model Bridge: </span>
             {brainDiff.explanation}
           </div>
         </div>
 
         {/* Curated Micro-Build & Resources */}
-        <div className="grid sm:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
           {/* Micro-Spec Card */}
-          <div className="p-4 rounded-2xl bg-white border border-[#E6E4DD] space-y-2">
-            <div className="text-xs font-bold text-[#0F766E] uppercase tracking-wider flex items-center gap-1.5">
-              <Layers className="w-4 h-4" /> Practical Micro-Spec
+          <div className="p-3.5 rounded-lg bg-white border border-zinc-200 space-y-1.5">
+            <div className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Layers size={13} strokeWidth={1.75} /> Practical Micro-Spec
             </div>
-            <div className="font-bold text-sm text-[#18181B]">{content.microSpec.title}</div>
-            <p className="text-xs text-zinc-600">{content.microSpec.description}</p>
-            <div className="text-[11px] text-zinc-400 font-mono pt-1">
-              Artifact: <span className="text-zinc-700 font-semibold">{content.microSpec.artifact}</span> ({content.microSpec.timeEstimate})
+            <div className="font-bold text-xs text-zinc-900">{content.microSpec.title}</div>
+            <p className="text-xs text-zinc-600 leading-relaxed">{content.microSpec.description}</p>
+            <div className="text-[11px] text-zinc-400 font-mono pt-0.5">
+              Artifact: <span className="text-zinc-700 font-medium">{content.microSpec.artifact}</span> ({content.microSpec.timeEstimate})
             </div>
           </div>
 
           {/* Curated Resources */}
-          <div className="p-4 rounded-2xl bg-white border border-[#E6E4DD] space-y-2">
-            <div className="text-xs font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-[#EA580C]" /> Curated 3-Minute Guides
+          <div className="p-3.5 rounded-lg bg-white border border-zinc-200 space-y-1.5">
+            <div className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Clock size={13} strokeWidth={1.75} /> Curated 3-Minute Guides
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {content.resources.slice(0, 2).map((res, i) => (
                 <a
                   key={i}
                   href={res.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between text-xs text-zinc-700 hover:text-[#EA580C] hover:underline p-1.5 rounded-lg bg-[#FAF8F5] border border-[#E6E4DD] transition-colors"
+                  className="flex items-center justify-between text-xs text-zinc-700 hover:text-zinc-900 hover:underline p-1.5 rounded bg-zinc-50 border border-zinc-200 transition-colors"
                 >
                   <span className="truncate">{res.title}</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-zinc-400 flex-shrink-0 ml-2" />
+                  <ExternalLink size={12} strokeWidth={1.75} className="text-zinc-400 flex-shrink-0 ml-1.5" />
                 </a>
               ))}
             </div>
@@ -345,64 +344,64 @@ export function LearningStudioView({
         </div>
       </div>
 
-      {/* SECTION B: HANDS-ON CODE SANDBOX & GROQ AI MENTOR EVALUATION */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E6E4DD] pb-4">
+      {/* SECTION B: HANDS-ON CODE SANDBOX & GROQ AI EVALUATION */}
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-3.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 pb-3.5">
           <div>
-            <div className="text-xs font-bold text-[#0F766E] uppercase tracking-wider">
+            <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
               Step 2 • Hands-On Interactive Code Sandbox
             </div>
-            <h3 className="text-xl font-bold text-[#18181B] mt-0.5">
+            <h3 className="text-lg font-bold text-zinc-900 mt-0.5">
               Live Code Patch & Test Suite
             </h3>
-            <p className="text-xs text-zinc-500 mt-1">
-              Edit the implementation directly in the Dark Obsidian editor. Execute locally or ask AdaptiveMentor-04 to grade your solution.
+            <p className="text-xs text-zinc-500 mt-0.5">
+              Edit the code in the dark editor below. Execute locally or ask AdaptiveMentor-04 to grade your solution.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleRunCode}
-              className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+              className="px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors"
             >
-              <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+              <Play size={12} strokeWidth={1.75} className="text-zinc-900 fill-zinc-900" />
               <span>Run Local Tests</span>
             </button>
             <button
               onClick={handleAskGroqGrade}
               disabled={gradingWithGroq}
-              className="px-4 py-2 rounded-xl bg-[#0F766E] hover:bg-[#115E59] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+              className="px-3 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition-colors"
             >
               {gradingWithGroq ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 size={13} className="animate-spin" />
               ) : (
-                <Sparkles className="w-3.5 h-3.5" />
+                <Cpu size={13} strokeWidth={1.75} />
               )}
               <span>Ask AI Mentor to Grade</span>
             </button>
           </div>
         </div>
 
-        {/* Code Editor Container */}
-        <div className="rounded-2xl bg-[#18181B] border border-zinc-800 p-4 shadow-inner space-y-3">
+        {/* Code Editor Container (Obsidian, whitespace-pre-wrap break-words) */}
+        <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-4 font-mono text-[13px] leading-relaxed shadow-inner space-y-2.5">
           <div className="flex items-center justify-between text-xs text-zinc-400 font-mono pb-2 border-b border-zinc-800">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center gap-1.5">
+              <Terminal size={13} strokeWidth={1.75} className="text-zinc-400" />
               <span>solution.js</span>
             </div>
             <div className="flex items-center gap-2">
               {testPassed !== null && (
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                  className={`text-[10px] px-2 py-0.5 rounded font-mono font-medium ${
                     testPassed
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                      : 'bg-red-500/20 text-red-300 border border-red-500/40'
+                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                      : 'bg-red-950 text-red-300 border border-red-800'
                   }`}
                 >
-                  {testPassed ? '✓ SUITE PASSED' : '✗ REVISION NEEDED'}
+                  {testPassed ? 'TESTS PASSED' : 'REVISION NEEDED'}
                 </span>
               )}
-              <span>ECMAScript 2026 Sandbox</span>
+              <span className="text-[11px] text-zinc-500">Node/ES2026</span>
             </div>
           </div>
 
@@ -410,15 +409,14 @@ export function LearningStudioView({
             value={studentCode}
             onChange={(e) => setStudentCode(e.target.value)}
             rows={7}
-            className="w-full bg-transparent text-zinc-100 font-mono text-sm leading-relaxed focus:outline-none resize-none"
+            className="w-full bg-transparent text-zinc-100 font-mono text-[13px] leading-relaxed focus:outline-none resize-none whitespace-pre-wrap break-words"
             spellCheck={false}
           />
 
-          {/* Test Harness Terminal Output */}
           {sandboxOutput && (
             <div className="pt-2 border-t border-zinc-800 text-xs font-mono">
               <div className="text-zinc-500 mb-1">Execution Telemetry:</div>
-              <pre className="text-emerald-400 bg-black/40 p-2.5 rounded-xl overflow-x-auto whitespace-pre-wrap">
+              <pre className="text-emerald-400 bg-black/40 p-2.5 rounded-md whitespace-pre-wrap break-words">
                 {sandboxOutput}
               </pre>
             </div>
@@ -428,34 +426,34 @@ export function LearningStudioView({
         {/* Groq AI Mentor Review Card */}
         {aiGradeResult && (
           <div
-            className={`p-4 rounded-2xl border ${
+            className={`p-3.5 rounded-lg border text-xs ${
               aiGradeResult.passed
-                ? 'bg-[#F0FDFA] border-[#99F6E4] text-[#0F766E]'
-                : 'bg-amber-50 border-amber-200 text-amber-900'
-            } space-y-2 animate-slide-in-up`}
+                ? 'bg-zinc-50 border-zinc-200 text-zinc-800'
+                : 'bg-amber-50/80 border-amber-200 text-amber-900'
+            } space-y-1.5 animate-slide-in-up`}
           >
             <div className="flex items-center justify-between">
-              <div className="font-bold text-sm flex items-center gap-2">
+              <div className="font-semibold text-xs flex items-center gap-1.5">
                 {aiGradeResult.passed ? (
-                  <CheckCircle2 className="w-4 h-4 text-[#0F766E]" />
+                  <CheckCircle2 size={14} strokeWidth={1.75} className="text-emerald-700" />
                 ) : (
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
+                  <AlertTriangle size={14} strokeWidth={1.75} className="text-amber-700" />
                 )}
                 <span>AdaptiveMentor-04 Review — Score: {aiGradeResult.score}/100</span>
               </div>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/80">
-                {aiGradeResult.passed ? 'VERIFIED' : 'SOCRATIC HINT'}
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-zinc-200 bg-white">
+                {aiGradeResult.passed ? 'VERIFIED' : 'GUIDED HINT'}
               </span>
             </div>
-            <p className="text-xs leading-relaxed">{aiGradeResult.critique}</p>
+            <p className="leading-relaxed">{aiGradeResult.critique}</p>
             {aiGradeResult.socraticHint && (
-              <div className="text-xs italic bg-white/60 p-2.5 rounded-xl border border-current/20">
-                💡 <strong>Mentor Hint:</strong> {aiGradeResult.socraticHint}
+              <div className="italic bg-white/70 p-2 rounded border border-zinc-200 text-zinc-700">
+                <strong>Mentor Socratic Hint:</strong> {aiGradeResult.socraticHint}
               </div>
             )}
             {aiGradeResult.suggestedFix && (
-              <div className="text-xs font-mono bg-[#18181B] text-zinc-200 p-2.5 rounded-xl">
-                <code>Suggested: {aiGradeResult.suggestedFix}</code>
+              <div className="font-mono bg-[#111113] text-zinc-200 p-2 rounded whitespace-pre-wrap break-words">
+                <code>{aiGradeResult.suggestedFix}</code>
               </div>
             )}
           </div>
@@ -463,50 +461,50 @@ export function LearningStudioView({
       </div>
 
       {/* SECTION C: BOSS FIGHT ASSESSMENT & ADAPTIVE FAILURE REROUTE */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="border-b border-[#E6E4DD] pb-4">
-          <div className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="border-b border-zinc-200 pb-3">
+          <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
             Step 3 • Boss Fight Assessment
           </div>
-          <h3 className="text-xl font-bold text-[#18181B] mt-0.5">
+          <h3 className="text-lg font-bold text-zinc-900 mt-0.5">
             Conceptual Verification Check
           </h3>
-          <p className="text-xs text-zinc-500 mt-1">
-            Prove your mastery of the mental model shift to officially master this node and unlock downstream edges.
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Confirm your mental model shift to officially master this node and unlock downstream dependencies.
           </p>
         </div>
 
-        <div className="space-y-4">
-          <div className="text-sm font-semibold text-[#18181B] leading-relaxed">
+        <div className="space-y-3">
+          <div className="text-xs font-medium text-zinc-900 leading-relaxed">
             {content.assessment.question}
           </div>
 
           {/* Options */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {content.assessment.options.map((opt, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrect = idx === content.assessment.correctIndex;
-              let btnClass = 'bg-[#FAF8F5] border-[#E6E4DD] text-zinc-700 hover:bg-[#F3F1EC]';
+              let btnClass = 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100';
 
               if (quizSubmitted) {
                 if (isCorrect) {
-                  btnClass = 'bg-[#F0FDFA] border-[#99F6E4] text-[#0F766E] font-bold';
+                  btnClass = 'bg-emerald-50 border-emerald-300 text-emerald-900 font-semibold';
                 } else if (isSelected && !isCorrect) {
-                  btnClass = 'bg-red-50 border-red-200 text-red-700 font-bold';
+                  btnClass = 'bg-red-50 border-red-300 text-red-900 font-semibold';
                 }
               } else if (isSelected) {
-                btnClass = 'bg-orange-50 border-[#EA580C] text-[#EA580C] font-semibold';
+                btnClass = 'bg-zinc-100 border-zinc-400 text-zinc-900 font-semibold';
               }
 
               return (
                 <button
                   key={idx}
                   onClick={() => !quizSubmitted && setSelectedOption(idx)}
-                  className={`w-full p-3.5 rounded-2xl border text-xs text-left transition-all flex items-center justify-between ${btnClass}`}
+                  className={`w-full p-3 rounded-md border text-xs text-left transition-colors flex items-center justify-between ${btnClass}`}
                 >
                   <span>{opt}</span>
-                  {quizSubmitted && isCorrect && <CheckCircle2 className="w-4 h-4 text-[#0F766E]" />}
-                  {quizSubmitted && isSelected && !isCorrect && <XCircle className="w-4 h-4 text-red-500" />}
+                  {quizSubmitted && isCorrect && <CheckCircle2 size={14} strokeWidth={1.75} className="text-emerald-700" />}
+                  {quizSubmitted && isSelected && !isCorrect && <XCircle size={14} strokeWidth={1.75} className="text-red-600" />}
                 </button>
               );
             })}
@@ -515,44 +513,44 @@ export function LearningStudioView({
           {/* Feedback & Result */}
           {quizSubmitted && (
             <div
-              className={`p-4 rounded-2xl border text-xs leading-relaxed ${
+              className={`p-3 rounded-md border text-xs leading-relaxed ${
                 selectedOption === content.assessment.correctIndex
-                  ? 'bg-[#F0FDFA] border-[#99F6E4] text-[#0F766E]'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                   : 'bg-amber-50 border-amber-200 text-amber-900'
               }`}
             >
               {selectedOption === content.assessment.correctIndex ? (
                 <div>
-                  <span className="font-bold">✓ Mastery Certified: </span>
+                  <span className="font-semibold">[Mastery Certified] </span>
                   {content.assessment.hint} Node marked mastered.
                 </div>
               ) : (
                 <div>
-                  <span className="font-bold">⚠️ Reroute Triggered: </span>
-                  {content.assessment.wrongHint} Spliced remedial foundation module into your DAG roadmap!
+                  <span className="font-semibold">[Reroute Triggered] </span>
+                  {content.assessment.wrongHint} Spliced remedial foundation module into your DAG roadmap.
                 </div>
               )}
             </div>
           )}
 
           {/* Action Button */}
-          <div className="pt-2 flex items-center gap-3">
+          <div className="pt-1 flex items-center gap-2">
             {!quizSubmitted ? (
               <button
                 onClick={handleSubmitQuiz}
                 disabled={selectedOption === null}
-                className="px-6 py-3 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-2 shadow-md shadow-[#EA580C]/20 transition-all"
+                className="px-4 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs"
               >
-                <span>Submit Boss Fight Solution</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Submit Assessment Answer</span>
+                <ArrowRight size={13} strokeWidth={1.75} />
               </button>
             ) : (
               <button
                 onClick={onBackToRoadmap}
-                className="px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold flex items-center gap-2 transition-all"
+                className="px-4 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors"
               >
                 <span>Return to Updated Roadmap</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight size={13} strokeWidth={1.75} />
               </button>
             )}
           </div>

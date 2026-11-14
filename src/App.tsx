@@ -32,6 +32,11 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
+  Terminal,
+  User,
+  Compass,
+  Code2,
+  Bot,
 } from 'lucide-react';
 
 const DEFAULT_SKILLS: Skill[] = [
@@ -60,7 +65,6 @@ export default function App() {
         return null;
       }
     }
-    // Default to student demo on first load for immediate instant evaluation, or null for auth
     return {
       id: 'user-student-aarav',
       type: 'student',
@@ -226,7 +230,7 @@ export default function App() {
     addLog({
       agent: 'GapArchitect-02',
       agentId: 2,
-      message: `Career pivot detected → "${s.targetRole}". Rebuilding skill DAG. Recalculating transfer-learning pathways.`,
+      message: `Career pivot detected: "${s.targetRole}". Rebuilding skill DAG. Recalculating transfer pathways.`,
       type: 'mutation',
       payload: JSON.stringify({ newPath: path, targetRole: s.targetRole }),
     });
@@ -245,7 +249,7 @@ export default function App() {
       particleCount: 80,
       spread: 90,
       origin: { y: 0.5 },
-      colors: ['#EA580C', '#0F766E', '#2563EB'],
+      colors: ['#18181B', '#0F766E', '#2563EB'],
     });
   }
 
@@ -256,7 +260,7 @@ export default function App() {
     addLog({
       agent: 'Profiler-01',
       agentId: 1,
-      message: 'Scenario reset: Python + SQL + HTML → Full Stack Developer. Baseline skill vector restored.',
+      message: 'Scenario reset: Python + SQL + HTML -> Full Stack Developer. Baseline skill vector restored.',
       type: 'info',
     });
   }
@@ -265,7 +269,7 @@ export default function App() {
     addLog({
       agent: 'AdaptiveMentor-04',
       agentId: 4,
-      message: 'Assessment FAILED on "JavaScript ES6+" — wrong answer detected. Invoking remediation protocol.',
+      message: 'Assessment FAILED on "JavaScript ES6+" — incorrect answer detected. Invoking remediation protocol.',
       type: 'warning',
       payload: JSON.stringify({ nodeId: 'js', result: 'fail', trigger: 'simulate_failure' }),
     });
@@ -273,7 +277,7 @@ export default function App() {
     addLog({
       agent: 'AdaptiveMentor-04',
       agentId: 4,
-      message: '🚑 Injected Amber Rescue Sprint: "Async Promises & Event Loop via Python Asyncio Analogy".',
+      message: 'Injected Remedial Module: Async Execution via Python Asyncio Analogy.',
       type: 'mutation',
     });
   }
@@ -282,7 +286,6 @@ export default function App() {
     setNodes((prev) =>
       prev.map((n) => {
         if (n.id === nodeId) return { ...n, status: 'mastered' };
-        // Unlock downstream nodes whose prerequisites are now mastered
         const prereqs = edges.filter((e) => e.to === n.id).map((e) => e.from);
         const updatedNodes = prev.map((x) => (x.id === nodeId ? { ...x, status: 'mastered' as const } : x));
         const allPrereqsMastered = prereqs.every((pid) => {
@@ -307,6 +310,15 @@ export default function App() {
   const activeRoleTitle = customTargetRole || scenario.targetRole;
   const activeRadar = customRadarData || scenario.radarData;
 
+  const userInitials = currentUser
+    ? currentUser.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'AS';
+
   // 1. IF NO USER IS LOGGED IN -> RENDER AUTH GATEWAY
   if (!currentUser) {
     return <AuthGateway onLogin={handleLogin} />;
@@ -315,19 +327,19 @@ export default function App() {
   // 2. IF LOGGED IN AS INSTITUTION -> RENDER INSTITUTION PORTAL
   if (currentUser.type === 'institution') {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] text-[#18181B] flex flex-col font-sans">
+      <div className="min-h-screen bg-[#FAFAFA] text-zinc-900 flex flex-col font-sans">
         {/* Institutional Top Bar */}
-        <header className="sticky top-0 z-40 bg-white border-b border-[#E6E4DD] px-6 py-3 shadow-xs">
+        <header className="sticky top-0 z-40 bg-white border-b border-zinc-200/90 px-4 sm:px-6 py-2.5">
           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#0F766E] text-white flex items-center justify-center font-bold shadow-xs">
-                <Building2 className="w-5 h-5" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center font-bold">
+                <Building2 size={15} strokeWidth={1.75} />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-base text-[#18181B]">SkillMorph AI</span>
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]">
-                    University & Enterprise Cloud
+                  <span className="font-semibold text-sm text-zinc-900">SkillMorph AI</span>
+                  <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
+                    Enterprise Talent Cloud
                   </span>
                 </div>
                 <div className="text-xs text-zinc-500">
@@ -337,7 +349,7 @@ export default function App() {
             </div>
 
             {/* Quick Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => {
                   setCurrentUser({
@@ -352,25 +364,25 @@ export default function App() {
                     pastProjects: ['Built Flask & PostgreSQL Inventory Microservice'],
                   });
                 }}
-                className="px-4 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3F1EC] border border-[#E6E4DD] text-xs font-bold text-zinc-800 flex items-center gap-2 transition-colors shadow-xs"
+                className="px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs font-medium text-zinc-800 flex items-center gap-1.5 transition-colors"
               >
-                <GraduationCap className="w-4 h-4 text-[#EA580C]" />
-                <span>Switch to Student View</span>
+                <GraduationCap size={14} strokeWidth={1.75} />
+                <span>Student View</span>
               </button>
 
               <button
                 onClick={() => setIsGroqKeyOpen(true)}
-                className="px-3 py-2 rounded-xl border border-[#E6E4DD] text-xs font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
+                className="p-1.5 rounded-md border border-zinc-200 text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition-colors"
                 title="Configure Groq API Key"
               >
-                <Key className="w-4 h-4" />
+                <Key size={14} strokeWidth={1.75} />
               </button>
 
               <button
                 onClick={handleLogout}
-                className="px-3.5 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-xs font-semibold text-zinc-700 flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-xs font-medium text-white flex items-center gap-1.5 transition-colors"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut size={14} strokeWidth={1.75} />
                 <span>Sign Out</span>
               </button>
             </div>
@@ -378,14 +390,14 @@ export default function App() {
         </header>
 
         {/* Institution Workspace */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 sm:p-6 pb-12">
           <OrgView
             onDeployCohortBridge={() => {
               handleRemedialInjection();
               addLog({
                 agent: 'Profiler-01',
                 agentId: 1,
-                message: '🏛️ Dean Intervention: Pushed Accelerated Cohort Bridge Module to Aarav Sharma.',
+                message: 'Dean Intervention: Pushed Accelerated Cohort Bridge Module to Aarav Sharma.',
                 type: 'mutation',
               });
             }}
@@ -415,10 +427,10 @@ export default function App() {
     );
   }
 
-  // 3. IF LOGGED IN AS STUDENT -> RENDER 4 DEDICATED FULL-WIDTH WORKSPACES WITH LEFT SIDEBAR
+  // 3. IF LOGGED IN AS STUDENT -> RENDER 4 DEDICATED FULL-WIDTH WORKSPACES WITH DESKTOP SIDEBAR + MOBILE DUAL NAV
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#FAF8F5] text-[#18181B] font-sans antialiased">
-      {/* Clean Left Sidebar Navigation */}
+    <div className="flex h-screen w-screen overflow-hidden bg-[#FAFAFA] text-zinc-900 font-sans antialiased">
+      {/* Clean Left Sidebar Navigation (Desktop) */}
       <StudentSidebar
         user={currentUser}
         activeTab={activeStudentTab}
@@ -443,13 +455,37 @@ export default function App() {
       />
 
       {/* Main Full-Width Content Container */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Breadcrumb / Top Bar */}
-        <header className="h-14 bg-white border-b border-[#E6E4DD] px-6 flex items-center justify-between flex-shrink-0">
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+        {/* Mobile Top Header (< md) */}
+        <header className="flex md:hidden h-12 bg-white border-b border-zinc-200 px-4 items-center justify-between flex-shrink-0 z-30">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-zinc-900 text-white flex items-center justify-center">
+              <Terminal size={13} strokeWidth={1.75} />
+            </div>
+            <span className="font-semibold text-xs tracking-tight text-zinc-900">SkillMorph AI</span>
+            <span className="text-[10px] text-zinc-400 font-mono">[{activeRoleTitle.split(' ')[0]}]</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsGroqKeyOpen(true)}
+              className="p-1 rounded border border-zinc-200 text-zinc-600"
+              title="Groq Settings"
+            >
+              <Key size={13} strokeWidth={1.75} />
+            </button>
+            <div className="w-7 h-7 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-[11px] font-semibold flex items-center justify-center">
+              {userInitials}
+            </div>
+          </div>
+        </header>
+
+        {/* Desktop Breadcrumb Header (md+) */}
+        <header className="hidden md:flex h-12 bg-white border-b border-zinc-200 px-6 items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2 text-xs text-zinc-500">
-            <span className="font-semibold text-zinc-800">Student Studio</span>
-            <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="capitalize font-bold text-[#EA580C]">
+            <span className="font-medium text-zinc-800">Student Studio</span>
+            <ChevronRight size={13} strokeWidth={1.75} className="text-zinc-400" />
+            <span className="capitalize font-semibold text-zinc-900">
               {activeStudentTab === 'profile' && 'My Profile, Skills & Career Match'}
               {activeStudentTab === 'roadmap' && 'Adaptive Learning Roadmap (Skill-DAG)'}
               {activeStudentTab === 'studio' && 'Interactive Learning Studio & Assessment'}
@@ -458,24 +494,24 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4] text-xs font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>4-Agent Mesh Synchronized</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-[11px] font-medium text-zinc-700">
+              <ShieldCheck size={13} strokeWidth={1.75} className="text-zinc-600" />
+              <span>4-Agent Mesh Active</span>
             </span>
 
             <button
               onClick={() => setIsGroqKeyOpen(true)}
-              className="px-3 py-1.5 rounded-xl border border-[#E6E4DD] hover:bg-[#FAF8F5] text-xs font-semibold text-zinc-700 flex items-center gap-1.5 transition-colors"
+              className="px-2.5 py-1 rounded-md border border-zinc-200 hover:bg-zinc-50 text-xs font-medium text-zinc-700 flex items-center gap-1.5 transition-colors"
             >
-              <Key className="w-3.5 h-3.5 text-[#EA580C]" />
-              <span className="hidden sm:inline">Groq LPU:</span>
+              <Key size={13} strokeWidth={1.75} className="text-zinc-500" />
+              <span>Groq LPU:</span>
               <span className="font-mono text-zinc-500">{groqKey ? 'Active' : 'Demo Mesh'}</span>
             </button>
           </div>
         </header>
 
-        {/* Scrollable Full-Width Viewport */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        {/* Scrollable Viewport (pb-20 on mobile so bottom bar never obscures content) */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 pb-20 md:pb-8">
           {activeStudentTab === 'profile' && (
             <StudentProfileView
               user={currentUser}
@@ -534,6 +570,30 @@ export default function App() {
             />
           )}
         </main>
+
+        {/* Apple iOS-Style Bottom Navigation Bar (md:hidden) */}
+        <nav className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-zinc-200 flex justify-around py-2 z-40 md:hidden">
+          {[
+            { id: 'profile' as StudentTab, label: 'Profile', icon: <User size={18} strokeWidth={1.75} /> },
+            { id: 'roadmap' as StudentTab, label: 'Roadmap', icon: <Compass size={18} strokeWidth={1.75} /> },
+            { id: 'studio' as StudentTab, label: 'Studio', icon: <Code2 size={18} strokeWidth={1.75} /> },
+            { id: 'agents' as StudentTab, label: 'Agents', icon: <Bot size={18} strokeWidth={1.75} /> },
+          ].map((tab) => {
+            const isActive = activeStudentTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveStudentTab(tab.id)}
+                className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] transition-colors ${
+                  isActive ? 'text-zinc-900 font-semibold' : 'text-zinc-400'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* Custom Career Modal */}

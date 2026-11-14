@@ -214,8 +214,8 @@ export function SprintArena({
               <span className="text-sm font-bold text-slate-900">90-Second Skill Sprint</span>
               <span className="text-xs text-slate-500 font-medium">— {node.label}</span>
               {node.isRemedial && (
-                <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold rounded-md px-2 py-0.5">
-                  🚑 Rescue Bridge
+                <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold rounded-md px-2 py-0.5 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3 text-amber-600" /> Remedial Module: Async Execution
                 </span>
               )}
             </div>
@@ -234,9 +234,9 @@ export function SprintArena({
       {/* Segmented Sprint Tabs */}
       <div className="flex border-b border-slate-200/80 bg-slate-50/30 px-3 pt-2">
         {[
-          { id: 'braindiff' as Tab, label: 'Polyglot Brain Diff (30s)', icon: '🧠' },
-          { id: 'resources' as Tab, label: 'Curated Mini-Build (15m)', icon: '📦' },
-          { id: 'assessment' as Tab, label: 'Boss Fight & Live Patch (60s)', icon: '⚔️' },
+          { id: 'braindiff' as Tab, label: 'Polyglot Brain Diff (30s)' },
+          { id: 'resources' as Tab, label: 'Curated Mini-Build (15m)' },
+          { id: 'assessment' as Tab, label: 'Boss Fight & Live Patch (60s)' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -247,7 +247,6 @@ export function SprintArena({
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
-            <span>{tab.icon}</span>
             <span>{tab.label}</span>
           </button>
         ))}
@@ -330,7 +329,7 @@ export function SprintArena({
                           : 'bg-blue-50 text-blue-600 border border-blue-200'
                       }`}
                     >
-                      {r.type === 'video' ? '▶' : r.type === 'interactive' ? '⚡' : '📄'}
+                      {r.type === 'video' ? <Play className="w-3.5 h-3.5 fill-current" /> : r.type === 'interactive' ? <Terminal className="w-3.5 h-3.5" /> : <Package className="w-3.5 h-3.5" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
@@ -485,13 +484,15 @@ export function SprintArena({
                   >
                     {correct ? (
                       <div>
-                        <div className="font-bold text-emerald-950 mb-0.5">✅ Assessment Mastered!</div>
+                        <div className="font-bold text-emerald-950 mb-0.5 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Assessment Mastered!
+                        </div>
                         <div>Node marked verified. Career placement readiness +8%. Downstream milestones unlocked!</div>
                       </div>
                     ) : (
                       <div>
-                        <div className="font-bold text-red-950 mb-1">
-                          ❌ Not quite — AdaptiveMentor-04 rerouting via rescue sprint...
+                        <div className="font-bold text-red-950 mb-1 flex items-center gap-1.5">
+                          <XCircle className="w-4 h-4 text-red-600" /> Incorrect — AdaptiveMentor-04 rerouting via rescue sprint...
                         </div>
                         <div className="mb-2 leading-relaxed">{content.assessment.wrongHint}</div>
                         <button
@@ -519,9 +520,9 @@ export function SprintArena({
                     </button>
                     <button
                       onClick={() => handleMcqSubmit(content.assessment.correctIndex)}
-                      className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm"
+                      className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-sm flex items-center justify-center gap-1.5"
                     >
-                      Submit Correct Fix ✓
+                      <Check className="w-3.5 h-3.5" /> Submit Verified Fix
                     </button>
                   </div>
                 )}

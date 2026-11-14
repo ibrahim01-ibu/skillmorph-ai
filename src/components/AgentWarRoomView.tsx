@@ -1,4 +1,4 @@
-// src/components/AgentWarRoomView.tsx — Multi-Agent War Room & AI Mentor
+// src/components/AgentWarRoomView.tsx — Precision Multi-Agent War Room & AI Mentor
 import { useState, useRef, useEffect } from 'react';
 import {
   Bot,
@@ -48,7 +48,7 @@ export function AgentWarRoomView({
     {
       id: 'msg-1',
       role: 'assistant',
-      content: `Welcome to the SkillMorph Autonomous Mesh War Room, ${user.name}! I am AdaptiveMentor-04. I actively synthesize cross-language transfer analogies from your verified stack (${skills.map((s) => s.name).join(', ')}) to help you reach "${targetRoleTitle}". What would you like to explore?`,
+      content: `Welcome to the SkillMorph Autonomous Mesh War Room, ${user.name}. I am AdaptiveMentor-04. I actively synthesize cross-language transfer analogies from your verified stack (${skills.map((s) => s.name).join(', ')}) to help you reach "${targetRoleTitle}". What would you like to explore?`,
       timestamp: '10:00 AM',
     },
   ]);
@@ -107,7 +107,6 @@ export function AgentWarRoomView({
       };
       setMessages((prev) => [...prev, aiMsg]);
     } catch {
-      // Deterministic fallback response
       const fallbackReply =
         CHAT_RESPONSES[q] ||
         `Transfer-learning insight for ${targetRoleTitle}: Since you already know ${skills[0]?.name || 'Python'}, focus on mental-model bridges rather than syntax rote learning. In modern stacks, reactive state maps cleanly to declarative data pipelines.`;
@@ -133,7 +132,7 @@ export function AgentWarRoomView({
     onAgentLog({
       agent: 'Profiler-01',
       agentId: 1,
-      message: '▶ Initiating Live 4-Agent Diagnostic Pipeline via Groq LPU engine...',
+      message: 'Initiating Live 4-Agent Diagnostic Pipeline via Groq LPU engine...',
       type: 'mutation',
     });
 
@@ -185,7 +184,7 @@ export function AgentWarRoomView({
       onAgentLog({
         agent: 'AdaptiveMentor-04',
         agentId: 4,
-        message: '✓ 4-Agent Diagnostic Pipeline completed with zero latency penalties.',
+        message: '4-Agent Diagnostic Pipeline completed with zero latency penalties.',
         type: 'success',
       });
     } catch (err) {
@@ -196,20 +195,20 @@ export function AgentWarRoomView({
   }
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+    <div className="space-y-5 max-w-6xl mx-auto">
       {/* Top Header Card */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
+            <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
               Autonomous Mesh Operations
             </span>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
-              Groq LPU High-Throughput
+            <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
+              Groq LPU Acceleration
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-[#18181B] mt-1">Multi-Agent War Room & AI Mentor</h1>
-          <p className="text-sm text-zinc-500 mt-1">
+          <h1 className="text-xl font-bold text-zinc-900 mt-0.5">Multi-Agent War Room & AI Mentor</h1>
+          <p className="text-xs text-zinc-500 mt-0.5">
             Real-time multi-agent orchestration between Profiler, GapArchitect, PolyglotCurator, and AdaptiveMentor.
           </p>
         </div>
@@ -218,29 +217,29 @@ export function AgentWarRoomView({
         <button
           onClick={handleRunDiagnosticPipeline}
           disabled={pipelineRunning}
-          className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-bold flex items-center gap-2 shadow-md shadow-indigo-600/20 transition-all self-stretch md:self-auto justify-center"
+          className="px-4 py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-2 transition-colors shadow-xs self-stretch md:self-auto justify-center"
         >
           {pipelineRunning ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 size={13} className="animate-spin" />
           ) : (
-            <Play className="w-4 h-4 fill-white" />
+            <Play size={13} strokeWidth={1.75} className="fill-white" />
           )}
-          <span>{pipelineRunning ? 'Running 4-Agent Diagnostic...' : '▶ Run Live 4-Agent Diagnostic Pipeline (Groq LPU)'}</span>
+          <span>{pipelineRunning ? 'Running 4-Agent Diagnostic...' : 'Run Live 4-Agent Diagnostic Pipeline (Groq LPU)'}</span>
         </button>
       </div>
 
       {/* 4 AGENTS PIPELINE STATUS & DIAGNOSTIC INSPECTOR */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex items-center justify-between border-b border-[#E6E4DD] pb-4">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
           <div>
-            <h2 className="text-lg font-bold text-[#18181B]">4-Agent Autonomous Mesh</h2>
+            <h2 className="text-sm font-bold text-zinc-900">4-Agent Autonomous Mesh</h2>
             <p className="text-xs text-zinc-500">Live operational topology and diagnostic inspection</p>
           </div>
-          <div className="text-xs font-mono text-zinc-400">Mesh State: ACTIVE</div>
+          <div className="text-[11px] font-mono text-zinc-400 uppercase">State: Active</div>
         </div>
 
         {/* 4 Agent Cards Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {agents.map((agent) => {
             const isStepActive =
               pipelineRunning &&
@@ -252,28 +251,28 @@ export function AgentWarRoomView({
             return (
               <div
                 key={agent.id}
-                className={`p-4 rounded-2xl border transition-all ${
+                className={`p-3.5 rounded-lg border transition-colors ${
                   isStepActive
-                    ? 'bg-indigo-50/70 border-indigo-400 shadow-sm'
-                    : 'bg-[#FAF8F5] border-[#E6E4DD]'
+                    ? 'bg-zinc-100 border-zinc-400 shadow-xs'
+                    : 'bg-zinc-50 border-zinc-200'
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
                     Agent 0{agent.id}
                   </span>
                   <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
                       isStepActive
-                        ? 'bg-indigo-100 text-indigo-700 animate-pulse'
-                        : 'bg-white text-zinc-600 border border-[#E6E4DD]'
+                        ? 'bg-zinc-900 text-white font-medium animate-pulse'
+                        : 'bg-white text-zinc-600 border border-zinc-200'
                     }`}
                   >
                     {isStepActive ? 'EXECUTING' : agent.status.toUpperCase()}
                   </span>
                 </div>
-                <div className="text-sm font-bold text-[#18181B]">{agent.name}</div>
-                <div className="text-xs text-zinc-500 mt-0.5">{agent.role}</div>
+                <div className="text-xs font-bold text-zinc-900">{agent.name}</div>
+                <div className="text-[11px] text-zinc-500 mt-0.5">{agent.role}</div>
               </div>
             );
           })}
@@ -281,17 +280,17 @@ export function AgentWarRoomView({
 
         {/* Diagnostic Output Results */}
         {pipelineResult && (
-          <div className="p-5 rounded-2xl bg-[#18181B] text-zinc-200 border border-zinc-800 space-y-4 animate-slide-in-up font-mono text-xs">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                <CheckCircle2 className="w-4 h-4" />
+          <div className="p-4 rounded-lg bg-[#111113] text-zinc-200 border border-zinc-800 space-y-3 font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+              <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                <CheckCircle2 size={13} strokeWidth={1.75} />
                 <span>Live Groq LPU Diagnostic Completed (0.24s execution time)</span>
               </div>
-              <span className="text-zinc-500 text-[11px]">openai/gpt-oss-120b</span>
+              <span className="text-zinc-500 text-[10px]">openai/gpt-oss-120b</span>
             </div>
 
             {/* Inspectable Tabs */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-1.5 flex-wrap">
               {[
                 { id: 'profiler', label: 'Profiler-01 Output' },
                 { id: 'gapArchitect', label: 'GapArchitect-02 Output' },
@@ -301,10 +300,10 @@ export function AgentWarRoomView({
                 <button
                   key={tab.id}
                   onClick={() => setExpandedAgentJson(tab.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
                     expandedAgentJson === tab.id
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                      ? 'bg-zinc-800 text-white font-semibold'
+                      : 'bg-zinc-900 text-zinc-400 hover:text-white'
                   }`}
                 >
                   {tab.label}
@@ -312,9 +311,9 @@ export function AgentWarRoomView({
               ))}
             </div>
 
-            {/* JSON Content */}
-            <div className="bg-black/60 p-4 rounded-xl overflow-x-auto text-zinc-300">
-              <pre>
+            {/* JSON Content (whitespace-pre-wrap break-words) */}
+            <div className="bg-black/50 p-3 rounded border border-zinc-800 text-zinc-300 font-mono text-[12px] leading-relaxed whitespace-pre-wrap break-words">
+              <pre className="whitespace-pre-wrap break-words font-mono">
                 {expandedAgentJson === 'profiler' && pipelineResult.profiler.json}
                 {expandedAgentJson === 'gapArchitect' && pipelineResult.gapArchitect.json}
                 {expandedAgentJson === 'polyglotCurator' && pipelineResult.polyglotCurator.json}
@@ -325,46 +324,46 @@ export function AgentWarRoomView({
         )}
       </div>
 
-      {/* TWO COLUMN WORKSPACE: AI MENTOR CHAT & LIVE AUDIT STREAM */}
-      <div className="grid lg:grid-cols-5 gap-6">
+      {/* TWO COLUMN WORKSPACE: AI MENTOR CHAT & LIVE AUDIT STREAM (Stacks on mobile) */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
         {/* AI Mentor Chat Interface (3 Cols) */}
-        <div className="lg:col-span-3 bg-white border border-[#E6E4DD] rounded-3xl p-6 shadow-sm flex flex-col h-[560px]">
-          <div className="flex items-center justify-between border-b border-[#E6E4DD] pb-3 mb-4 flex-shrink-0">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#EA580C] text-white flex items-center justify-center">
-                <Bot className="w-5 h-5" />
+        <div className="lg:col-span-3 bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col h-[520px]">
+          <div className="flex items-center justify-between border-b border-zinc-200 pb-2.5 mb-3 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center">
+                <Bot size={14} strokeWidth={1.75} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#18181B]">AI Mentor Coach (AdaptiveMentor-04)</h3>
-                <p className="text-xs text-zinc-500">Cross-language transfer specialist</p>
+                <h3 className="text-xs font-bold text-zinc-900">AI Mentor Coach (AdaptiveMentor-04)</h3>
+                <p className="text-[11px] text-zinc-500">Cross-language transfer specialist</p>
               </div>
             </div>
-            <span className="text-[10px] font-mono text-zinc-400">Groq gpt-oss-120b</span>
+            <span className="text-[10px] font-mono text-zinc-400">gpt-oss-120b</span>
           </div>
 
           {/* Messages Scroll Area */}
-          <div className="flex-1 overflow-y-auto space-y-3.5 pr-2">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3 text-xs ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.role === 'assistant' && (
-                  <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center flex-shrink-0 font-bold text-xs mt-0.5">
+                  <div className="w-6 h-6 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 flex items-center justify-center flex-shrink-0 font-mono text-[10px] font-semibold mt-0.5">
                     04
                   </div>
                 )}
                 <div
-                  className={`p-3.5 rounded-2xl max-w-[85%] leading-relaxed ${
+                  className={`p-3 rounded-lg max-w-[85%] leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-[#EA580C] text-white font-medium rounded-tr-xs'
-                      : 'bg-[#FAF8F5] text-zinc-800 border border-[#E6E4DD] rounded-tl-xs'
+                      ? 'bg-zinc-900 text-white font-normal'
+                      : 'bg-zinc-50 text-zinc-800 border border-zinc-200'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap">{msg.content}</div>
+                  <div className="whitespace-pre-wrap break-words">{msg.content}</div>
                   <div
                     className={`text-[9px] mt-1 text-right ${
-                      msg.role === 'user' ? 'text-white/80' : 'text-zinc-400'
+                      msg.role === 'user' ? 'text-zinc-400' : 'text-zinc-400'
                     }`}
                   >
                     {msg.timestamp}
@@ -374,7 +373,7 @@ export function AgentWarRoomView({
             ))}
             {chatLoading && (
               <div className="flex gap-2 items-center text-xs text-zinc-500 p-2">
-                <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                <Loader2 size={13} className="animate-spin text-zinc-700" />
                 <span>AdaptiveMentor-04 synthesizing polyglot guidance...</span>
               </div>
             )}
@@ -382,13 +381,13 @@ export function AgentWarRoomView({
           </div>
 
           {/* Suggested Quick Prompts */}
-          <div className="pt-3 border-t border-[#E6E4DD] flex-shrink-0">
-            <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+          <div className="pt-2.5 border-t border-zinc-200 flex-shrink-0">
+            <div className="flex gap-1.5 overflow-x-auto pb-1.5 scrollbar-none">
               {PRESET_QUERIES.map((p, i) => (
                 <button
                   key={i}
                   onClick={() => handleSendMessage(p)}
-                  className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] hover:bg-[#F3F1EC] border border-[#E6E4DD] text-[11px] text-zinc-600 whitespace-nowrap transition-colors"
+                  className="px-2 py-1 rounded bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-[11px] text-zinc-600 whitespace-nowrap transition-colors"
                 >
                   {p}
                 </button>
@@ -396,34 +395,34 @@ export function AgentWarRoomView({
             </div>
 
             {/* Input Bar */}
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-1.5 mt-1.5">
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask AI Mentor anything about your career graph..."
-                className="flex-1 px-4 py-2.5 bg-[#FAF8F5] border border-[#E6E4DD] rounded-xl text-xs text-zinc-800 focus:outline-none focus:bg-white focus:border-[#EA580C]"
+                className="flex-1 px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-md text-xs text-zinc-900 focus:outline-none focus:bg-white focus:border-zinc-900"
               />
               <button
                 onClick={() => handleSendMessage()}
                 disabled={chatLoading || !query.trim()}
-                className="px-4 py-2.5 bg-[#EA580C] hover:bg-[#C2410C] disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center justify-center transition-colors"
+                className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white rounded-md text-xs font-medium flex items-center justify-center transition-colors"
               >
-                <Send className="w-3.5 h-3.5" />
+                <Send size={13} strokeWidth={1.75} />
               </button>
             </div>
           </div>
         </div>
 
         {/* Live Mesh Audit Telemetry Log Stream (2 Cols) */}
-        <div className="lg:col-span-2 bg-white border border-[#E6E4DD] rounded-3xl p-6 shadow-sm flex flex-col h-[560px]">
-          <div className="flex items-center justify-between border-b border-[#E6E4DD] pb-3 mb-4 flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-[#0F766E]" />
-              <h3 className="text-base font-bold text-[#18181B]">Agent Audit Telemetry</h3>
+        <div className="lg:col-span-2 bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col h-[520px]">
+          <div className="flex items-center justify-between border-b border-zinc-200 pb-2.5 mb-3 flex-shrink-0">
+            <div className="flex items-center gap-1.5">
+              <Activity size={14} strokeWidth={1.75} className="text-zinc-600" />
+              <h3 className="text-xs font-bold text-zinc-900">Agent Audit Telemetry</h3>
             </div>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-600">
               {logs.length} Events
             </span>
           </div>
@@ -435,23 +434,23 @@ export function AgentWarRoomView({
               </div>
             ) : (
               logs.slice().reverse().map((log) => {
-                let badgeClass = 'bg-zinc-100 text-zinc-600 border-zinc-200';
-                if (log.type === 'mutation') badgeClass = 'bg-indigo-50 text-indigo-700 border-indigo-200';
-                if (log.type === 'warning') badgeClass = 'bg-amber-50 text-amber-800 border-amber-200';
-                if (log.type === 'success') badgeClass = 'bg-[#F0FDFA] text-[#0F766E] border-[#99F6E4]';
+                let badgeClass = 'bg-zinc-100 text-zinc-700 border-zinc-200';
+                if (log.type === 'mutation') badgeClass = 'bg-zinc-900 text-white border-zinc-900';
+                if (log.type === 'warning') badgeClass = 'bg-amber-50 text-amber-900 border-amber-200';
+                if (log.type === 'success') badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-200';
 
                 return (
                   <div
                     key={log.id}
-                    className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E6E4DD] space-y-1"
+                    className="p-2.5 rounded-md bg-zinc-50 border border-zinc-200 space-y-0.5"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-zinc-800">{log.agent}</span>
-                      <span className={`text-[9px] px-1.5 py-0.2 rounded border font-semibold ${badgeClass}`}>
+                      <span className="font-semibold text-zinc-900">{log.agent}</span>
+                      <span className={`text-[9px] px-1 py-0.2 rounded border font-mono ${badgeClass}`}>
                         {log.type.toUpperCase()}
                       </span>
                     </div>
-                    <p className="text-zinc-600 font-sans leading-snug">{log.message}</p>
+                    <p className="text-zinc-600 font-sans leading-snug break-words">{log.message}</p>
                     <div className="text-[9px] text-zinc-400 text-right">{log.timestamp}</div>
                   </div>
                 );

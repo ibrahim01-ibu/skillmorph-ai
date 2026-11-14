@@ -1,13 +1,14 @@
-// src/components/StudentSidebar.tsx — Left Navigation Sidebar for Student Portal
+// src/components/StudentSidebar.tsx — Apple / Linear / Vercel Geometric Sidebar
 import {
   User,
   Compass,
-  Zap,
+  Code2,
   Bot,
   Building2,
   Key,
   LogOut,
   Award,
+  Terminal,
 } from 'lucide-react';
 import type { StudentTab, UserProfile } from '../types';
 
@@ -34,70 +35,77 @@ export function StudentSidebar({
   onOpenPassport,
   onLogout,
 }: StudentSidebarProps) {
+  const initials = user.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   const NAV_ITEMS: { id: StudentTab; label: string; icon: React.ReactNode; desc: string }[] = [
     {
       id: 'profile',
       label: 'Profile & Skills',
-      icon: <User className="w-4 h-4" />,
+      icon: <User size={16} strokeWidth={1.75} />,
       desc: 'Competency vector & GitHub scan',
     },
     {
       id: 'roadmap',
       label: 'Adaptive Roadmap',
-      icon: <Compass className="w-4 h-4" />,
+      icon: <Compass size={16} strokeWidth={1.75} />,
       desc: 'Topological Skill-DAG graph',
     },
     {
       id: 'studio',
       label: 'Learning Studio',
-      icon: <Zap className="w-4 h-4" />,
+      icon: <Code2 size={16} strokeWidth={1.75} />,
       desc: 'Brain-Diff & AI assessment',
     },
     {
       id: 'agents',
       label: 'Multi-Agent War Room',
-      icon: <Bot className="w-4 h-4" />,
+      icon: <Bot size={16} strokeWidth={1.75} />,
       desc: 'Groq LPU pipeline & mentor',
     },
   ];
 
   return (
-    <div className="w-64 bg-[#F3F1EC] border-r border-[#E6E4DD] flex flex-col justify-between h-full p-4 flex-shrink-0 select-none">
+    <aside className="hidden md:flex md:w-60 md:flex-col bg-white border-r border-zinc-200/90 justify-between h-full p-4 flex-shrink-0 select-none">
       {/* Top Brand & Learner Card */}
       <div className="space-y-4">
         {/* Brand */}
-        <div className="flex items-center gap-2.5 px-2">
-          <div className="w-8 h-8 rounded-xl bg-[#EA580C] text-white flex items-center justify-center font-bold shadow-xs">
-            <Zap className="w-4 h-4" />
+        <div className="flex items-center gap-2.5 px-1 py-1">
+          <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center shadow-xs">
+            <Terminal size={15} strokeWidth={1.75} />
           </div>
           <div>
-            <div className="font-bold text-sm tracking-tight text-[#18181B]">SkillMorph AI</div>
-            <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">
+            <div className="font-semibold text-sm tracking-tight text-zinc-900">SkillMorph AI</div>
+            <div className="text-[10px] text-zinc-400 font-mono tracking-wider uppercase">
               Career Autopilot
             </div>
           </div>
         </div>
 
         {/* Learner Summary Card */}
-        <div className="p-3.5 rounded-2xl bg-white border border-[#E6E4DD] shadow-xs space-y-2.5">
+        <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-2">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#0F766E] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-              {user.name.charAt(0)}
+            <div className="w-8 h-8 rounded-md bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-xs font-semibold flex items-center justify-center">
+              {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="font-bold text-xs text-[#18181B] truncate">{user.name}</div>
-              <div className="text-[10px] text-zinc-500 truncate">{user.institution}</div>
+              <div className="font-medium text-xs text-zinc-900 truncate">{user.name}</div>
+              <div className="text-[11px] text-zinc-500 truncate">{user.institution}</div>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[#E6E4DD] space-y-1">
-            <div className="flex items-center justify-between text-[11px] font-semibold">
+          <div className="pt-2 border-t border-zinc-200/80 space-y-1">
+            <div className="flex items-center justify-between text-xs font-medium">
               <span className="text-zinc-600 truncate max-w-[120px]">{targetRoleTitle}</span>
-              <span className="font-mono font-bold text-[#0F766E]">{readiness}%</span>
+              <span className="font-mono text-xs text-zinc-900 font-semibold">{readiness}%</span>
             </div>
-            <div className="h-1.5 w-full bg-[#FAF8F5] rounded-full overflow-hidden border border-[#E6E4DD]">
+            <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#EA580C] to-[#0F766E] rounded-full transition-all duration-500"
+                className="h-full bg-zinc-900 rounded-full transition-all duration-300"
                 style={{ width: `${readiness}%` }}
               />
             </div>
@@ -112,16 +120,16 @@ export function StudentSidebar({
               <button
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-left transition-colors text-xs ${
                   isActive
-                    ? 'bg-white text-[#EA580C] font-bold shadow-xs border border-[#E6E4DD]'
-                    : 'text-zinc-600 hover:text-[#18181B] hover:bg-white/60 font-medium'
+                    ? 'bg-zinc-100 text-zinc-900 font-semibold border border-zinc-200'
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 font-normal'
                 }`}
               >
-                <div className={isActive ? 'text-[#EA580C]' : 'text-zinc-500'}>{item.icon}</div>
+                <div className={isActive ? 'text-zinc-900' : 'text-zinc-500'}>{item.icon}</div>
                 <div className="min-w-0">
-                  <div className="text-xs leading-none">{item.label}</div>
-                  <div className="text-[10px] text-zinc-400 mt-1 truncate">{item.desc}</div>
+                  <div className="leading-tight">{item.label}</div>
+                  <div className="text-[10px] text-zinc-400 truncate">{item.desc}</div>
                 </div>
               </button>
             );
@@ -130,43 +138,39 @@ export function StudentSidebar({
       </div>
 
       {/* Bottom Administrative & Session Controls */}
-      <div className="space-y-1.5 pt-4 border-t border-[#E6E4DD]">
-        {/* Export Skill Passport button */}
+      <div className="space-y-1 pt-3 border-t border-zinc-200">
         <button
           onClick={onOpenPassport}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#0F766E] hover:bg-[#F0FDFA] transition-colors"
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-zinc-700 hover:bg-zinc-100 transition-colors"
         >
-          <Award className="w-4 h-4" />
+          <Award size={15} strokeWidth={1.75} className="text-zinc-500" />
           <span>Export Skill Passport</span>
         </button>
 
-        {/* Switch to Institution Portal (for judges) */}
         <button
           onClick={onSwitchToOrg}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-700 hover:bg-white transition-colors"
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-zinc-700 hover:bg-zinc-100 transition-colors"
         >
-          <Building2 className="w-4 h-4 text-[#0F766E]" />
-          <span>Institution Portal (Deans)</span>
+          <Building2 size={15} strokeWidth={1.75} className="text-zinc-500" />
+          <span>Institution Portal (Dean)</span>
         </button>
 
-        {/* Groq Settings */}
         <button
           onClick={onOpenGroqKeyModal}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-600 hover:bg-white transition-colors"
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-zinc-600 hover:bg-zinc-100 transition-colors"
         >
-          <Key className="w-4 h-4 text-zinc-400" />
+          <Key size={15} strokeWidth={1.75} className="text-zinc-400" />
           <span>Groq LPU Settings</span>
         </button>
 
-        {/* Sign Out / Switch Account */}
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-500 hover:text-red-600 hover:bg-white transition-colors"
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-zinc-500 hover:text-red-600 hover:bg-zinc-50 transition-colors"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut size={15} strokeWidth={1.75} />
           <span>Sign Out / Switch Portal</span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

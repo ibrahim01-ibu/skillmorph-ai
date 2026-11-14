@@ -148,7 +148,9 @@ export function SkillPassportModal({
               <span className="flex items-center gap-1.5 text-indigo-300">
                 <Hash className="w-3.5 h-3.5" /> SHA-256 AST Hash
               </span>
-              <span className="text-emerald-400 text-[10px] font-medium">✓ Autonomous Mesh Signed</span>
+              <span className="text-emerald-400 text-[10px] font-medium flex items-center gap-1">
+                <CheckCircle className="w-3 h-3 text-emerald-400" /> Autonomous Mesh Signed
+              </span>
             </div>
             <div className="text-slate-400 truncate">{mockSha256}</div>
             <div className="text-slate-400 mt-2 text-[10px]">

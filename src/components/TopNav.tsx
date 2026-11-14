@@ -11,6 +11,9 @@ import {
   EyeOff,
   Sparkles,
   SlidersHorizontal,
+  GraduationCap,
+  Building2,
+  Check,
 } from 'lucide-react';
 import type { ViewMode, CareerPath } from '../types';
 
@@ -75,23 +78,23 @@ export function TopNav({
           <div className="bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 flex items-center gap-1 shadow-inner">
             <button
               onClick={() => onViewChange('learner')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 viewMode === 'learner'
                   ? 'bg-white text-blue-700 shadow-sm border border-slate-200/60'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              👨‍🎓 Learner Career Studio
+              <GraduationCap className="w-3.5 h-3.5" /> Learner Career Studio
             </button>
             <button
               onClick={() => onViewChange('org')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 viewMode === 'org'
                   ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/60'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              🏛️ University & Enterprise Talent Cloud
+              <Building2 className="w-3.5 h-3.5" /> University & Enterprise Talent Cloud
             </button>
           </div>
 
@@ -173,7 +176,7 @@ export function TopNav({
                             : 'text-slate-600 hover:bg-slate-50'
                         }`}
                       >
-                        {currentPath === p.path ? '✓ ' : '  '}
+                        {currentPath === p.path && <Check className="w-3 h-3 text-blue-600 inline mr-1" />}
                         {p.label}
                       </button>
                     ))}
@@ -228,8 +231,11 @@ export function TopNav({
               </button>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200/80 rounded-2xl p-3.5 mb-4 text-xs text-blue-900 leading-relaxed">
-              ⚡ <strong>Zero Setup Required:</strong> A pre-configured demo key is active with runtime obfuscation. You can also plug in your personal Groq key (`gsk_...`) below.
+            <div className="bg-blue-50 border border-blue-200/80 rounded-2xl p-3.5 mb-4 text-xs text-blue-900 leading-relaxed flex items-start gap-2">
+              <Zap className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+              <span>
+                <strong>Zero Setup Required:</strong> A pre-configured demo key is active with runtime obfuscation. You can also plug in your personal Groq key (`gsk_...`) below.
+              </span>
             </div>
 
             <div className="space-y-2">

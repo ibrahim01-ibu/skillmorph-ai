@@ -1,4 +1,4 @@
-// src/components/RoadmapView.tsx — Spacious Interactive Skill-DAG Workspace
+// src/components/RoadmapView.tsx — Precision Interactive Skill-DAG Workspace
 import { useState } from 'react';
 import { SkillDAG } from './SkillDAG';
 import { AgentStepperBar } from './AgentStepperBar';
@@ -6,13 +6,12 @@ import type { DAGNode, DAGEdge, Agent, AgentLog } from '../types';
 import { NODE_CONTENT } from '../data/scenarios';
 import {
   Compass,
-  Sparkles,
   ArrowRight,
-  AlertTriangle,
+  AlertCircle,
   RotateCcw,
-  Zap,
   CheckCircle2,
   Lock,
+  GitBranch,
 } from 'lucide-react';
 
 interface RoadmapViewProps {
@@ -59,11 +58,10 @@ export function RoadmapView({
     });
   }
 
-  // Active agent for stepper bar
   const activeAgent = agents.find((a) => a.status !== 'idle');
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12">
+    <div className="space-y-5 max-w-6xl mx-auto">
       {/* 4-Agent Live Pipeline Bar */}
       <AgentStepperBar
         agents={agents}
@@ -76,40 +74,40 @@ export function RoadmapView({
       />
 
       {/* Header Stats & Quick Chaos Bar */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">
+            <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
               Autonomous Skill-DAG Engine
             </span>
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]">
-              Waze-Style Dynamic Rerouting
+            <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
+              Topological Rerouting Active
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-[#18181B] mt-1">
+          <h1 className="text-xl font-bold text-zinc-900 mt-0.5">
             Adaptive Learning Graph: {targetRoleTitle}
           </h1>
-          <p className="text-sm text-zinc-500 mt-1">
-            Topological transfer learning roadmap. Master prerequisite nodes to unlock advanced milestones.
+          <p className="text-xs text-zinc-500 mt-1">
+            Topological transfer learning roadmap. Master prerequisite nodes to unlock downstream milestones.
           </p>
         </div>
 
         {/* Progress & Chaos Controls */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
           {/* Progress widget */}
-          <div className="bg-[#FAF8F5] border border-[#E6E4DD] rounded-2xl p-3.5 min-w-[200px]">
-            <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-zinc-600">Roadmap Velocity</span>
-              <span className="text-[#0F766E] font-bold font-mono">{progressPct}% ({masteredCount}/{totalCount})</span>
+          <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-3 min-w-[200px]">
+            <div className="flex items-center justify-between text-xs font-medium mb-1.5">
+              <span className="text-zinc-600">Roadmap Progress</span>
+              <span className="text-zinc-900 font-mono font-bold">{progressPct}% ({masteredCount}/{totalCount})</span>
             </div>
-            <div className="h-2 w-full bg-[#E6E4DD] rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#EA580C] to-[#0F766E] rounded-full transition-all duration-500"
+                className="h-full bg-zinc-900 rounded-full transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
             <div className="text-[11px] text-zinc-500 mt-1 text-right">
-              Career Readiness: <span className="font-bold text-[#18181B]">{readiness}%</span>
+              Readiness: <span className="font-semibold text-zinc-900">{readiness}%</span>
             </div>
           </div>
 
@@ -117,17 +115,17 @@ export function RoadmapView({
           <div className="flex flex-col gap-1.5">
             <button
               onClick={onSimulateFailure}
-              className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              className="px-3 py-1.5 rounded-md bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap"
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-              <span>Simulate Assessment Failure (Splice Rescue Node)</span>
+              <AlertCircle size={13} strokeWidth={1.75} className="text-amber-700" />
+              <span>Simulate Failure (Splice Rescue Node)</span>
             </button>
 
             <button
               onClick={onResetScenario}
-              className="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              className="px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-zinc-500" />
+              <RotateCcw size={13} strokeWidth={1.75} className="text-zinc-500" />
               <span>Reset Default Roadmap</span>
             </button>
           </div>
@@ -135,27 +133,27 @@ export function RoadmapView({
       </div>
 
       {/* Main Interactive SVG Roadmap Canvas */}
-      <div className="bg-white border border-[#E6E4DD] rounded-3xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs">
+        <div className="flex items-center justify-between mb-3.5">
           <div className="flex items-center gap-2">
-            <Compass className="w-5 h-5 text-[#EA580C]" />
-            <h2 className="text-lg font-bold text-[#18181B]">Topological Dependency Canvas</h2>
+            <Compass size={16} strokeWidth={1.75} className="text-zinc-700" />
+            <h2 className="text-sm font-bold text-zinc-900">Topological Dependency Canvas</h2>
           </div>
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <span className="flex items-center gap-1 text-[#0F766E]">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Mastered
+          <div className="flex items-center gap-4 text-xs">
+            <span className="flex items-center gap-1 text-emerald-700 font-medium">
+              <CheckCircle2 size={13} strokeWidth={1.75} /> Mastered
             </span>
-            <span className="flex items-center gap-1 text-[#EA580C]">
-              <Zap className="w-3.5 h-3.5" /> Active / Unlocked
+            <span className="flex items-center gap-1 text-zinc-900 font-medium">
+              <GitBranch size={13} strokeWidth={1.75} /> Active / Unlocked
             </span>
             <span className="flex items-center gap-1 text-zinc-400">
-              <Lock className="w-3.5 h-3.5" /> Locked Prerequisite
+              <Lock size={13} strokeWidth={1.75} /> Locked Prerequisite
             </span>
           </div>
         </div>
 
         {/* SVG DAG Component Container */}
-        <div className="h-[460px] w-full rounded-2xl bg-[#FAF8F5] border border-[#E6E4DD] overflow-hidden flex items-center justify-center relative">
+        <div className="h-[440px] w-full rounded-lg bg-zinc-50 border border-zinc-200 overflow-hidden flex items-center justify-center relative">
           <SkillDAG
             nodes={nodes}
             edges={edges}
@@ -167,32 +165,33 @@ export function RoadmapView({
 
       {/* Selected Node Action Drawer */}
       {selectedNode && (
-        <div className="bg-white border-2 border-[#EA580C]/40 rounded-3xl p-6 sm:p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-white border border-zinc-300 rounded-xl p-5 sm:p-6 shadow-xs">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#EA580C] uppercase tracking-wider">
+                <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
                   Selected Node Inspector
                 </span>
                 {selectedNode.isRemedial && (
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                    🚑 Remedial Rescue Bridge
+                  <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-amber-200 bg-amber-50 text-amber-900 flex items-center gap-1">
+                    <AlertCircle size={12} strokeWidth={1.75} />
+                    <span>Remedial Module: Async Execution</span>
                   </span>
                 )}
                 <span
-                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                  className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded border ${
                     selectedNode.status === 'mastered'
-                      ? 'bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]'
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                       : selectedNode.status === 'active'
-                      ? 'bg-orange-50 text-orange-700 border border-orange-200'
-                      : 'bg-zinc-100 text-zinc-500 border border-zinc-200'
+                      ? 'border-zinc-300 bg-zinc-100 text-zinc-800'
+                      : 'border-zinc-200 bg-zinc-50 text-zinc-400'
                   }`}
                 >
-                  Status: {selectedNode.status.toUpperCase()}
+                  STATUS: {selectedNode.status.toUpperCase()}
                 </span>
               </div>
-              <h3 className="text-2xl font-bold text-[#18181B]">{selectedNode.label}</h3>
-              <p className="text-sm text-zinc-600 max-w-2xl">
+              <h3 className="text-xl font-bold text-zinc-900">{selectedNode.label}</h3>
+              <p className="text-xs text-zinc-600 max-w-2xl leading-relaxed">
                 {nodeContent?.brainDiff.explanation ||
                   'Transfer-learning milestone curated by PolyglotCurator-03 based on your existing skill inventory.'}
               </p>
@@ -203,15 +202,14 @@ export function RoadmapView({
               <button
                 onClick={() => onLaunchStudio(selectedNode)}
                 disabled={selectedNode.status === 'locked'}
-                className="w-full md:w-auto px-6 py-3 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] disabled:opacity-50 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-md shadow-[#EA580C]/20 transition-all"
+                className="w-full md:w-auto px-4 py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center justify-center gap-2 transition-colors shadow-xs"
               >
-                <Sparkles className="w-4 h-4" />
                 <span>
                   {selectedNode.status === 'locked'
                     ? 'Prerequisites Required to Unlock'
                     : 'Launch Interactive Learning Studio & AI Assessment'}
                 </span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight size={14} strokeWidth={1.75} />
               </button>
             </div>
           </div>
