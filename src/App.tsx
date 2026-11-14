@@ -33,6 +33,7 @@ import {
   ChevronRight,
   ShieldCheck,
   Terminal,
+  ArrowLeft,
   User,
   Compass,
   Code2,
@@ -55,6 +56,7 @@ function makeLog(partial: Omit<AgentLog, 'id' | 'timestamp'>): AgentLog {
 
 export default function App() {
   // Session / Authentication state
+  const [showPitchGateway, setShowPitchGateway] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
     if (typeof window === 'undefined') return null;
     const saved = localStorage.getItem('skillmorph_current_user');
@@ -188,10 +190,68 @@ export default function App() {
     if (targetCareer) {
       setCustomTargetRole(targetCareer);
     }
+    setShowPitchGateway(false);
     addLog({
       agent: 'Profiler-01',
       agentId: 1,
       message: `User authenticated: ${user.name} (${user.type.toUpperCase()}). Session initialized.`,
+      type: 'info',
+    });
+  }
+
+  function handleLaunchStudent() {
+    const studentUser: UserProfile = {
+      id: 'user-student-aarav',
+      type: 'student',
+      name: 'Aarav Sharma',
+      email: 'aarav.sharma@iitb.ac.in',
+      institution: 'IIT Bombay',
+      roleTitle: 'Final Year CS',
+      githubUsername: 'aarav-sharma-dev',
+      bio: 'Backend & Data enthusiast transitioning into high-scale modern Full Stack & Distributed Systems.',
+      certifications: ['AWS Certified Cloud Practitioner', 'Meta Front-End Specialization'],
+      pastProjects: [
+        'Built Flask & PostgreSQL Inventory Microservice with JWT Auth',
+        'Python High-Throughput Scraper with Redis Caching',
+      ],
+    };
+    setCurrentUser(studentUser);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('skillmorph_current_user', JSON.stringify(studentUser));
+    }
+    setSkills(DEFAULT_SKILLS);
+    setCustomTargetRole('Full Stack Developer');
+    setActiveStudentTab('profile');
+    setShowPitchGateway(false);
+    addLog({
+      agent: 'Profiler-01',
+      agentId: 1,
+      message: 'Executive Launchpad: Student Profile initialized for Aarav Sharma (Full Stack Target).',
+      type: 'info',
+    });
+  }
+
+  function handleLaunchInstitution() {
+    const deanUser: UserProfile = {
+      id: 'user-dean-vikram',
+      type: 'institution',
+      name: 'Dr. Vikram Nair',
+      email: 'vikram.nair@iitb.ac.in',
+      institution: 'IIT Bombay — Career Services',
+      roleTitle: 'Head of Placement Cell & Talent Analytics',
+      bio: 'Leading placement readiness and curriculum alignment across 1,240 senior engineering students.',
+      certifications: ['NAAC Accreditation Board Lead', 'IEEE Senior Member'],
+      pastProjects: ['Institutional AI Career Gap & Placement Readiness Deployment 2026'],
+    };
+    setCurrentUser(deanUser);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('skillmorph_current_user', JSON.stringify(deanUser));
+    }
+    setShowPitchGateway(false);
+    addLog({
+      agent: 'Profiler-01',
+      agentId: 1,
+      message: 'Executive Launchpad: University & Enterprise Talent Cloud initialized for Dr. Vikram Nair.',
       type: 'info',
     });
   }
@@ -201,6 +261,7 @@ export default function App() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('skillmorph_current_user');
     }
+    setShowPitchGateway(true);
   }
 
   function handleGroqKeyChange(key: string) {
@@ -319,9 +380,15 @@ export default function App() {
         .toUpperCase()
     : 'AS';
 
-  // 1. IF NO USER IS LOGGED IN -> RENDER AUTH GATEWAY
-  if (!currentUser) {
-    return <AuthGateway onLogin={handleLogin} />;
+  // 1. IF SHOWING PITCH GATEWAY OR NO USER IS LOGGED IN -> RENDER INTERACTIVE EXECUTIVE PITCH & LAUNCHPAD
+  if (showPitchGateway || !currentUser) {
+    return (
+      <AuthGateway
+        onLogin={handleLogin}
+        onLaunchStudent={handleLaunchStudent}
+        onLaunchInstitution={handleLaunchInstitution}
+      />
+    );
   }
 
   // 2. IF LOGGED IN AS INSTITUTION -> RENDER INSTITUTION PORTAL
@@ -350,6 +417,14 @@ export default function App() {
 
             {/* Quick Actions */}
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowPitchGateway(true)}
+                className="px-3 py-1.5 rounded-md bg-white hover:bg-zinc-50 border border-zinc-300 text-xs font-medium text-zinc-800 flex items-center gap-1.5 transition-colors shadow-2xs"
+              >
+                <ArrowLeft size={14} strokeWidth={1.75} />
+                <span>Executive Overview</span>
+              </button>
+
               <button
                 onClick={() => {
                   setCurrentUser({
@@ -452,6 +527,7 @@ export default function App() {
         onOpenGroqKeyModal={() => setIsGroqKeyOpen(true)}
         onOpenPassport={() => setIsPassportOpen(true)}
         onLogout={handleLogout}
+        onOpenPitchGateway={() => setShowPitchGateway(true)}
       />
 
       {/* Main Full-Width Content Container */}
@@ -459,7 +535,7 @@ export default function App() {
         {/* Mobile Top Header (< md) */}
         <header className="flex md:hidden h-12 bg-white border-b border-zinc-200 px-4 items-center justify-between flex-shrink-0 z-30">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-zinc-900 text-white flex items-center justify-center">
+            <div className="w-6 h-6 rounded-md bg-zinc-900 text-white flex items-center justify-center">
               <Terminal size={13} strokeWidth={1.75} />
             </div>
             <span className="font-semibold text-xs tracking-tight text-zinc-900">SkillMorph AI</span>
@@ -467,6 +543,14 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowPitchGateway(true)}
+              className="px-2 py-1 rounded border border-zinc-200 text-zinc-700 text-[11px] font-medium flex items-center gap-1 hover:bg-zinc-50"
+              title="Return to Executive Overview"
+            >
+              <ArrowLeft size={11} strokeWidth={1.75} />
+              <span>Overview</span>
+            </button>
             <button
               onClick={() => setIsGroqKeyOpen(true)}
               className="p-1 rounded border border-zinc-200 text-zinc-600"
@@ -494,6 +578,14 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowPitchGateway(true)}
+              className="px-2.5 py-1 rounded-md border border-zinc-200 hover:bg-zinc-50 text-xs font-medium text-zinc-700 flex items-center gap-1.5 transition-colors shadow-2xs"
+            >
+              <ArrowLeft size={13} strokeWidth={1.75} />
+              <span>Executive Overview</span>
+            </button>
+
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-[11px] font-medium text-zinc-700">
               <ShieldCheck size={13} strokeWidth={1.75} className="text-zinc-600" />
               <span>4-Agent Mesh Active</span>
@@ -567,6 +659,7 @@ export default function App() {
               logs={logs}
               groqKey={groqKey}
               onAgentLog={handleAgentLog}
+              nodes={nodes}
             />
           )}
         </main>

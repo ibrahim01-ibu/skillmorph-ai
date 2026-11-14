@@ -8,10 +8,25 @@ import {
   CheckCircle2,
   Activity,
 } from 'lucide-react';
-import type { Agent, AgentLog, ChatMessage, UserProfile, Skill } from '../types';
+import type {
+  Agent,
+  AgentLog,
+  ChatMessage,
+  UserProfile,
+  Skill,
+  DAGNode,
+  AgentTabType,
+  AgentDomainInfo,
+  StudentStateContext,
+} from '../types';
 import {
   askMentorGroq,
   runDiagnosticPipelineWithGroq,
+  classifyAgentIntent,
+  generateLiveStateGreeting,
+  sanitizeAiResponse,
+  isGreetingOrStatusQuery,
+  AGENT_REGISTRY,
   type DiagnosticPipelineResult,
 } from '../services/groq';
 import { CHAT_RESPONSES } from '../data/scenarios';
@@ -25,13 +40,83 @@ interface AgentWarRoomViewProps {
   logs: AgentLog[];
   groqKey: string;
   onAgentLog: (log: Omit<AgentLog, 'id' | 'timestamp'>) => void;
+  nodes?: DAGNode[];
 }
+
+const AGENT_TABS = [
+  { id: 'auto' as const, label: 'Auto-Router' },
+  { id: 'profiler' as const, label: 'Profiler-01 [Skills & Audit]' },
+  { id: 'gapArchitect' as const, label: 'GapArchitect-02 [Career Match & DAG]' },
+  { id: 'polyglotCurator' as const, label: 'PolyglotCurator-03 [Courses & Code Bridge]' },
+  { id: 'adaptiveMentor' as const, label: 'AdaptiveMentor-04 [Assessment & Coaching]' },
+];
 
 const PRESET_QUERIES = [
   'Explain async promises using Python asyncio as a direct analogy.',
   'What are the 3 highest ROI full-stack projects for my resume?',
   'How does React Virtual DOM differ from direct DOM manipulation in vanilla JS?',
 ];
+
+function renderMessageContent(content: string) {
+  if (!content) return null;
+
+  // Split content by triple-backtick code blocks: ```[lang]?\n?[code]```
+  const codeBlockRegex = /(```[\w-]*\r?\n[\s\S]*?```|```[\s\S]*?```)/g;
+  const parts = content.split(codeBlockRegex);
+
+  return (
+    <div className="space-y-1.5">
+      {parts.map((part, pIdx) => {
+        if (!part) return null;
+
+        // Check if part is a triple-backtick code block
+        if (part.startsWith('```') && part.endsWith('```') && part.length >= 6) {
+          const inner = part.slice(3, -3);
+          const firstLineBreak = inner.indexOf('\n');
+          let code = inner;
+          if (firstLineBreak !== -1) {
+            const potentialLang = inner.slice(0, firstLineBreak).trim();
+            if (/^[a-zA-Z0-9_#-]+$/.test(potentialLang)) {
+              code = inner.slice(firstLineBreak + 1);
+            }
+          }
+          code = code.replace(/\r?\n$/, '');
+
+          return (
+            <div
+              key={pIdx}
+              className="bg-zinc-900 text-zinc-100 font-mono text-xs p-3 rounded-lg my-2 overflow-x-auto"
+            >
+              <pre className="font-mono whitespace-pre text-xs leading-relaxed">
+                <code>{code}</code>
+              </pre>
+            </div>
+          );
+        }
+
+        // Regular text: split by **bold** tags
+        const boldRegex = /(\*\*[^*]+?\*\*)/g;
+        const textSegments = part.split(boldRegex);
+
+        return (
+          <span key={pIdx} className="whitespace-pre-wrap break-words leading-relaxed">
+            {textSegments.map((seg, sIdx) => {
+              if (seg.startsWith('**') && seg.endsWith('**') && seg.length >= 4) {
+                const boldText = seg.slice(2, -2);
+                return (
+                  <strong key={sIdx} className="font-semibold text-inherit">
+                    {boldText}
+                  </strong>
+                );
+              }
+              return seg;
+            })}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 export function AgentWarRoomView({
   user,
@@ -42,14 +127,18 @@ export function AgentWarRoomView({
   logs,
   groqKey,
   onAgentLog,
+  nodes,
 }: AgentWarRoomViewProps) {
   // Chat state
+  const [selectedTab, setSelectedTab] = useState<AgentTabType>('auto');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'msg-1',
       role: 'assistant',
       content: `Welcome to the SkillMorph Autonomous Mesh War Room, ${user.name}. I am AdaptiveMentor-04. I actively synthesize cross-language transfer analogies from your verified stack (${skills.map((s) => s.name).join(', ')}) to help you reach "${targetRoleTitle}". What would you like to explore?`,
       timestamp: '10:00 AM',
+      agentId: 4,
+      agentName: 'AdaptiveMentor-04',
     },
   ]);
   const [query, setQuery] = useState('');
@@ -70,6 +159,20 @@ export function AgentWarRoomView({
     const q = textToSend || query;
     if (!q.trim() || chatLoading) return;
 
+    // 1. Determine routed agent based on active tab or intent classifier
+    const routedAgent: AgentDomainInfo =
+      selectedTab === 'auto'
+        ? classifyAgentIntent(q)
+        : AGENT_REGISTRY[selectedTab];
+
+    // 2. Telemetry event logging: exact format required
+    onAgentLog({
+      agent: routedAgent.name,
+      agentId: routedAgent.id,
+      message: `Router dispatched query to ${routedAgent.name} [Domain: ${routedAgent.domain}]`,
+      type: 'info',
+    });
+
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
       role: 'user',
@@ -81,22 +184,33 @@ export function AgentWarRoomView({
     if (!textToSend) setQuery('');
     setChatLoading(true);
 
-    onAgentLog({
-      agent: 'AdaptiveMentor-04',
-      agentId: 4,
-      message: `Mentor query received: "${q.slice(0, 50)}...". Synthesizing personalized transfer guidance.`,
-      type: 'info',
-    });
+    // Active remediation detection
+    const hasRemediation =
+      (nodes && nodes.some((n) => n.isRemedial || n.status === 'remedial')) ||
+      readiness === 42 ||
+      (typeof window !== 'undefined' && localStorage.getItem('cohort_bridge_deployed') === 'true');
+    const remedialTopic =
+      nodes?.find((n) => n.isRemedial || n.status === 'remedial')?.label ||
+      'JavaScript ES6+';
+
+    const studentContext: StudentStateContext = {
+      learnerName: user.name,
+      targetRole: targetRoleTitle,
+      readiness,
+      currentSkills: skills.map((s) => s.name),
+      certifications: user.certifications,
+      pastProjects: user.pastProjects,
+      missingSkills: ['JavaScript ES6+', 'React UI Architecture', 'Node.js & Express APIs'],
+      hasRemediation,
+      remedialTopic,
+    };
 
     try {
-      const reply = await askMentorGroq(
+      const { response: reply, routedAgent: finalAgent } = await askMentorGroq(
         q,
-        {
-          currentSkills: skills.map((s) => s.name),
-          targetRole: targetRoleTitle,
-          readiness,
-        },
-        groqKey
+        studentContext,
+        groqKey,
+        selectedTab
       );
 
       const aiMsg: ChatMessage = {
@@ -104,18 +218,27 @@ export function AgentWarRoomView({
         role: 'assistant',
         content: reply,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        agentId: finalAgent.id,
+        agentName: finalAgent.name,
       };
       setMessages((prev) => [...prev, aiMsg]);
     } catch {
-      const fallbackReply =
-        CHAT_RESPONSES[q] ||
-        `Transfer-learning insight for ${targetRoleTitle}: Since you already know ${skills[0]?.name || 'Python'}, focus on mental-model bridges rather than syntax rote learning. In modern stacks, reactive state maps cleanly to declarative data pipelines.`;
+      let fallbackReply: string;
+      if (isGreetingOrStatusQuery(q)) {
+        fallbackReply = generateLiveStateGreeting(routedAgent, studentContext);
+      } else {
+        fallbackReply =
+          CHAT_RESPONSES[q] ||
+          `Transfer-learning insight for ${targetRoleTitle}: Since you already know ${skills[0]?.name || 'Python'}, focus on mental-model bridges rather than syntax rote learning. In modern stacks, reactive state maps cleanly to declarative data pipelines.`;
+      }
 
       const aiMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         role: 'assistant',
-        content: fallbackReply,
+        content: sanitizeAiResponse(fallbackReply),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        agentId: routedAgent.id,
+        agentName: routedAgent.name,
       };
       setMessages((prev) => [...prev, aiMsg]);
     } finally {
@@ -328,17 +451,46 @@ export function AgentWarRoomView({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
         {/* AI Mentor Chat Interface (3 Cols) */}
         <div className="lg:col-span-3 bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col h-[520px]">
-          <div className="flex items-center justify-between border-b border-zinc-200 pb-2.5 mb-3 flex-shrink-0">
+          {/* Header with Active Agent & Model */}
+          <div className="flex items-center justify-between border-b border-zinc-200 pb-2.5 mb-2 flex-shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center">
                 <Bot size={14} strokeWidth={1.75} />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-zinc-900">AI Mentor Coach (AdaptiveMentor-04)</h3>
-                <p className="text-[11px] text-zinc-500">Cross-language transfer specialist</p>
+                <h3 className="text-xs font-bold text-zinc-900">
+                  {selectedTab === 'auto'
+                    ? 'AI Mentor Mesh (Auto-Router)'
+                    : `${AGENT_REGISTRY[selectedTab].name} [${AGENT_REGISTRY[selectedTab].domain}]`}
+                </h3>
+                <p className="text-[11px] text-zinc-500">
+                  {selectedTab === 'auto'
+                    ? 'Autonomous intent classification & mesh dispatch'
+                    : AGENT_REGISTRY[selectedTab].tabLabel}
+                </p>
               </div>
             </div>
             <span className="text-[10px] font-mono text-zinc-400">gpt-oss-120b</span>
+          </div>
+
+          {/* 5 Agent Tabs */}
+          <div className="flex gap-1 overflow-x-auto pb-2 mb-2 border-b border-zinc-200 scrollbar-none flex-shrink-0">
+            {AGENT_TABS.map((tab) => {
+              const isActive = selectedTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedTab(tab.id)}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors whitespace-nowrap ${
+                    isActive
+                      ? 'bg-zinc-900 text-white shadow-xs'
+                      : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Messages Scroll Area */}
@@ -350,7 +502,7 @@ export function AgentWarRoomView({
               >
                 {msg.role === 'assistant' && (
                   <div className="w-6 h-6 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 flex items-center justify-center flex-shrink-0 font-mono text-[10px] font-semibold mt-0.5">
-                    04
+                    {msg.agentId ? `0${msg.agentId}` : '04'}
                   </div>
                 )}
                 <div
@@ -360,7 +512,7 @@ export function AgentWarRoomView({
                       : 'bg-zinc-50 text-zinc-800 border border-zinc-200'
                   }`}
                 >
-                  <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                  <div>{renderMessageContent(msg.content)}</div>
                   <div
                     className={`text-[9px] mt-1 text-right ${
                       msg.role === 'user' ? 'text-zinc-400' : 'text-zinc-400'
@@ -374,7 +526,11 @@ export function AgentWarRoomView({
             {chatLoading && (
               <div className="flex gap-2 items-center text-xs text-zinc-500 p-2">
                 <Loader2 size={13} className="animate-spin text-zinc-700" />
-                <span>AdaptiveMentor-04 synthesizing polyglot guidance...</span>
+                <span>
+                  {selectedTab === 'auto'
+                    ? 'Router dispatching & synthesizing guidance...'
+                    : `${AGENT_REGISTRY[selectedTab].name} synthesizing guidance...`}
+                </span>
               </div>
             )}
             <div ref={chatBottomRef} />

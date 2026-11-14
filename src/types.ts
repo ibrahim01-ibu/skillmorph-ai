@@ -123,11 +123,37 @@ export interface CohortStudent {
   aiIntervention: string;
 }
 
+export type AgentId = 1 | 2 | 3 | 4;
+export type AgentKey = 'profiler' | 'gapArchitect' | 'polyglotCurator' | 'adaptiveMentor';
+export type AgentTabType = 'auto' | AgentKey;
+
+export interface AgentDomainInfo {
+  key: AgentKey;
+  id: AgentId;
+  name: 'Profiler-01' | 'GapArchitect-02' | 'PolyglotCurator-03' | 'AdaptiveMentor-04';
+  tabLabel: string;
+  domain: string;
+}
+
+export interface StudentStateContext {
+  learnerName: string;
+  targetRole: string;
+  readiness: number;
+  currentSkills: string[];
+  certifications?: string[];
+  pastProjects?: string[];
+  missingSkills?: string[];
+  hasRemediation?: boolean;
+  remedialTopic?: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
+  agentId?: AgentId;
+  agentName?: string;
 }
 
 export interface ScenarioConfig {

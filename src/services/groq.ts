@@ -1,5 +1,14 @@
 // src/services/groq.ts — Groq API Client & Live Custom Career Generator
-import type { DAGNode, DAGEdge, RadarData, BrainDiff } from '../types';
+import type {
+  DAGNode,
+  DAGEdge,
+  RadarData,
+  BrainDiff,
+  AgentDomainInfo,
+  AgentKey,
+  AgentTabType,
+  StudentStateContext,
+} from '../types';
 
 // Obfuscated Base64 chunked fallback to guarantee secret scanning safety
 const _KEY_SEGMENTS = [
@@ -96,31 +105,390 @@ async function callGroqChat(
   throw lastError || new Error('All Groq models failed');
 }
 
+export const AGENT_REGISTRY: Record<AgentKey, AgentDomainInfo> = {
+  profiler: {
+    key: 'profiler',
+    id: 1,
+    name: 'Profiler-01',
+    tabLabel: 'Profiler-01 [Skills & Audit]',
+    domain: 'Skills & Audit',
+  },
+  gapArchitect: {
+    key: 'gapArchitect',
+    id: 2,
+    name: 'GapArchitect-02',
+    tabLabel: 'GapArchitect-02 [Career Match & DAG]',
+    domain: 'Career Matching',
+  },
+  polyglotCurator: {
+    key: 'polyglotCurator',
+    id: 3,
+    name: 'PolyglotCurator-03',
+    tabLabel: 'PolyglotCurator-03 [Courses & Code Bridge]',
+    domain: 'Courses & Code Bridge',
+  },
+  adaptiveMentor: {
+    key: 'adaptiveMentor',
+    id: 4,
+    name: 'AdaptiveMentor-04',
+    tabLabel: 'AdaptiveMentor-04 [Assessment & Coaching]',
+    domain: 'Assessment & Coaching',
+  },
+};
+
+export function isGreetingOrStatusQuery(text: string): boolean {
+  if (!text) return false;
+  const trimmed = text.trim().toLowerCase();
+  const clean = trimmed.replace(/[!?,.]+$/g, '').trim();
+
+  const directGreetings = [
+    'hi',
+    'hello',
+    'hey',
+    'greetings',
+    'howdy',
+    'yo',
+    'sup',
+    'good morning',
+    'good afternoon',
+    'good evening',
+  ];
+  if (directGreetings.includes(clean)) return true;
+
+  if (/^(hi|hello|hey|yo|howdy)\b/i.test(clean) && clean.split(/\s+/).length <= 4) {
+    return true;
+  }
+
+  const statusPhrases = [
+    'status',
+    'my status',
+    'current status',
+    'how am i doing',
+    'how is my progress',
+    "how's my progress",
+    'what is my status',
+    "what's my status",
+    'where do i stand',
+    'show my status',
+  ];
+  if (statusPhrases.includes(clean)) return true;
+  if (/^(what('?s| is) my (current )?status|how('?s| is) my progress)/i.test(clean)) {
+    return true;
+  }
+
+  return false;
+}
+
+export function classifyAgentIntent(query: string): AgentDomainInfo {
+  if (!query) return AGENT_REGISTRY.adaptiveMentor;
+  const q = query.toLowerCase();
+
+  // If greeting or status inquiry, route to AdaptiveMentor-04 for live-state guidance
+  if (isGreetingOrStatusQuery(q)) {
+    return AGENT_REGISTRY.adaptiveMentor;
+  }
+
+  let profilerScore = 0;
+  let gapScore = 0;
+  let polyglotScore = 0;
+  let adaptiveScore = 0;
+
+  // Profiler-01: existing skills, GitHub repo, git, commit, AST, audit, verified strengths vs weaknesses, certifications, past projects
+  const profilerKeywords = [
+    'github',
+    'repo',
+    'repository',
+    'git',
+    'commit',
+    'ast',
+    'audit',
+    'verified',
+    'strength',
+    'strengths',
+    'weakness',
+    'weaknesses',
+    'certification',
+    'certifications',
+    'project',
+    'projects',
+    'passport',
+    'resume',
+    'profile',
+    'existing skill',
+    'existing skills',
+    'python stack',
+  ];
+  for (const w of profilerKeywords) {
+    if (q.includes(w)) profilerScore += 2;
+  }
+
+  // GapArchitect-02: career matching, target role requirements, missing skill dependencies, DAG, readiness percentages, roadmap, ROI
+  const gapKeywords = [
+    'career',
+    'target role',
+    'requirements',
+    'delta',
+    'dag',
+    'gap',
+    'gaps',
+    'missing',
+    'missing skill',
+    'dependency',
+    'dependencies',
+    'readiness',
+    'percentage',
+    'percent',
+    'roadmap',
+    'roi',
+    'path',
+    'market',
+    'job',
+    'full stack',
+    'career match',
+  ];
+  for (const w of gapKeywords) {
+    if (q.includes(w)) gapScore += 2;
+  }
+
+  // PolyglotCurator-03: technical concepts, course/tutorial recommendations, practical exercises, Python-to-JS/React/Node code comparisons, syntax, brain diff
+  const polyglotKeywords = [
+    'explain',
+    'how does',
+    'concept',
+    'concepts',
+    'analogy',
+    'analogies',
+    'brain diff',
+    'bridge',
+    'transfer',
+    'syntax',
+    'difference',
+    'compare',
+    'comparison',
+    'python to',
+    'react',
+    'promise',
+    'promises',
+    'asyncio',
+    'event loop',
+    'closure',
+    'closures',
+    'middleware',
+    'tutorial',
+    'tutorials',
+    'course',
+    'courses',
+    'exercise',
+    'exercises',
+    'code block',
+    'virtual dom',
+  ];
+  for (const w of polyglotKeywords) {
+    if (q.includes(w)) polyglotScore += 2;
+  }
+
+  // AdaptiveMentor-04: assessment performance, debugging mistakes, remedial path adjustments, interview prep, quiz, exam, test, sprint
+  const adaptiveKeywords = [
+    'assessment',
+    'eval',
+    'evaluation',
+    'grade',
+    'score',
+    'failed',
+    'failure',
+    'mistake',
+    'mistakes',
+    'debug',
+    'debugging',
+    'bug',
+    'error',
+    'remedial',
+    'remediation',
+    'interview',
+    'prep',
+    'preparation',
+    'mock',
+    'socratic',
+    'hint',
+    'coaching',
+  ];
+  for (const w of adaptiveKeywords) {
+    if (q.includes(w)) adaptiveScore += 2;
+  }
+
+  const maxScore = Math.max(profilerScore, gapScore, polyglotScore, adaptiveScore);
+  if (maxScore === 0) {
+    return AGENT_REGISTRY.adaptiveMentor;
+  }
+  if (maxScore === profilerScore) return AGENT_REGISTRY.profiler;
+  if (maxScore === gapScore) return AGENT_REGISTRY.gapArchitect;
+  if (maxScore === polyglotScore) return AGENT_REGISTRY.polyglotCurator;
+  return AGENT_REGISTRY.adaptiveMentor;
+}
+
+export function generateLiveStateGreeting(
+  _agent: AgentDomainInfo,
+  ctx: StudentStateContext
+): string {
+  const firstName = ctx.learnerName?.split(' ')[0] || ctx.learnerName || 'Learner';
+  const remediationClause = ctx.hasRemediation
+    ? ` with an active remediation flag on ${ctx.remedialTopic || 'JavaScript ES6+'}`
+    : '';
+  return `Hello ${firstName}, your ${ctx.targetRole} readiness is currently at ${ctx.readiness}%${remediationClause}. Would you like Profiler-01 to audit your skills, GapArchitect-02 to review your career delta, or PolyglotCurator-03 to walk through a code concept?`;
+}
+
+export function sanitizeAiResponse(text: string): string {
+  if (!text) return '';
+  return text
+    // Strip Unicode extended pictographic characters and emojis
+    .replace(/\p{Extended_Pictographic}/gu, '')
+    .replace(/[\u{1F1E6}-\u{1FAFF}]/gu, '')
+    .replace(/[\u2600-\u27BF]/g, '')
+    .replace(/[\uFE00-\uFE0F]/g, '')
+    .replace(/\u200D/g, '')
+    .replace(/\u20E3/g, '')
+    .trim();
+}
+
+export function buildAgentSystemPrompt(
+  agent: AgentDomainInfo,
+  ctx: StudentStateContext
+): string {
+  const domainBoundaries: Record<AgentKey, string> = {
+    profiler:
+      "You are Profiler-01 [Domain: Skills & Audit]. You strictly answer questions about the learner's existing skills, GitHub repo analysis, projects, certifications, and verified strengths vs. weaknesses. If the question involves career matching or topological DAGs, redirect to GapArchitect-02. If it involves code comparison tutorials, redirect to PolyglotCurator-03. If it involves assessment debugging, redirect to AdaptiveMentor-04.",
+    gapArchitect:
+      'You are GapArchitect-02 [Domain: Career Matching]. You strictly answer questions about career matching, target role requirements, missing skill dependencies, topological DAG dependencies, and readiness percentages. If the question involves skill audits or repo scans, redirect to Profiler-01. If it involves code syntax tutorials, redirect to PolyglotCurator-03. If it involves assessment scoring, redirect to AdaptiveMentor-04.',
+    polyglotCurator:
+      'You are PolyglotCurator-03 [Domain: Courses & Code Bridge]. You strictly answer technical concept questions, course/tutorial recommendations, practical coding exercises, and Python-to-JS/React/Node cross-language mental bridges and comparisons. If the question involves resume audits, redirect to Profiler-01. If it involves career readiness percentages, redirect to GapArchitect-02. If it involves assessment debugging, redirect to AdaptiveMentor-04.',
+    adaptiveMentor:
+      'You are AdaptiveMentor-04 [Domain: Assessment & Coaching]. You strictly answer questions about assessment performance, debugging mistakes, remedial path adjustments, sprint coaching, and interview preparation. If the question involves repo scans, redirect to Profiler-01. If it involves career roadmaps, redirect to GapArchitect-02.',
+  };
+
+  const remediationText = ctx.hasRemediation
+    ? `Active remediation flag on ${ctx.remedialTopic || 'JavaScript ES6+'}`
+    : 'None';
+
+  return `${domainBoundaries[agent.key]}
+
+LIVE LEARNER CONTEXT:
+- Learner Name: ${ctx.learnerName || 'Aarav Sharma'}
+- Target Role: "${ctx.targetRole}"
+- Current Readiness: ${ctx.readiness}%
+- Verified Skills: [${(ctx.currentSkills || []).join(', ')}]
+${ctx.certifications?.length ? `- Certifications: [${ctx.certifications.join(', ')}]` : ''}
+${ctx.pastProjects?.length ? `- Past Projects: [${ctx.pastProjects.join(', ')}]` : ''}
+${ctx.missingSkills?.length ? `- Missing Skill Gaps: [${ctx.missingSkills.join(', ')}]` : ''}
+- Active Remediation Status: ${remediationText}
+
+STRICT NEGATIVE CONSTRAINTS:
+1. Answer ONLY what the user actually asked, being direct, technical, and conversational.
+2. NEVER use Unicode emojis under any circumstances (no \uD83D\uDC4B, \u0031\uFE0F\u20E3, \uD83E\uDD16, \uD83D\uDE80, \uD83D\uDCA1, \uD83C\uDFDB, or any other emojis). Use only clean plain text and standard markdown.
+3. GREETINGS & SHORT CONVERSATIONAL INPUTS:
+   If the user sends a greeting (e.g. "hi", "hello", "hey") or a simple status inquiry (e.g. "what is my status", "how am i doing"):
+   You MUST NEVER dump a code tutorial, code blocks, or lengthy essay.
+   You MUST reply naturally in exactly 2 crisp sentences referencing their real live state (name, target role, current readiness %, and active remediation flag if present) and asking which specific domain agent they wish to consult.
+4. Keep answers concise, authoritative, and strictly within your assigned domain boundary.`;
+}
+
+function getDomainFallbackReply(
+  _query: string,
+  agent: AgentDomainInfo,
+  ctx: StudentStateContext
+): string {
+  const firstName = ctx.learnerName?.split(' ')[0] || ctx.learnerName || 'Learner';
+  switch (agent.key) {
+    case 'profiler':
+      return `Profiler-01 audit for ${firstName}: Verified proficiency across ${ctx.currentSkills.join(', ')}. Scanned projects include ${ctx.pastProjects?.slice(0, 2).join(' and ') || 'inventory microservices'}. Verified strengths show robust algorithmic logic, with readiness to expand into client-side ECMAScript architectures.`;
+    case 'gapArchitect':
+      return `GapArchitect-02 trajectory for ${firstName}: Your path to "${ctx.targetRole}" is currently at ${ctx.readiness}% topological readiness. Critical missing skill dependencies identified: ${(ctx.missingSkills || ['JavaScript ES6+', 'React', 'Node.js']).join(', ')}. Completing the active module will unlock downstream reactive state nodes.`;
+    case 'polyglotCurator':
+      return `PolyglotCurator-03 code bridge: To understand modern asynchronous patterns, leverage your existing ${ctx.currentSkills[0] || 'Python'} background. While Python uses asyncio event loops and coroutines, JavaScript achieves concurrency using Promises and microtask queues on the V8 engine loop.`;
+    case 'adaptiveMentor':
+    default:
+      return `AdaptiveMentor-04 guidance: You are actively working towards "${ctx.targetRole}" with ${ctx.readiness}% baseline readiness${ctx.hasRemediation ? ` and active remediation on ${ctx.remedialTopic || 'JavaScript ES6+'}` : ''}. Focus on resolving async control-flow concepts before advancing to full-stack API integration.`;
+  }
+}
+
 export async function askMentorGroq(
   query: string,
-  context: { currentSkills: string[]; targetRole: string; readiness: number },
+  context: StudentStateContext | { currentSkills: string[]; targetRole: string; readiness: number },
+  apiKey: string,
+  selectedTab: AgentTabType
+): Promise<{ response: string; routedAgent: AgentDomainInfo }>;
+export async function askMentorGroq(
+  query: string,
+  context: StudentStateContext | { currentSkills: string[]; targetRole: string; readiness: number },
   apiKey: string
-): Promise<string> {
-  const systemPrompt = `You are the lead AI Mentor of the SkillMorph AI 4-Agent Autonomous Mesh.
-Learner Context:
-- Target Role: "${context.targetRole}"
-- Current Skills: [${context.currentSkills.join(', ')}]
-- Readiness Meter: ${context.readiness}%
+): Promise<string>;
+export async function askMentorGroq(
+  query: string,
+  context: StudentStateContext | { currentSkills: string[]; targetRole: string; readiness: number },
+  apiKey: string,
+  selectedTab?: AgentTabType
+): Promise<string | { response: string; routedAgent: AgentDomainInfo }> {
+  // Normalize context
+  const fullContext: StudentStateContext = {
+    learnerName: 'learnerName' in context && context.learnerName ? context.learnerName : 'Aarav Sharma',
+    targetRole: context.targetRole,
+    readiness: context.readiness,
+    currentSkills: context.currentSkills,
+    certifications: 'certifications' in context ? context.certifications : undefined,
+    pastProjects: 'pastProjects' in context ? context.pastProjects : undefined,
+    missingSkills:
+      'missingSkills' in context && context.missingSkills
+        ? context.missingSkills
+        : ['JavaScript ES6+', 'React UI Architecture', 'Node.js & Express APIs'],
+    hasRemediation:
+      'hasRemediation' in context && context.hasRemediation !== undefined
+        ? context.hasRemediation
+        : context.readiness === 42,
+    remedialTopic:
+      'remedialTopic' in context && context.remedialTopic ? context.remedialTopic : 'JavaScript ES6+',
+  };
 
-Rules:
-1. Be ultra-concise, technical, and motivating.
-2. ALWAYS use cross-language transfer learning / "Brain Diff" analogies (e.g. explain React, JS, Go, Rust, or Cloud via the learner's existing skills like Python or SQL).
-3. Provide crisp code snippets when appropriate.
-4. Keep response under 300 words.`;
+  const routedAgent =
+    !selectedTab || selectedTab === 'auto'
+      ? classifyAgentIntent(query)
+      : AGENT_REGISTRY[selectedTab];
 
-  return await callGroqChat(
-    [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: query },
-    ],
-    apiKey,
-    false
-  );
+  // If greeting or status inquiry, enforce deterministic live-state 2-sentence response
+  if (isGreetingOrStatusQuery(query)) {
+    const greetingResponse = generateLiveStateGreeting(routedAgent, fullContext);
+    const sanitized = sanitizeAiResponse(greetingResponse);
+    if (selectedTab !== undefined) {
+      return { response: sanitized, routedAgent };
+    }
+    return sanitized;
+  }
+
+  const systemPrompt = buildAgentSystemPrompt(routedAgent, fullContext);
+
+  let raw = '';
+  if (apiKey && apiKey.trim().length > 0) {
+    try {
+      raw = await callGroqChat(
+        [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: query },
+        ],
+        apiKey,
+        false
+      );
+    } catch (err) {
+      console.warn('Groq mentor query fallback:', err);
+      raw = getDomainFallbackReply(query, routedAgent, fullContext);
+    }
+  } else {
+    raw = getDomainFallbackReply(query, routedAgent, fullContext);
+  }
+
+  const cleanReply = sanitizeAiResponse(raw);
+
+  if (selectedTab !== undefined) {
+    return { response: cleanReply, routedAgent };
+  }
+  return cleanReply;
 }
 
 export async function regenerateExplanationWithGroq(

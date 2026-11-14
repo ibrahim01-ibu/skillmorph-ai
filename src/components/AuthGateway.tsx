@@ -1,4 +1,4 @@
-// src/components/AuthGateway.tsx — Student & Institution Authentication & Onboarding Portal
+// src/components/AuthGateway.tsx — Interactive Executive Pitch & Dual-Portal Launchpad
 import { useState } from 'react';
 import {
   GraduationCap,
@@ -6,39 +6,47 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
-  Code2,
+  Terminal,
+  Cpu,
+  GitBranch,
+  Award,
+  Layers,
+  ChevronDown,
+  ChevronUp,
   Lock,
-  User,
   Plus,
   Trash2,
-  Terminal,
 } from 'lucide-react';
 import type { UserProfile, Skill, SkillLevel } from '../types';
 
 interface AuthGatewayProps {
   onLogin: (user: UserProfile, initialSkills?: Skill[], targetCareer?: string) => void;
+  onLaunchStudent: () => void;
+  onLaunchInstitution: () => void;
 }
 
-export function AuthGateway({ onLogin }: AuthGatewayProps) {
+export function AuthGateway({
+  onLogin,
+  onLaunchStudent,
+  onLaunchInstitution,
+}: AuthGatewayProps) {
+  const [showAdvancedAuth, setShowAdvancedAuth] = useState(false);
   const [activeTab, setActiveTab] = useState<'student' | 'institution'>('student');
-  const [isSignUp, setIsSignUp] = useState(false);
 
-  // Student Form State
+  // Custom Student Form State
   const [studentName, setStudentName] = useState('Aarav Sharma');
   const [studentEmail, setStudentEmail] = useState('aarav.sharma@iitb.ac.in');
   const [studentUniversity, setStudentUniversity] = useState('Indian Institute of Technology Bombay');
-  const [studentRoleTitle, setStudentRoleTitle] = useState('Final Year B.Tech Computer Science');
+  const [studentRoleTitle] = useState('Final Year B.Tech Computer Science');
   const [studentTargetRole, setStudentTargetRole] = useState('Full Stack Developer');
-  const [studentProjects, setStudentProjects] = useState<string[]>([
+  const [studentProjects] = useState<string[]>([
     'Student Database CRUD CLI (Python + SQLite)',
     'Static Portfolio Page (HTML)',
   ]);
-  const [newProject, setNewProject] = useState('');
-  const [studentCerts, setStudentCerts] = useState<string[]>([
+  const [studentCerts] = useState<string[]>([
     'Python for Data & Backend (NPTEL / Coursera)',
     'Relational SQL Foundations',
   ]);
-  const [newCert, setNewCert] = useState('');
   const [studentSkills, setStudentSkills] = useState<Skill[]>([
     { id: 'sk-1', name: 'Python', level: 'Advanced', category: 'Backend' },
     { id: 'sk-2', name: 'SQL & Relational DBs', level: 'Intermediate', category: 'Data' },
@@ -47,55 +55,11 @@ export function AuthGateway({ onLogin }: AuthGatewayProps) {
   const [newSkillName, setNewSkillName] = useState('');
   const [newSkillLevel, setNewSkillLevel] = useState<SkillLevel>('Intermediate');
 
-  // Institution Form State
+  // Custom Institution Form State
   const [instName, setInstName] = useState('Dr. Vikram Nair');
   const [instEmail, setInstEmail] = useState('vikram.nair@iitb.ac.in');
   const [instOrg, setInstOrg] = useState('IIT Bombay — Office of Career Services & Talent Analytics');
   const [instRoleTitle, setInstRoleTitle] = useState('Dean of Placements & Industry Partnerships');
-
-  // Quick 1-Click Demo Logins
-  function handleDemoStudentLogin() {
-    onLogin(
-      {
-        id: 'user-student-aarav',
-        type: 'student',
-        name: 'Aarav Sharma',
-        email: 'aarav.sharma@iitb.ac.in',
-        institution: 'IIT Bombay',
-        roleTitle: 'Final Year CS',
-        githubUsername: 'aarav-sharma-dev',
-        bio: 'Backend & Data enthusiast transitioning into high-scale modern Full Stack & Distributed Systems.',
-        certifications: [
-          'Python for Data & Backend (NPTEL / Coursera)',
-          'Relational SQL Foundations',
-        ],
-        pastProjects: [
-          'Student Database CRUD CLI (Python + SQLite)',
-          'Static Portfolio Page (HTML)',
-        ],
-      },
-      [
-        { id: 'skill-python', name: 'Python', level: 'Advanced', category: 'Backend' },
-        { id: 'skill-sql', name: 'SQL', level: 'Intermediate', category: 'Data' },
-        { id: 'skill-html', name: 'Basic HTML', level: 'Foundation', category: 'Frontend' },
-      ],
-      'Full Stack Developer'
-    );
-  }
-
-  function handleDemoInstitutionLogin() {
-    onLogin({
-      id: 'user-dean-vikram',
-      type: 'institution',
-      name: 'Dr. Vikram Nair',
-      email: 'vikram.nair@iitb.ac.in',
-      institution: 'IIT Bombay — Career Services',
-      roleTitle: 'Head of Placement Cell & Talent Analytics',
-      bio: 'Leading placement readiness and curriculum alignment across 1,240 senior engineering students.',
-      certifications: ['NAAC Accreditation Board Lead', 'IEEE Senior Member'],
-      pastProjects: ['Institutional AI Career Gap & Placement Readiness Deployment 2026'],
-    });
-  }
 
   function handleStudentSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -150,476 +114,604 @@ export function AuthGateway({ onLogin }: AuthGatewayProps) {
     setStudentSkills((prev) => prev.filter((s) => s.id !== id));
   }
 
-  function addProject() {
-    if (!newProject.trim()) return;
-    setStudentProjects((prev) => [...prev, newProject.trim()]);
-    setNewProject('');
-  }
-
-  function addCert() {
-    if (!newCert.trim()) return;
-    setStudentCerts((prev) => [...prev, newCert.trim()]);
-    setNewCert('');
-  }
-
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-zinc-900 flex flex-col justify-between p-4 sm:p-8">
-      {/* Top Brand Bar */}
-      <div className="max-w-4xl w-full mx-auto flex items-center justify-between pb-4 border-b border-zinc-200">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center font-bold">
-            <Terminal size={15} strokeWidth={1.75} />
-          </div>
-          <div>
+    <div className="min-h-screen bg-[#FAFAFA] text-zinc-900 font-sans antialiased flex flex-col justify-between selection:bg-zinc-200">
+      {/* SECTION 1: MINIMALIST TOP NAV BAR */}
+      <header className="sticky top-0 z-50 bg-[#FAFAFA]/90 backdrop-blur-md border-b border-zinc-200/80 px-4 sm:px-8 py-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center font-bold shadow-xs">
+              <Terminal size={15} strokeWidth={1.75} />
+            </div>
             <div className="flex items-center gap-2">
               <span className="text-base font-semibold tracking-tight text-zinc-900">SkillMorph AI</span>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
-                Enterprise Autopilot
+              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded border border-zinc-200 bg-white text-zinc-600 shadow-2xs">
+                PromptWars X RTC — Production Release
               </span>
             </div>
-            <p className="text-xs text-zinc-500">Autonomous 4-Agent Career & Placement Mesh</p>
           </div>
-        </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-xs text-zinc-600 bg-white border border-zinc-200 px-3 py-1 rounded-md shadow-xs">
-          <ShieldCheck size={14} strokeWidth={1.75} className="text-emerald-600" />
-          <span>W3C Verifiable Proof-of-Skill & Groq LPU Powered</span>
-        </div>
-      </div>
-
-      {/* Main Container */}
-      <div className="max-w-4xl w-full mx-auto my-6">
-        {/* Judge 1-Click Fastlane Buttons */}
-        <div className="bg-white border border-zinc-300 rounded-xl p-4 sm:p-5 mb-6 shadow-xs">
-          <div className="flex items-center gap-2 text-xs font-semibold text-zinc-700 uppercase tracking-wider mb-2.5">
-            <Terminal size={14} strokeWidth={1.75} className="text-zinc-900" />
-            <span>Judge Sandbox — Instant 1-Click Evaluation Gateways</span>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             <button
-              onClick={handleDemoStudentLogin}
-              className="group flex items-center justify-between p-3.5 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-left transition-colors"
+              onClick={onLaunchStudent}
+              className="px-3.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs"
             >
-              <div>
-                <div className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
-                  <GraduationCap size={16} strokeWidth={1.75} className="text-zinc-700" />
-                  <span>Student Demo: Aarav Sharma</span>
-                </div>
-                <div className="text-xs text-zinc-500 mt-0.5">
-                  Python + SQL + HTML to Full Stack Dev (4-Node Gap)
-                </div>
-              </div>
-              <ArrowRight size={15} strokeWidth={1.75} className="text-zinc-400 group-hover:text-zinc-900 group-hover:translate-x-0.5 transition-transform" />
+              <GraduationCap size={14} strokeWidth={1.75} />
+              <span>Launch Student App</span>
             </button>
-
             <button
-              onClick={handleDemoInstitutionLogin}
-              className="group flex items-center justify-between p-3.5 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-left transition-colors"
+              onClick={onLaunchInstitution}
+              className="px-3.5 py-1.5 rounded-md bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors shadow-2xs"
             >
-              <div>
-                <div className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
-                  <Building2 size={16} strokeWidth={1.75} className="text-zinc-700" />
-                  <span>Institution Demo: University Dean Portal</span>
-                </div>
-                <div className="text-xs text-zinc-500 mt-0.5">
-                  Dr. Vikram Nair to Placement Analytics & Interventions
-                </div>
-              </div>
-              <ArrowRight size={15} strokeWidth={1.75} className="text-zinc-400 group-hover:text-zinc-900 group-hover:translate-x-0.5 transition-transform" />
+              <Building2 size={14} strokeWidth={1.75} />
+              <span>Launch Institution App</span>
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Tab Switcher: Student vs Institution */}
-        <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-7 shadow-xs">
-          <div className="flex border-b border-zinc-200 pb-4 mb-5">
-            <div className="flex gap-1.5 p-1 bg-zinc-100 rounded-lg w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={() => setActiveTab('student')}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-colors ${
-                  activeTab === 'student'
-                    ? 'bg-white text-zinc-900 font-semibold shadow-xs'
-                    : 'text-zinc-600 hover:text-zinc-900'
-                }`}
-              >
-                <GraduationCap size={15} strokeWidth={1.75} />
-                <span>Student / Learner Portal</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('institution')}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-colors ${
-                  activeTab === 'institution'
-                    ? 'bg-white text-zinc-900 font-semibold shadow-xs'
-                    : 'text-zinc-600 hover:text-zinc-900'
-                }`}
-              >
-                <Building2 size={15} strokeWidth={1.75} />
-                <span>University / Enterprise Portal</span>
-              </button>
-            </div>
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-16">
+        {/* SECTION 2: HERO SECTION + DUAL USER INTERACTIVE LAUNCHPAD (ABOVE THE FOLD) */}
+        <section className="text-center pt-2 sm:pt-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 bg-white text-zinc-700 text-xs font-medium mb-5 shadow-2xs">
+            <ShieldCheck size={14} strokeWidth={1.75} className="text-zinc-900" />
+            <span>Autonomous 4-Agent Groq LPU Mesh • Zero Tutorial Hell</span>
           </div>
 
-          {/* TAB A: STUDENT SIGN-IN & ONBOARDING */}
-          {activeTab === 'student' ? (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-lg sm:text-xl font-bold text-zinc-900">
-                    {isSignUp ? 'Create Comprehensive Learner Profile' : 'Student Career Autopilot Sign-In'}
-                  </h2>
-                  <p className="text-xs text-zinc-500 mt-0.5">
-                    {isSignUp
-                      ? 'Define your existing skill vector, past projects, and target career for personalized transfer learning.'
-                      : 'Sign in to access your Waze-style Skill-DAG, anti-doomscroll sprints, and verified skill passport.'}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsSignUp(!isSignUp)}
-                  className="text-xs font-medium text-zinc-800 hover:underline whitespace-nowrap"
-                >
-                  {isSignUp ? 'Already registered? Sign In' : 'New student? Complete Profile'}
-                </button>
-              </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 max-w-4xl mx-auto leading-tight">
+            The Autonomous Career Autopilot & Dynamic Skill-DAG Engine.
+          </h1>
 
-              <form onSubmit={handleStudentSubmit} className="space-y-3.5">
-                <div className="grid sm:grid-cols-2 gap-3.5">
+          <p className="text-sm sm:text-base md:text-lg text-zinc-600 max-w-3xl mx-auto leading-relaxed mt-4">
+            Traditional LMS platforms dump static 40-hour courses on every learner. SkillMorph AI uses a 4-Agent Groq LPU
+            mesh to audit existing skills, bridge syntax gaps in 90 seconds, and dynamically reroute learning paths when
+            assessments fail or career goals pivot.
+          </p>
+
+          {/* TWO PROMINENT, CLICKABLE ROLE CARDS SIDE-BY-SIDE */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-10 text-left">
+            {/* Card 1: End-User Experience — Student Career Studio */}
+            <div className="group bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs font-medium">
+                    <GraduationCap size={13} strokeWidth={1.75} />
+                    <span>Sample Scenario: Aarav Sharma (IIT Bombay)</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-zinc-400">End-User Experience</span>
+                </div>
+
+                <h2 className="text-xl font-bold text-zinc-900 tracking-tight flex items-center gap-2">
+                  <span>Student Career Studio</span>
+                </h2>
+
+                <p className="text-xs text-zinc-500 mt-1 mb-5">
+                  Adaptive topological learning graph, polyglot syntax bridges, and live assessment boss fights.
+                </p>
+
+                {/* Live Preview Stack */}
+                <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/90 text-xs space-y-2.5 mb-6">
                   <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Full Name
-                    </label>
-                    <div className="relative">
-                      <User size={15} strokeWidth={1.75} className="text-zinc-400 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        required
-                        value={studentName}
-                        onChange={(e) => setStudentName(e.target.value)}
-                        placeholder="Aarav Sharma"
-                        className="w-full pl-9 pr-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                      />
+                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1">
+                      Current Verified Stack
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium">
+                        Python (Advanced)
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium">
+                        SQL & DBs
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium">
+                        Basic HTML
+                      </span>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Student Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={studentEmail}
-                      onChange={(e) => setStudentEmail(e.target.value)}
-                      placeholder="aarav.sharma@iitb.ac.in"
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                    />
+                  <div className="pt-2 border-t border-zinc-200">
+                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1">
+                      Target Goal & Missing Skill Delta
+                    </span>
+                    <div className="text-xs text-zinc-800 font-medium flex items-center gap-1.5 flex-wrap">
+                      <span className="font-semibold text-zinc-900">Target: Full Stack Developer</span>
+                      <span className="text-zinc-400">→</span>
+                      <span className="text-amber-700 font-normal">Missing: JavaScript, React, Node.js</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      University / College / Organization
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={studentUniversity}
-                      onChange={(e) => setStudentUniversity(e.target.value)}
-                      placeholder="IIT Bombay"
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                    />
-                  </div>
+                <ul className="space-y-1.5 text-xs text-zinc-600 mb-6">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                    <span>Live topological Skill-DAG roadmap with dynamic edge calculation</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                    <span>30-second Polyglot Brain-Diff syntax translation (Python to JS)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                    <span>Boss fight assessment with 1-line code patch unit tests</span>
+                  </li>
+                </ul>
+              </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Current Academic Status / Year
-                    </label>
-                    <input
-                      type="text"
-                      value={studentRoleTitle}
-                      onChange={(e) => setStudentRoleTitle(e.target.value)}
-                      placeholder="Final Year CS"
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                    />
+              <button
+                onClick={onLaunchStudent}
+                className="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-3 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors shadow-xs group-hover:shadow"
+              >
+                <span>Enter Student Profile & Learning Studio</span>
+                <ArrowRight size={15} strokeWidth={1.75} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+
+            {/* Card 2: Primary Buyer Experience — University & Enterprise Cloud */}
+            <div className="group bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl p-6 sm:p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-medium">
+                    <Building2 size={13} strokeWidth={1.75} />
+                    <span>Institutional Admin: Dr. Vikram Nair (Placement Dean)</span>
                   </div>
+                  <span className="text-[11px] font-mono text-zinc-400">Primary Buyer</span>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                    Target Job Role / Career Goal
-                  </label>
-                  <select
-                    value={studentTargetRole}
-                    onChange={(e) => setStudentTargetRole(e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-semibold text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                  >
-                    <option value="Full Stack Developer">Full Stack Developer</option>
-                    <option value="AI/ML Systems Engineer">AI/ML Systems Engineer</option>
-                    <option value="Cloud Backend Architect">Cloud Backend Architect</option>
-                    <option value="Distributed Systems Engineer">Distributed Systems Engineer</option>
-                  </select>
-                </div>
+                <h2 className="text-xl font-bold text-zinc-900 tracking-tight flex items-center gap-2">
+                  <span>University & Enterprise Cloud</span>
+                </h2>
 
-                {/* Extended Profile Fields in Sign-Up Mode */}
-                {isSignUp && (
-                  <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 space-y-3.5">
-                    {/* Verified Skills Vector */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="text-xs font-medium text-zinc-700 uppercase tracking-wider">
-                          Existing Verified Skills ({studentSkills.length})
-                        </label>
-                        <span className="text-[11px] text-zinc-500">Languages, tools, frameworks</span>
+                <p className="text-xs text-zinc-500 mt-1 mb-5">
+                  Cohort skill-gap intelligence, bottleneck diagnosis, and 1-click remedial curriculum intervention.
+                </p>
+
+                {/* Live Preview Capabilities */}
+                <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/90 text-xs space-y-2.5 mb-6">
+                  <div>
+                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1">
+                      Institutional Scope & Live Metrics
+                    </span>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2 rounded bg-white border border-zinc-200">
+                        <div className="text-[10px] text-zinc-500">Cohort Tracked</div>
+                        <div className="font-semibold text-zinc-900">342 Engineering Students</div>
                       </div>
+                      <div className="p-2 rounded bg-white border border-zinc-200">
+                        <div className="text-[10px] text-zinc-500">Curriculum Bottleneck</div>
+                        <div className="font-semibold text-red-700">68% Async JS Drop-off</div>
+                      </div>
+                    </div>
+                  </div>
 
-                      <div className="flex flex-wrap gap-1.5 mb-2.5">
+                  <div className="pt-2 border-t border-zinc-200">
+                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1">
+                      1-Click Placement Dean Intervention
+                    </span>
+                    <div className="text-xs text-zinc-700">
+                      Pushes accelerated remedial async sprint directly to struggling student nodes in real time.
+                    </div>
+                  </div>
+                </div>
+
+                <ul className="space-y-1.5 text-xs text-zinc-600 mb-6">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                    <span>Cohort Skill-Gap Matrix across departmental batches</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                    <span>Bottleneck Radar with automated drop-off cluster identification</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+                    <span>1-Click Remedial Module Deployment directly to student DAGs</span>
+                  </li>
+                </ul>
+              </div>
+
+              <button
+                onClick={onLaunchInstitution}
+                className="w-full bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-300 font-medium py-3 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors shadow-2xs group-hover:shadow"
+              >
+                <span>Enter University & Org Command Center</span>
+                <ArrowRight size={15} strokeWidth={1.75} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: HOW WE ARE DIFFERENT (THE 3-PILLAR TECHNICAL MOAT GRID) */}
+        <section className="pt-6 border-t border-zinc-200">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 block mb-1">
+              Architectural Moat
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
+              Why SkillMorph AI Wins
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+              Replacing passive video watching with active neural graph translation and automated multi-agent rerouting.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Pillar 1 */}
+            <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center mb-4 font-mono text-xs font-bold">
+                  01
+                </div>
+                <h4 className="text-base font-semibold text-zinc-900 tracking-tight mb-2">
+                  Polyglot Brain-Diff Engine
+                </h4>
+                <div className="inline-block text-[10px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200 mb-3">
+                  vs. 40-Hour Tutorial Hell
+                </div>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Maps existing neural pathways (<code className="text-zinc-800 font-mono">Python asyncio</code>, <code className="text-zinc-800 font-mono">SQL</code>) directly to target gaps (<code className="text-zinc-800 font-mono">JS Promises</code>, <code className="text-zinc-800 font-mono">React</code>, <code className="text-zinc-800 font-mono">Node.js</code>) in 30-second side-by-side code diffs—cutting learning time by 4x.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center gap-1.5 text-[11px] text-zinc-500 font-medium">
+                <Cpu size={13} className="text-zinc-700" />
+                <span>Zero redundant concept re-teaching</span>
+              </div>
+            </div>
+
+            {/* Pillar 2 */}
+            <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center mb-4 font-mono text-xs font-bold">
+                  02
+                </div>
+                <h4 className="text-base font-semibold text-zinc-900 tracking-tight mb-2">
+                  Self-Healing Topological Skill-DAG
+                </h4>
+                <div className="inline-block text-[10px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200 mb-3">
+                  vs. Static Syllabi
+                </div>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Powered by 4 specialized agents (<code className="text-zinc-800 font-mono">Profiler-01</code>, <code className="text-zinc-800 font-mono">GapArchitect-02</code>, <code className="text-zinc-800 font-mono">PolyglotCurator-03</code>, <code className="text-zinc-800 font-mono">AdaptiveMentor-04</code>). Failing an assessment automatically splices a remedial foundation node into the graph.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center gap-1.5 text-[11px] text-zinc-500 font-medium">
+                <GitBranch size={13} className="text-zinc-700" />
+                <span>Dynamic topological edge healing</span>
+              </div>
+            </div>
+
+            {/* Pillar 3 */}
+            <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center mb-4 font-mono text-xs font-bold">
+                  03
+                </div>
+                <h4 className="text-base font-semibold text-zinc-900 tracking-tight mb-2">
+                  Proof-of-Skill Execution
+                </h4>
+                <div className="inline-block text-[10px] font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200 mb-3">
+                  vs. Unverified Video Certificates
+                </div>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Combines live GitHub repository telemetry with 1-line interactive code patch unit tests to issue cryptographic Verified Skill Passports that engineering recruiters can trust.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center gap-1.5 text-[11px] text-zinc-500 font-medium">
+                <Award size={13} className="text-zinc-700" />
+                <span>Cryptographic proof-of-work dossier</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4: PRACTICAL B2B2C BUSINESS MODEL & UNIT ECONOMICS STRIP */}
+        <section className="pt-6 border-t border-zinc-200">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 block mb-1">
+              Commercial Viability
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900">
+              Unit Economics & Monetization Strategy
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+              Dual-revenue B2B2C monetization model paired with low-cost edge inference.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Recurring Enterprise</span>
+                <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-mono font-semibold border border-emerald-200">
+                  High LTV
+                </span>
+              </div>
+              <h4 className="text-base font-bold text-zinc-900 mb-1">
+                B2B Campus & Enterprise Licensing
+              </h4>
+              <div className="text-sm font-bold text-blue-600 mb-2">$18 / learner / year</div>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                Replaces low-completion bulk MOOC licenses for universities and corporate L&D teams with measurable placement readiness KPIs and automated student intervention tooling.
+              </p>
+            </div>
+
+            <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Hiring Marketplace</span>
+                <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-800 text-[10px] font-mono font-semibold border border-blue-200">
+                  Success Fee
+                </span>
+              </div>
+              <h4 className="text-base font-bold text-zinc-900 mb-1">
+                Verified Talent Placement Fee
+              </h4>
+              <div className="text-sm font-bold text-blue-600 mb-2">B2B Verified Hiring API</div>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                Employers pay per-candidate pipeline access to filter candidates by cryptographically verified DAG nodes and unit-tested bug fixes rather than unverified resumes.
+              </p>
+            </div>
+
+            <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Gross Margin</span>
+                <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-800 text-[10px] font-mono font-semibold border border-purple-200">
+                  92% Margin
+                </span>
+              </div>
+              <h4 className="text-base font-bold text-zinc-900 mb-1">
+                Zero-Infrastructure Edge Architecture
+              </h4>
+              <div className="text-sm font-bold text-emerald-600 mb-2">&lt; $0.0004 / query</div>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                Hybrid client-side DAG state + sub-second Groq LPU inference delivers extreme cost efficiency, near-instant user interaction, and 92% gross software margins.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 5: ADVANCED CUSTOM REGISTRATION & MANUAL CREDENTIALS (COLLAPSIBLE) */}
+        <section className="pt-6 border-t border-zinc-200">
+          <div className="bg-white border border-zinc-200/90 rounded-xl shadow-xs overflow-hidden">
+            <button
+              onClick={() => setShowAdvancedAuth(!showAdvancedAuth)}
+              className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-50/70 transition-colors"
+            >
+              <div className="flex items-center gap-2.5">
+                <Layers size={16} strokeWidth={1.75} className="text-zinc-600" />
+                <div>
+                  <div className="text-xs font-semibold text-zinc-900">
+                    Custom Credentials & Manual Onboarding Form (Optional)
+                  </div>
+                  <div className="text-[11px] text-zinc-500">
+                    Register a new student profile or institutional admin account from scratch
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                <span>{showAdvancedAuth ? 'Hide form' : 'Show form'}</span>
+                {showAdvancedAuth ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+              </div>
+            </button>
+
+            {showAdvancedAuth && (
+              <div className="p-5 sm:p-7 border-t border-zinc-200/80 bg-zinc-50/30">
+                <div className="flex border-b border-zinc-200 pb-4 mb-5">
+                  <div className="flex gap-1.5 p-1 bg-zinc-100 rounded-lg w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('student')}
+                      className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-colors ${
+                        activeTab === 'student'
+                          ? 'bg-white text-zinc-900 font-semibold shadow-xs'
+                          : 'text-zinc-600 hover:text-zinc-900'
+                      }`}
+                    >
+                      <GraduationCap size={15} strokeWidth={1.75} />
+                      <span>Student / Learner Registration</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('institution')}
+                      className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-colors ${
+                        activeTab === 'institution'
+                          ? 'bg-white text-zinc-900 font-semibold shadow-xs'
+                          : 'text-zinc-600 hover:text-zinc-900'
+                      }`}
+                    >
+                      <Building2 size={15} strokeWidth={1.75} />
+                      <span>Institution Registration</span>
+                    </button>
+                  </div>
+                </div>
+
+                {activeTab === 'student' ? (
+                  <form onSubmit={handleStudentSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          value={studentName}
+                          onChange={(e) => setStudentName(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Email</label>
+                        <input
+                          type="email"
+                          value={studentEmail}
+                          onChange={(e) => setStudentEmail(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">University / College</label>
+                        <input
+                          type="text"
+                          value={studentUniversity}
+                          onChange={(e) => setStudentUniversity(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Target Job Role</label>
+                        <input
+                          type="text"
+                          value={studentTargetRole}
+                          onChange={(e) => setStudentTargetRole(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Skills Builder */}
+                    <div className="pt-2">
+                      <label className="block text-xs font-medium text-zinc-700 mb-1">Initial Stack</label>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
                         {studentSkills.map((s) => (
                           <span
                             key={s.id}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white border border-zinc-200 text-xs font-medium text-zinc-800"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-zinc-100 border border-zinc-200 text-zinc-800"
                           >
-                            <Code2 size={13} strokeWidth={1.75} className="text-zinc-600" />
                             <span>{s.name}</span>
-                            <span className="text-[10px] text-zinc-500 font-mono">[{s.level}]</span>
+                            <span className="text-[10px] text-zinc-400">({s.level})</span>
                             <button
                               type="button"
                               onClick={() => removeSkill(s.id)}
-                              className="text-zinc-400 hover:text-red-600 ml-1"
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newSkillName}
-                          onChange={(e) => setNewSkillName(e.target.value)}
-                          placeholder="TypeScript, Docker, PyTorch"
-                          className="flex-1 px-2.5 py-1.5 bg-white border border-zinc-200 rounded-md text-xs"
-                        />
-                        <select
-                          value={newSkillLevel}
-                          onChange={(e) => setNewSkillLevel(e.target.value as SkillLevel)}
-                          className="px-2 py-1.5 bg-white border border-zinc-200 rounded-md text-xs font-medium"
-                        >
-                          <option value="Foundation">Foundation</option>
-                          <option value="Intermediate">Intermediate</option>
-                          <option value="Advanced">Advanced</option>
-                          <option value="Expert">Expert</option>
-                        </select>
-                        <button
-                          type="button"
-                          onClick={addSkill}
-                          className="px-3 py-1.5 bg-zinc-900 text-white rounded-md text-xs font-medium flex items-center gap-1"
-                        >
-                          <Plus size={13} strokeWidth={1.75} /> Add
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Past Projects */}
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                        Past Projects & GitHub Repos
-                      </label>
-                      <div className="space-y-1 mb-2">
-                        {studentProjects.map((proj, idx) => (
-                          <div
-                            key={idx}
-                            className="text-xs bg-white border border-zinc-200 rounded-md px-2.5 py-1.5 text-zinc-700 flex items-center justify-between"
-                          >
-                            <span>{proj}</span>
-                            <button
-                              type="button"
-                              onClick={() => setStudentProjects((p) => p.filter((_, i) => i !== idx))}
                               className="text-zinc-400 hover:text-red-600"
                             >
                               <Trash2 size={12} />
                             </button>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newProject}
-                          onChange={(e) => setNewProject(e.target.value)}
-                          placeholder="Real-Time Chat App with WebSockets"
-                          className="flex-1 px-2.5 py-1.5 bg-white border border-zinc-200 rounded-md text-xs"
-                        />
-                        <button
-                          type="button"
-                          onClick={addProject}
-                          className="px-3 py-1.5 bg-zinc-900 text-white rounded-md text-xs font-medium"
-                        >
-                          Add Project
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Certifications */}
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                        Certifications & Honors
-                      </label>
-                      <div className="flex flex-wrap gap-1.5 mb-2">
-                        {studentCerts.map((c, idx) => (
-                          <span
-                            key={idx}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white border border-zinc-200 text-xs font-medium text-zinc-700"
-                          >
-                            <CheckCircle2 size={13} strokeWidth={1.75} className="text-zinc-600" />
-                            <span>{c}</span>
-                            <button
-                              type="button"
-                              onClick={() => setStudentCerts((certs) => certs.filter((_, i) => i !== idx))}
-                              className="text-zinc-400 hover:text-red-600 ml-1"
-                            >
-                              <Trash2 size={12} />
-                            </button>
                           </span>
                         ))}
                       </div>
+
                       <div className="flex gap-2">
                         <input
                           type="text"
-                          value={newCert}
-                          onChange={(e) => setNewCert(e.target.value)}
-                          placeholder="AWS Solutions Architect Associate"
-                          className="flex-1 px-2.5 py-1.5 bg-white border border-zinc-200 rounded-md text-xs"
+                          placeholder="Skill name (e.g. Docker, TypeScript)"
+                          value={newSkillName}
+                          onChange={(e) => setNewSkillName(e.target.value)}
+                          className="flex-1 text-xs px-3 py-1.5 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
                         />
+                        <select
+                          value={newSkillLevel}
+                          onChange={(e) => setNewSkillLevel(e.target.value as SkillLevel)}
+                          className="text-xs px-2 py-1.5 rounded-md border border-zinc-300 bg-white"
+                        >
+                          <option value="Foundation">Foundation</option>
+                          <option value="Intermediate">Intermediate</option>
+                          <option value="Advanced">Advanced</option>
+                        </select>
                         <button
                           type="button"
-                          onClick={addCert}
-                          className="px-3 py-1.5 bg-zinc-900 text-white rounded-md text-xs font-medium"
+                          onClick={addSkill}
+                          className="px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1"
                         >
-                          Add Cert
+                          <Plus size={13} />
+                          <span>Add</span>
                         </button>
                       </div>
                     </div>
-                  </div>
+
+                    <div className="pt-3">
+                      <button
+                        type="submit"
+                        className="w-full sm:w-auto px-5 py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium flex items-center justify-center gap-2 transition-colors"
+                      >
+                        <Lock size={13} strokeWidth={1.75} />
+                        <span>Launch Custom Student Profile</span>
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <form onSubmit={handleInstitutionSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Administrator Name</label>
+                        <input
+                          type="text"
+                          value={instName}
+                          onChange={(e) => setInstName(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Official Email</label>
+                        <input
+                          type="email"
+                          value={instEmail}
+                          onChange={(e) => setInstEmail(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Institution / University</label>
+                        <input
+                          type="text"
+                          value={instOrg}
+                          onChange={(e) => setInstOrg(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-zinc-700 mb-1">Role Title</label>
+                        <input
+                          type="text"
+                          value={instRoleTitle}
+                          onChange={(e) => setInstRoleTitle(e.target.value)}
+                          className="w-full text-xs px-3 py-2 rounded-md border border-zinc-300 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-3">
+                      <button
+                        type="submit"
+                        className="w-full sm:w-auto px-5 py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium flex items-center justify-center gap-2 transition-colors"
+                      >
+                        <Building2 size={13} strokeWidth={1.75} />
+                        <span>Launch Custom Institution Portal</span>
+                      </button>
+                    </div>
+                  </form>
                 )}
-
-                <button
-                  type="submit"
-                  className="w-full py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors"
-                >
-                  <span>{isSignUp ? 'Launch Personalized Skill-DAG' : 'Enter Student Studio'}</span>
-                  <ArrowRight size={15} strokeWidth={1.75} />
-                </button>
-              </form>
-            </div>
-          ) : (
-            /* TAB B: INSTITUTION / UNIVERSITY SIGN-IN */
-            <div>
-              <div className="mb-4">
-                <h2 className="text-lg sm:text-xl font-bold text-zinc-900">
-                  University & Enterprise Talent Portal
-                </h2>
-                <p className="text-xs text-zinc-500 mt-0.5">
-                  Institutional access for Placement Deans, Department Heads, and Talent Directors to monitor cohort skill readiness and push targeted interventions.
-                </p>
               </div>
+            )}
+          </div>
+        </section>
+      </main>
 
-              <form onSubmit={handleInstitutionSubmit} className="space-y-3.5">
-                <div className="grid sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Administrator Name
-                    </label>
-                    <div className="relative">
-                      <User size={15} strokeWidth={1.75} className="text-zinc-400 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        required
-                        value={instName}
-                        onChange={(e) => setInstName(e.target.value)}
-                        placeholder="Dr. Vikram Nair"
-                        className="w-full pl-9 pr-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Official Institutional Email
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={instEmail}
-                      onChange={(e) => setInstEmail(e.target.value)}
-                      placeholder="dean.careers@university.edu"
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Institution / University / Company
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={instOrg}
-                      onChange={(e) => setInstOrg(e.target.value)}
-                      placeholder="IIT Bombay — Placement Cell"
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 uppercase tracking-wider mb-1">
-                      Administrative Role / Title
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={instRoleTitle}
-                      onChange={(e) => setInstRoleTitle(e.target.value)}
-                      placeholder="Head of Career Services & Talent Analytics"
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-900 focus:bg-white focus:outline-none focus:border-zinc-900"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-md bg-zinc-50 border border-zinc-200 flex items-start gap-2.5">
-                  <Lock size={15} strokeWidth={1.75} className="text-zinc-500 flex-shrink-0 mt-0.5" />
-                  <div className="text-xs text-zinc-600 leading-relaxed">
-                    <span className="font-medium text-zinc-900">Campus Placement Security & Compliance:</span>
-                    <div className="mt-0.5 text-zinc-500">
-                      Access aggregate cohort velocity, NAAC/NBA skill alignment reports, and push direct targeted curriculum interventions into individual student roadmaps.
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors"
-                >
-                  <Building2 size={15} strokeWidth={1.75} />
-                  <span>Enter University & Talent Cloud</span>
-                  <ArrowRight size={15} strokeWidth={1.75} />
-                </button>
-              </form>
-            </div>
-          )}
+      {/* FOOTER */}
+      <footer className="border-t border-zinc-200/90 py-6 px-4 sm:px-8 bg-white mt-12 text-center text-xs text-zinc-500">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-500">
+            <span>SkillMorph AI</span>
+            <span>•</span>
+            <span>Autonomous 4-Agent Groq LPU Mesh</span>
+            <span>•</span>
+            <span>W3C Proof-of-Skill Verifiable Credentials</span>
+          </div>
+          <div className="text-[11px] text-zinc-400">
+            PromptWars X RTC Hackathon Production Release
+          </div>
         </div>
-      </div>
-
-      {/* Footer Info */}
-      <div className="max-w-4xl w-full mx-auto text-center text-xs text-zinc-400 pt-3 border-t border-zinc-200">
-        SkillMorph AI 4-Agent Mesh • Polyglot Brain-Diff Architecture • Zero-Doomscroll Guarantee
-      </div>
+      </footer>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   LogOut,
   Award,
   Terminal,
+  ArrowLeft,
 } from 'lucide-react';
 import type { StudentTab, UserProfile } from '../types';
 
@@ -22,6 +23,7 @@ interface StudentSidebarProps {
   onOpenGroqKeyModal: () => void;
   onOpenPassport: () => void;
   onLogout: () => void;
+  onOpenPitchGateway?: () => void;
 }
 
 export function StudentSidebar({
@@ -34,6 +36,7 @@ export function StudentSidebar({
   onOpenGroqKeyModal,
   onOpenPassport,
   onLogout,
+  onOpenPitchGateway,
 }: StudentSidebarProps) {
   const initials = user.name
     .split(' ')
@@ -139,6 +142,16 @@ export function StudentSidebar({
 
       {/* Bottom Administrative & Session Controls */}
       <div className="space-y-1 pt-3 border-t border-zinc-200">
+        {onOpenPitchGateway && (
+          <button
+            onClick={onOpenPitchGateway}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-zinc-800 hover:bg-zinc-100 transition-colors font-medium"
+          >
+            <ArrowLeft size={15} strokeWidth={1.75} className="text-zinc-600" />
+            <span>Executive Overview & Pitch</span>
+          </button>
+        )}
+
         <button
           onClick={onOpenPassport}
           className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-zinc-700 hover:bg-zinc-100 transition-colors"
