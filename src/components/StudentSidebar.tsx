@@ -54,13 +54,13 @@ export function StudentSidebar({
     },
     {
       id: 'roadmap',
-      label: 'Adaptive Roadmap',
+      label: 'Adaptive Roadmap (DAG)',
       icon: <Compass size={16} strokeWidth={1.75} />,
       desc: 'Topological Skill-DAG graph',
     },
     {
       id: 'studio',
-      label: 'Learning Studio',
+      label: 'Learning Studio (Brain-Diff & Sprints)',
       icon: <Code2 size={16} strokeWidth={1.75} />,
       desc: 'Brain-Diff & AI assessment',
     },
@@ -73,7 +73,7 @@ export function StudentSidebar({
   ];
 
   return (
-    <aside className="hidden md:flex md:w-60 md:flex-col bg-white border-r border-zinc-200/90 justify-between h-full p-4 flex-shrink-0 select-none">
+    <aside className="hidden md:flex md:w-64 md:flex-col bg-white border-r border-zinc-200 justify-between h-full p-4 flex-shrink-0 select-none">
       {/* Top Brand & Learner Card */}
       <div className="space-y-4">
         {/* Brand */}
@@ -83,7 +83,7 @@ export function StudentSidebar({
           </div>
           <div>
             <div className="font-semibold text-sm tracking-tight text-zinc-900">SkillMorph AI</div>
-            <div className="text-[10px] text-zinc-400 font-mono tracking-wider uppercase">
+            <div className="text-xs text-zinc-400 font-mono tracking-wider uppercase">
               Career Autopilot
             </div>
           </div>
@@ -97,7 +97,7 @@ export function StudentSidebar({
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-medium text-xs text-zinc-900 truncate">{user.name}</div>
-              <div className="text-[11px] text-zinc-500 truncate">{user.institution}</div>
+              <div className="text-xs text-zinc-500 truncate">{user.institution}</div>
             </div>
           </div>
 
@@ -131,8 +131,8 @@ export function StudentSidebar({
               >
                 <div className={isActive ? 'text-zinc-900' : 'text-zinc-500'}>{item.icon}</div>
                 <div className="min-w-0">
-                  <div className="leading-tight">{item.label}</div>
-                  <div className="text-[10px] text-zinc-400 truncate">{item.desc}</div>
+                  <div className="leading-tight font-medium">{item.label}</div>
+                  <div className="text-xs text-zinc-400 truncate">{item.desc}</div>
                 </div>
               </button>
             );

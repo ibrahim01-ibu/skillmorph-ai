@@ -202,27 +202,27 @@ export function LearningStudioView({
   }
 
   return (
-    <div className="space-y-5 max-w-6xl mx-auto">
+    <div className="space-y-6 max-w-6xl mx-auto">
       {/* Studio Header Bar */}
-      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={onBackToRoadmap}
-            className="w-8 h-8 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 flex items-center justify-center text-zinc-700 transition-colors"
+            className="w-9 h-9 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 flex items-center justify-center text-zinc-700 transition-colors shadow-2xs"
             title="Back to Roadmap"
           >
-            <ArrowLeft size={15} strokeWidth={1.75} />
+            <ArrowLeft size={16} strokeWidth={1.75} />
           </button>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider">
                 90-Second Learning Studio
               </span>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
+              <span className="text-xs font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
                 Target Milestone
               </span>
             </div>
-            <h1 className="text-xl font-bold text-zinc-900 mt-0.5">{node.label}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900">{node.label}</h1>
           </div>
         </div>
 
@@ -234,14 +234,14 @@ export function LearningStudioView({
               setQuizSubmitted(true);
               onRemedialInjected();
             }}
-            className="px-3 py-1.5 rounded-md bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-medium flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-md bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-medium flex items-center gap-1.5 transition-colors shadow-2xs"
           >
-            <AlertTriangle size={13} strokeWidth={1.75} className="text-amber-700" />
+            <AlertTriangle size={14} strokeWidth={1.75} className="text-amber-700" />
             <span>Simulate Failure (Trigger Reroute)</span>
           </button>
           <button
             onClick={onBackToRoadmap}
-            className="px-3.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition-colors"
+            className="px-4 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition-colors shadow-2xs"
           >
             Back to DAG
           </button>
@@ -249,16 +249,16 @@ export function LearningStudioView({
       </div>
 
       {/* SECTION A: POLYGLOT TRANSFER-LEARNING LESSON */}
-      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 border-b border-zinc-200 pb-3.5">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 border-b border-zinc-200 pb-4">
           <div>
-            <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+            <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider">
               Step 1 • Polyglot Brain-Diff Architecture
             </div>
-            <h2 className="text-lg font-bold text-zinc-900 mt-0.5">
+            <h2 className="text-lg font-semibold text-zinc-900 mt-0.5">
               Transfer Learning: {brainDiff.concept || node.label}
             </h2>
-            <p className="text-xs text-zinc-500 mt-0.5">
+            <p className="text-sm text-zinc-600 mt-0.5 leading-relaxed">
               Leveraging {brainDiff.existingLang} mental models to master {brainDiff.newLang} without doomscrolling.
             </p>
           </div>
@@ -266,42 +266,42 @@ export function LearningStudioView({
           <button
             onClick={handleRegenerateExplanation}
             disabled={regeneratingDiff}
-            className="px-3 py-1.5 rounded-md bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+            className="px-3.5 py-2 rounded-md bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors self-start sm:self-auto shadow-2xs"
           >
-            <RotateCw size={13} strokeWidth={1.75} className={regeneratingDiff ? 'animate-spin' : ''} />
+            <RotateCw size={14} strokeWidth={1.75} className={regeneratingDiff ? 'animate-spin' : ''} />
             <span>{regeneratingDiff ? 'Streaming from Groq...' : 'Regenerate Explanation via Groq'}</span>
           </button>
         </div>
 
         {/* Side-by-Side Dark Obsidian Code Comparison (No Horizontal Scrollbars) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* What you know */}
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between text-xs font-medium px-0.5">
-              <span className="text-zinc-500">Known Stack: <strong className="text-zinc-900">{brainDiff.existingLang}</strong></span>
-              <span className="text-[10px] font-mono text-zinc-600 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200">Verified Base</span>
+              <span className="text-zinc-600">Known Stack: <strong className="text-zinc-900 font-semibold">{brainDiff.existingLang}</strong></span>
+              <span className="text-xs font-mono text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">Verified Base</span>
             </div>
-            <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap break-words min-h-[140px]">
+            <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-5 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words min-h-[160px]">
               <pre className="font-mono whitespace-pre-wrap break-words">{brainDiff.existingCode}</pre>
             </div>
           </div>
 
           {/* New counter-part */}
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between text-xs font-medium px-0.5">
-              <span className="text-zinc-500">New Target Concept: <strong className="text-zinc-900">{brainDiff.newLang}</strong></span>
-              <span className="text-[10px] font-mono text-zinc-600 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200">Active Gap</span>
+              <span className="text-zinc-600">New Target Concept: <strong className="text-zinc-900 font-semibold">{brainDiff.newLang}</strong></span>
+              <span className="text-xs font-mono text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">Active Gap</span>
             </div>
-            <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-4 font-mono text-[13px] leading-relaxed whitespace-pre-wrap break-words min-h-[140px]">
+            <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-5 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words min-h-[160px]">
               <pre className="font-mono whitespace-pre-wrap break-words">{brainDiff.newCode}</pre>
             </div>
           </div>
         </div>
 
         {/* Conceptual Mental Bridge Summary */}
-        <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 flex items-start gap-2.5">
-          <Lightbulb size={16} strokeWidth={1.75} className="text-zinc-600 flex-shrink-0 mt-0.5" />
-          <div className="text-xs text-zinc-700 leading-relaxed">
+        <div className="p-4 rounded-lg bg-zinc-50 border border-zinc-200 flex items-start gap-3">
+          <Lightbulb size={18} strokeWidth={1.75} className="text-zinc-700 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-zinc-700 leading-relaxed">
             <span className="font-semibold text-zinc-900">Mental Model Bridge: </span>
             {brainDiff.explanation}
           </div>
@@ -310,33 +310,33 @@ export function LearningStudioView({
         {/* Curated Micro-Build & Resources */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
           {/* Micro-Spec Card */}
-          <div className="p-3.5 rounded-lg bg-white border border-zinc-200 space-y-1.5">
-            <div className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Layers size={13} strokeWidth={1.75} /> Practical Micro-Spec
+          <div className="p-4 rounded-lg bg-white border border-zinc-200 space-y-2">
+            <div className="text-xs font-semibold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Layers size={14} strokeWidth={1.75} /> Practical Micro-Spec
             </div>
-            <div className="font-bold text-xs text-zinc-900">{content.microSpec.title}</div>
-            <p className="text-xs text-zinc-600 leading-relaxed">{content.microSpec.description}</p>
-            <div className="text-[11px] text-zinc-400 font-mono pt-0.5">
-              Artifact: <span className="text-zinc-700 font-medium">{content.microSpec.artifact}</span> ({content.microSpec.timeEstimate})
+            <div className="font-bold text-sm text-zinc-900">{content.microSpec.title}</div>
+            <p className="text-sm text-zinc-600 leading-relaxed">{content.microSpec.description}</p>
+            <div className="text-xs text-zinc-500 font-mono pt-0.5">
+              Artifact: <span className="text-zinc-900 font-medium">{content.microSpec.artifact}</span> ({content.microSpec.timeEstimate})
             </div>
           </div>
 
           {/* Curated Resources */}
-          <div className="p-3.5 rounded-lg bg-white border border-zinc-200 space-y-1.5">
-            <div className="text-[11px] font-semibold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Clock size={13} strokeWidth={1.75} /> Curated 3-Minute Guides
+          <div className="p-4 rounded-lg bg-white border border-zinc-200 space-y-2">
+            <div className="text-xs font-semibold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Clock size={14} strokeWidth={1.75} /> Curated 3-Minute Guides
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {content.resources.slice(0, 2).map((res, i) => (
                 <a
                   key={i}
                   href={res.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between text-xs text-zinc-700 hover:text-zinc-900 hover:underline p-1.5 rounded bg-zinc-50 border border-zinc-200 transition-colors"
+                  className="flex items-center justify-between text-xs text-zinc-700 hover:text-zinc-900 hover:underline p-2 rounded bg-zinc-50 border border-zinc-200 transition-colors"
                 >
                   <span className="truncate">{res.title}</span>
-                  <ExternalLink size={12} strokeWidth={1.75} className="text-zinc-400 flex-shrink-0 ml-1.5" />
+                  <ExternalLink size={13} strokeWidth={1.75} className="text-zinc-400 flex-shrink-0 ml-1.5" />
                 </a>
               ))}
             </div>
@@ -345,16 +345,16 @@ export function LearningStudioView({
       </div>
 
       {/* SECTION B: HANDS-ON CODE SANDBOX & GROQ AI EVALUATION */}
-      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-3.5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 pb-3.5">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 pb-4">
           <div>
-            <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+            <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider">
               Step 2 • Hands-On Interactive Code Sandbox
             </div>
-            <h3 className="text-lg font-bold text-zinc-900 mt-0.5">
+            <h3 className="text-lg font-semibold text-zinc-900 mt-0.5">
               Live Code Patch & Test Suite
             </h3>
-            <p className="text-xs text-zinc-500 mt-0.5">
+            <p className="text-sm text-zinc-600 mt-0.5 leading-relaxed">
               Edit the code in the dark editor below. Execute locally or ask AdaptiveMentor-04 to grade your solution.
             </p>
           </div>
@@ -362,20 +362,20 @@ export function LearningStudioView({
           <div className="flex items-center gap-2">
             <button
               onClick={handleRunCode}
-              className="px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors shadow-2xs"
             >
-              <Play size={12} strokeWidth={1.75} className="text-zinc-900 fill-zinc-900" />
+              <Play size={13} strokeWidth={1.75} className="text-zinc-900 fill-zinc-900" />
               <span>Run Local Tests</span>
             </button>
             <button
               onClick={handleAskGroqGrade}
               disabled={gradingWithGroq}
-              className="px-3 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition-colors shadow-2xs"
             >
               {gradingWithGroq ? (
                 <Loader2 size={13} className="animate-spin" />
               ) : (
-                <Cpu size={13} strokeWidth={1.75} />
+                <Cpu size={14} strokeWidth={1.75} />
               )}
               <span>Ask AI Mentor to Grade</span>
             </button>
@@ -383,16 +383,16 @@ export function LearningStudioView({
         </div>
 
         {/* Code Editor Container (Obsidian, whitespace-pre-wrap break-words) */}
-        <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-4 font-mono text-[13px] leading-relaxed shadow-inner space-y-2.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400 font-mono pb-2 border-b border-zinc-800">
+        <div className="bg-[#111113] text-zinc-100 border border-zinc-800 rounded-lg p-5 font-mono text-sm leading-relaxed shadow-inner space-y-3">
+          <div className="flex items-center justify-between text-xs text-zinc-400 font-mono pb-2.5 border-b border-zinc-800">
             <div className="flex items-center gap-1.5">
-              <Terminal size={13} strokeWidth={1.75} className="text-zinc-400" />
+              <Terminal size={14} strokeWidth={1.75} className="text-zinc-400" />
               <span>solution.js</span>
             </div>
             <div className="flex items-center gap-2">
               {testPassed !== null && (
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded font-mono font-medium ${
+                  className={`text-xs px-2.5 py-0.5 rounded font-mono font-medium ${
                     testPassed
                       ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
                       : 'bg-red-950 text-red-300 border border-red-800'
@@ -401,7 +401,7 @@ export function LearningStudioView({
                   {testPassed ? 'TESTS PASSED' : 'REVISION NEEDED'}
                 </span>
               )}
-              <span className="text-[11px] text-zinc-500">Node/ES2026</span>
+              <span className="text-xs text-zinc-500">Node/ES2026</span>
             </div>
           </div>
 
@@ -409,14 +409,14 @@ export function LearningStudioView({
             value={studentCode}
             onChange={(e) => setStudentCode(e.target.value)}
             rows={7}
-            className="w-full bg-transparent text-zinc-100 font-mono text-[13px] leading-relaxed focus:outline-none resize-none whitespace-pre-wrap break-words"
+            className="w-full bg-transparent text-zinc-100 font-mono text-sm leading-relaxed focus:outline-none resize-none whitespace-pre-wrap break-words"
             spellCheck={false}
           />
 
           {sandboxOutput && (
             <div className="pt-2 border-t border-zinc-800 text-xs font-mono">
               <div className="text-zinc-500 mb-1">Execution Telemetry:</div>
-              <pre className="text-emerald-400 bg-black/40 p-2.5 rounded-md whitespace-pre-wrap break-words">
+              <pre className="text-emerald-400 bg-black/40 p-3 rounded-md whitespace-pre-wrap break-words text-xs">
                 {sandboxOutput}
               </pre>
             </div>
@@ -426,33 +426,33 @@ export function LearningStudioView({
         {/* Groq AI Mentor Review Card */}
         {aiGradeResult && (
           <div
-            className={`p-3.5 rounded-lg border text-xs ${
+            className={`p-4 rounded-lg border text-sm ${
               aiGradeResult.passed
                 ? 'bg-zinc-50 border-zinc-200 text-zinc-800'
                 : 'bg-amber-50/80 border-amber-200 text-amber-900'
-            } space-y-1.5 animate-slide-in-up`}
+            } space-y-2 animate-slide-in-up`}
           >
             <div className="flex items-center justify-between">
-              <div className="font-semibold text-xs flex items-center gap-1.5">
+              <div className="font-semibold text-sm flex items-center gap-2">
                 {aiGradeResult.passed ? (
-                  <CheckCircle2 size={14} strokeWidth={1.75} className="text-emerald-700" />
+                  <CheckCircle2 size={16} strokeWidth={1.75} className="text-emerald-700" />
                 ) : (
-                  <AlertTriangle size={14} strokeWidth={1.75} className="text-amber-700" />
+                  <AlertTriangle size={16} strokeWidth={1.75} className="text-amber-700" />
                 )}
                 <span>AdaptiveMentor-04 Review — Score: {aiGradeResult.score}/100</span>
               </div>
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-zinc-200 bg-white">
+              <span className="text-xs font-mono px-2 py-0.5 rounded border border-zinc-200 bg-white">
                 {aiGradeResult.passed ? 'VERIFIED' : 'GUIDED HINT'}
               </span>
             </div>
-            <p className="leading-relaxed">{aiGradeResult.critique}</p>
+            <p className="leading-relaxed text-sm">{aiGradeResult.critique}</p>
             {aiGradeResult.socraticHint && (
-              <div className="italic bg-white/70 p-2 rounded border border-zinc-200 text-zinc-700">
+              <div className="italic bg-white/70 p-2.5 rounded border border-zinc-200 text-zinc-700 text-xs">
                 <strong>Mentor Socratic Hint:</strong> {aiGradeResult.socraticHint}
               </div>
             )}
             {aiGradeResult.suggestedFix && (
-              <div className="font-mono bg-[#111113] text-zinc-200 p-2 rounded whitespace-pre-wrap break-words">
+              <div className="font-mono bg-[#111113] text-zinc-200 p-3 rounded whitespace-pre-wrap break-words text-xs">
                 <code>{aiGradeResult.suggestedFix}</code>
               </div>
             )}
@@ -461,26 +461,26 @@ export function LearningStudioView({
       </div>
 
       {/* SECTION C: BOSS FIGHT ASSESSMENT & ADAPTIVE FAILURE REROUTE */}
-      <div className="bg-white border border-zinc-200/90 rounded-xl p-5 sm:p-6 shadow-xs space-y-4">
-        <div className="border-b border-zinc-200 pb-3">
-          <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+      <div className="bg-white border border-zinc-200/90 rounded-xl p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-5">
+        <div className="border-b border-zinc-200 pb-4">
+          <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider">
             Step 3 • Boss Fight Assessment
           </div>
-          <h3 className="text-lg font-bold text-zinc-900 mt-0.5">
+          <h3 className="text-lg font-semibold text-zinc-900 mt-0.5">
             Conceptual Verification Check
           </h3>
-          <p className="text-xs text-zinc-500 mt-0.5">
+          <p className="text-sm text-zinc-600 mt-0.5 leading-relaxed">
             Confirm your mental model shift to officially master this node and unlock downstream dependencies.
           </p>
         </div>
 
-        <div className="space-y-3">
-          <div className="text-xs font-medium text-zinc-900 leading-relaxed">
+        <div className="space-y-4">
+          <div className="text-sm font-semibold text-zinc-900 leading-relaxed">
             {content.assessment.question}
           </div>
 
           {/* Options */}
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {content.assessment.options.map((opt, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrect = idx === content.assessment.correctIndex;
@@ -500,11 +500,11 @@ export function LearningStudioView({
                 <button
                   key={idx}
                   onClick={() => !quizSubmitted && setSelectedOption(idx)}
-                  className={`w-full p-3 rounded-md border text-xs text-left transition-colors flex items-center justify-between ${btnClass}`}
+                  className={`w-full p-3.5 rounded-lg border text-sm text-left transition-colors flex items-center justify-between ${btnClass}`}
                 >
                   <span>{opt}</span>
-                  {quizSubmitted && isCorrect && <CheckCircle2 size={14} strokeWidth={1.75} className="text-emerald-700" />}
-                  {quizSubmitted && isSelected && !isCorrect && <XCircle size={14} strokeWidth={1.75} className="text-red-600" />}
+                  {quizSubmitted && isCorrect && <CheckCircle2 size={16} strokeWidth={1.75} className="text-emerald-700" />}
+                  {quizSubmitted && isSelected && !isCorrect && <XCircle size={16} strokeWidth={1.75} className="text-red-600" />}
                 </button>
               );
             })}
@@ -513,7 +513,7 @@ export function LearningStudioView({
           {/* Feedback & Result */}
           {quizSubmitted && (
             <div
-              className={`p-3 rounded-md border text-xs leading-relaxed ${
+              className={`p-3.5 rounded-lg border text-sm leading-relaxed ${
                 selectedOption === content.assessment.correctIndex
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                   : 'bg-amber-50 border-amber-200 text-amber-900'
@@ -539,18 +539,18 @@ export function LearningStudioView({
               <button
                 onClick={handleSubmitQuiz}
                 disabled={selectedOption === null}
-                className="px-4 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs"
+                className="px-5 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white text-sm font-medium flex items-center gap-2 transition-colors shadow-xs"
               >
                 <span>Submit Assessment Answer</span>
-                <ArrowRight size={13} strokeWidth={1.75} />
+                <ArrowRight size={14} strokeWidth={1.75} />
               </button>
             ) : (
               <button
                 onClick={onBackToRoadmap}
-                className="px-4 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors"
+                className="px-5 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium flex items-center gap-2 transition-colors shadow-xs"
               >
                 <span>Return to Updated Roadmap</span>
-                <ArrowRight size={13} strokeWidth={1.75} />
+                <ArrowRight size={14} strokeWidth={1.75} />
               </button>
             )}
           </div>

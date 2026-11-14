@@ -17,34 +17,34 @@ const STATUS_CONFIGS: Record<
   mastered: {
     bg: '#ffffff',
     border: '#10b981',
-    text: '#0f172a',
+    text: '#18181b',
     pillBg: '#ecfdf5',
     pillText: '#047857',
-    shadow: 'drop-shadow(0 2px 6px rgba(16, 185, 129, 0.12))',
+    shadow: 'drop-shadow(0 1px 3px rgba(16, 185, 129, 0.12))',
   },
   active: {
     bg: '#ffffff',
-    border: '#2563eb',
-    text: '#0f172a',
-    pillBg: '#eff6ff',
-    pillText: '#1d4ed8',
-    shadow: 'drop-shadow(0 4px 12px rgba(37, 99, 235, 0.18))',
+    border: '#18181b',
+    text: '#18181b',
+    pillBg: '#f4f4f5',
+    pillText: '#18181b',
+    shadow: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08))',
   },
   locked: {
-    bg: '#f8fafc',
-    border: '#e2e8f0',
-    text: '#94a3b8',
-    pillBg: '#f1f5f9',
-    pillText: '#64748b',
+    bg: '#fafafa',
+    border: '#e4e4e7',
+    text: '#a1a1aa',
+    pillBg: '#f4f4f5',
+    pillText: '#71717a',
     shadow: 'none',
   },
   remedial: {
-    bg: '#fffbeb',
+    bg: '#ffffff',
     border: '#f59e0b',
-    text: '#78350f',
+    text: '#18181b',
     pillBg: '#fef3c7',
     pillText: '#b45309',
-    shadow: 'drop-shadow(0 4px 14px rgba(245, 158, 11, 0.2))',
+    shadow: 'drop-shadow(0 2px 8px rgba(245, 158, 11, 0.16))',
   },
 };
 
@@ -55,14 +55,14 @@ interface SkillDAGProps {
   onNodeClick: (node: DAGNode) => void;
 }
 
-const NODE_W = 180;
-const NODE_H = 64;
+const NODE_W = 196;
+const NODE_H = 70;
 const SVG_W = 600;
 const SVG_H = 640;
 
 function getNodeCoord(node: DAGNode) {
   // Scale x positions with ample breathing room (center 300)
-  const scaledX = 300 + (node.x - 240) * 1.85;
+  const scaledX = 300 + (node.x - 240) * 1.8;
   return { x: scaledX, y: node.y + 10 };
 }
 
@@ -87,14 +87,14 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm p-2">
+    <div className="relative w-full overflow-hidden rounded-xl bg-white border border-zinc-200/90 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] p-2">
       {/* Canvas Top Bar */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 bg-slate-50/50 rounded-xl mb-1">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-200/80 bg-zinc-50/60 rounded-lg mb-1">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-blue-600" />
+          <Sparkles className="w-4 h-4 text-zinc-900" />
           <div>
-            <span className="text-xs font-semibold text-slate-800">Adaptive Skill-DAG Roadmap</span>
-            <span className="text-[11px] text-slate-400 ml-2 hidden sm:inline">
+            <span className="text-xs font-semibold text-zinc-900">Adaptive Skill-DAG Roadmap</span>
+            <span className="text-xs text-zinc-500 ml-2 hidden sm:inline">
               Click any active node to launch the 90-second sprint
             </span>
           </div>
@@ -102,13 +102,13 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
 
         {/* Legend */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-600">
+          <div className="flex items-center gap-1.5 text-xs text-zinc-600 font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Mastered
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-600">
-            <span className="w-2 h-2 rounded-full bg-blue-600 inline-block animate-pulse" /> Active
+          <div className="flex items-center gap-1.5 text-xs text-zinc-600 font-medium">
+            <span className="w-2 h-2 rounded-full bg-zinc-900 inline-block animate-pulse" /> Active
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-600">
+          <div className="flex items-center gap-1.5 text-xs text-zinc-600 font-medium">
             <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> Rescue
           </div>
         </div>
@@ -254,10 +254,10 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
 
               {/* Node Label Title */}
               <text
-                x={46}
-                y={26}
-                fontSize="11.5"
-                fontWeight="700"
+                x={48}
+                y={28}
+                fontSize="13"
+                fontWeight="600"
                 fill={cfg.text}
                 dominantBaseline="middle"
               >
@@ -265,20 +265,20 @@ export function SkillDAG({ nodes, edges, selectedNodeId, onNodeClick }: SkillDAG
               </text>
 
               {/* Sublabel / Status Pill */}
-              <g transform="translate(46, 38)">
+              <g transform="translate(48, 41)">
                 <rect
                   x={0}
                   y={0}
-                  width={Math.min(125, (node.sublabel?.length || 0) * 6.5 + 16)}
-                  height={16}
+                  width={Math.min(136, (node.sublabel?.length || 0) * 7 + 16)}
+                  height={18}
                   rx={4}
                   fill={cfg.pillBg}
                 />
                 <text
                   x={8}
-                  y={11.5}
-                  fontSize="8.5"
-                  fontWeight="600"
+                  y={13}
+                  fontSize="11"
+                  fontWeight="500"
                   fill={cfg.pillText}
                 >
                   {node.sublabel}

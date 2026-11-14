@@ -405,7 +405,7 @@ export default function App() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-sm text-zinc-900">SkillMorph AI</span>
-                  <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
                     Enterprise Talent Cloud
                   </span>
                 </div>
@@ -539,13 +539,13 @@ export default function App() {
               <Terminal size={13} strokeWidth={1.75} />
             </div>
             <span className="font-semibold text-xs tracking-tight text-zinc-900">SkillMorph AI</span>
-            <span className="text-[10px] text-zinc-400 font-mono">[{activeRoleTitle.split(' ')[0]}]</span>
+            <span className="text-xs text-zinc-400 font-mono">[{activeRoleTitle.split(' ')[0]}]</span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowPitchGateway(true)}
-              className="px-2 py-1 rounded border border-zinc-200 text-zinc-700 text-[11px] font-medium flex items-center gap-1 hover:bg-zinc-50"
+              className="px-2 py-1 rounded border border-zinc-200 text-zinc-700 text-xs font-medium flex items-center gap-1 hover:bg-zinc-50"
               title="Return to Executive Overview"
             >
               <ArrowLeft size={11} strokeWidth={1.75} />
@@ -558,7 +558,7 @@ export default function App() {
             >
               <Key size={13} strokeWidth={1.75} />
             </button>
-            <div className="w-7 h-7 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-[11px] font-semibold flex items-center justify-center">
+            <div className="w-7 h-7 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-xs font-semibold flex items-center justify-center">
               {userInitials}
             </div>
           </div>
@@ -586,7 +586,7 @@ export default function App() {
               <span>Executive Overview</span>
             </button>
 
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-[11px] font-medium text-zinc-700">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-xs font-medium text-zinc-700">
               <ShieldCheck size={13} strokeWidth={1.75} className="text-zinc-600" />
               <span>4-Agent Mesh Active</span>
             </span>
@@ -677,7 +677,7 @@ export default function App() {
               <button
                 key={tab.id}
                 onClick={() => setActiveStudentTab(tab.id)}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] transition-colors ${
+                className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs transition-colors ${
                   isActive ? 'text-zinc-900 font-semibold' : 'text-zinc-400'
                 }`}
               >

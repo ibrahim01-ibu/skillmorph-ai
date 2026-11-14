@@ -1,5 +1,5 @@
-// src/components/AgentStepperBar.tsx — Multi-Agent Live Mesh Stepper
-import { CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+// src/components/AgentStepperBar.tsx — Multi-Agent Live Mesh Stepper (Daylight Minimalist)
+import { CheckCircle2, Loader2, Bot } from 'lucide-react';
 import type { Agent } from '../types';
 
 interface AgentStepperBarProps {
@@ -10,15 +10,15 @@ interface AgentStepperBarProps {
 
 export function AgentStepperBar({ agents, activeAgentId, statusText }: AgentStepperBarProps) {
   return (
-    <div className="w-full bg-white border border-slate-200/90 rounded-2xl px-5 py-3 shadow-[0_2px_10px_-3px_rgba(15,23,42,0.05)] mb-3">
+    <div className="w-full bg-white border border-zinc-200/90 rounded-xl px-5 py-3 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] mb-4">
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-md bg-zinc-900 text-white flex items-center justify-center shadow-xs">
+            <Bot size={14} strokeWidth={1.75} />
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-800">Autonomous 4-Agent Mesh</div>
-            <div className="text-[10px] text-slate-500">
+            <div className="text-xs font-semibold text-zinc-900">Autonomous 4-Agent Mesh</div>
+            <div className="text-xs text-zinc-500">
               {statusText || 'Agents synchronized & monitoring live career state'}
             </div>
           </div>
@@ -31,21 +31,21 @@ export function AgentStepperBar({ agents, activeAgentId, statusText }: AgentStep
             return (
               <div key={agent.id} className="flex items-center gap-2">
                 <div
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                     isWorking
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm'
-                      : 'bg-slate-50 text-slate-600 border border-slate-200'
+                      ? 'bg-zinc-900 text-white shadow-xs'
+                      : 'bg-zinc-50 text-zinc-700 border border-zinc-200'
                   }`}
                 >
                   {isWorking ? (
-                    <Loader2 className="w-3 h-3 text-blue-600 animate-spin" />
+                    <Loader2 size={12} className="animate-spin text-white" />
                   ) : (
-                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                    <CheckCircle2 size={12} strokeWidth={1.75} className="text-emerald-600" />
                   )}
                   <span>{agent.name.split('-')[0]}</span>
                 </div>
                 {index < agents.length - 1 && (
-                  <div className={`w-3 h-0.5 ${isWorking ? 'bg-blue-400' : 'bg-slate-200'}`} />
+                  <div className={`w-3 h-0.5 ${isWorking ? 'bg-zinc-900' : 'bg-zinc-200'}`} />
                 )}
               </div>
             );

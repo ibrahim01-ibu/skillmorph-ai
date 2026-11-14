@@ -90,32 +90,32 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5 pb-16">
+    <div className="max-w-6xl mx-auto space-y-6 pb-16">
       {/* Executive Command Header */}
-      <div className="bg-white rounded-xl border border-zinc-200/90 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+      <div className="bg-white rounded-xl border border-zinc-200/90 p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
+            <span className="text-xs font-medium px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700">
               Placement Dean & Talent Analytics Console
             </span>
             <span className="text-xs text-zinc-400 font-mono">AY 2026-2027</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
             Institutional Skill Intelligence & Placement Command
           </h1>
-          <p className="text-xs text-zinc-500 mt-1 max-w-3xl leading-relaxed">
+          <p className="text-sm text-zinc-600 mt-1 max-w-3xl leading-relaxed">
             Real-time cohort skill-gap telemetry, automated curriculum intervention deployment, and cryptographic verification for university placement cells and hiring partners.
           </p>
         </div>
 
         {/* Action Controls */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
           {onSwitchToStudent && (
             <button
               onClick={onSwitchToStudent}
-              className="px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs font-medium text-zinc-800 flex items-center gap-1.5 transition-colors whitespace-nowrap"
+              className="px-3.5 py-2 rounded-md bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs font-medium text-zinc-800 flex items-center gap-1.5 transition-colors whitespace-nowrap shadow-2xs"
             >
-              <GraduationCap size={14} strokeWidth={1.75} />
+              <GraduationCap size={15} strokeWidth={1.75} />
               <span>Student View</span>
             </button>
           )}
@@ -123,7 +123,7 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
           <button
             onClick={() => handleDeployBridge('Aarav Sharma')}
             disabled={deployed}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
               deployed
                 ? 'bg-zinc-100 text-zinc-700 border border-zinc-300'
                 : 'bg-zinc-900 hover:bg-zinc-800 text-white shadow-xs'
@@ -145,83 +145,83 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
       </div>
 
       {/* 4 Top KPI Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1 */}
-        <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-xs space-y-1">
+        <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-1.5">
           <div className="flex items-center justify-between text-xs text-zinc-500 font-medium">
             <span>Cohort Enrolled</span>
-            <Building2 size={14} strokeWidth={1.75} className="text-zinc-400" />
+            <Building2 size={15} strokeWidth={1.75} className="text-zinc-400" />
           </div>
           <div className="text-2xl font-bold text-zinc-900 font-mono">{totalLearners}</div>
-          <div className="text-[11px] text-zinc-600 font-medium flex items-center gap-1">
-            <TrendingUp size={12} strokeWidth={1.75} className="text-emerald-600" />
+          <div className="text-xs text-zinc-600 font-medium flex items-center gap-1">
+            <TrendingUp size={13} strokeWidth={1.75} className="text-emerald-600" />
             <span>98.2% Active on Skill-DAG</span>
           </div>
         </div>
 
         {/* KPI 2 */}
-        <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-xs space-y-1">
+        <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-1.5">
           <div className="flex items-center justify-between text-xs text-zinc-500 font-medium">
             <span>Average Readiness</span>
-            <Sparkles size={14} strokeWidth={1.75} className="text-zinc-400" />
+            <Sparkles size={15} strokeWidth={1.75} className="text-zinc-400" />
           </div>
           <div className="text-2xl font-bold text-zinc-900 font-mono">{avgReadiness}%</div>
-          <div className="text-[11px] text-zinc-600 font-medium flex items-center gap-1">
-            <TrendingUp size={12} strokeWidth={1.75} className="text-emerald-600" />
+          <div className="text-xs text-zinc-600 font-medium flex items-center gap-1">
+            <TrendingUp size={13} strokeWidth={1.75} className="text-emerald-600" />
             <span>+14% since polyglot sprints</span>
           </div>
         </div>
 
         {/* KPI 3 */}
-        <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-xs space-y-1">
+        <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-1.5">
           <div className="flex items-center justify-between text-xs text-zinc-500 font-medium">
             <span>Primary Bottleneck</span>
-            <AlertTriangle size={14} strokeWidth={1.75} className="text-amber-600" />
+            <AlertTriangle size={15} strokeWidth={1.75} className="text-amber-600" />
           </div>
           <div className="text-xs font-semibold text-zinc-900 leading-tight">
             Async JS & Promises
           </div>
-          <div className="text-[11px] text-zinc-500">
+          <div className="text-xs text-zinc-500">
             68% of cohort trigger rescue routing
           </div>
         </div>
 
         {/* KPI 4 */}
-        <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-xs space-y-1">
+        <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-1.5">
           <div className="flex items-center justify-between text-xs text-zinc-500 font-medium">
             <span>Faculty Time Saved</span>
-            <Clock size={14} strokeWidth={1.75} className="text-zinc-400" />
+            <Clock size={15} strokeWidth={1.75} className="text-zinc-400" />
           </div>
           <div className="text-2xl font-bold text-zinc-900 font-mono">{hoursSaved}</div>
-          <div className="text-[11px] text-zinc-500">Autonomous Socratic mentoring</div>
+          <div className="text-xs text-zinc-500">Autonomous Socratic mentoring</div>
         </div>
       </div>
 
       {/* Track Readiness Distribution & Department Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Track Readiness Distribution */}
-        <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-xs space-y-3.5">
+        <div className="bg-white rounded-xl border border-zinc-200/90 p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-zinc-900">Track Readiness Distribution</h2>
-              <p className="text-xs text-zinc-500">Live readiness benchmarks across target industry roles</p>
+              <h2 className="text-lg font-semibold text-zinc-900">Track Readiness Distribution</h2>
+              <p className="text-sm text-zinc-600 mt-0.5">Live readiness benchmarks across target industry roles</p>
             </div>
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-600">
+            <span className="text-xs font-medium px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-600">
               3 Active Tracks
             </span>
           </div>
 
-          <div className="space-y-3 pt-1">
+          <div className="space-y-3.5 pt-1">
             {[
               { track: 'Full Stack Web Developer', readiness: 48, students: 142 },
               { track: 'AI/ML Systems Engineer', readiness: 71, students: 110 },
               { track: 'Cloud Backend Architect', readiness: 59, students: 90 },
             ].map((t) => (
-              <div key={t.track} className="space-y-1">
+              <div key={t.track} className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs font-medium">
                   <span className="text-zinc-800">{t.track}</span>
                   <span className="font-mono text-zinc-500">
-                    <strong className="text-zinc-900">{t.readiness}%</strong> ({t.students} students)
+                    <strong className="text-zinc-900 font-semibold">{t.readiness}%</strong> ({t.students} students)
                   </span>
                 </div>
                 <div className="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
@@ -234,36 +234,36 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
             ))}
           </div>
 
-          <div className="p-3 rounded-md bg-zinc-50 border border-zinc-200 text-xs text-zinc-600 leading-relaxed mt-2">
+          <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 text-xs text-zinc-600 leading-relaxed mt-2">
             <strong>Key Dean Finding:</strong> {bottleneck}. Triggering batch polyglot transfer modules reduces remedial latency from 3 weeks to 90 seconds.
           </div>
         </div>
 
         {/* Department Skill-Gap Heatmap */}
-        <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-xs space-y-3.5">
+        <div className="bg-white rounded-xl border border-zinc-200/90 p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-zinc-900">Department Skill-Gap Heatmap</h2>
-              <p className="text-xs text-zinc-500">Competency saturation by engineering branch</p>
+              <h2 className="text-lg font-semibold text-zinc-900">Department Skill-Gap Heatmap</h2>
+              <p className="text-sm text-zinc-600 mt-0.5">Competency saturation by engineering branch</p>
             </div>
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-600">
+            <span className="text-xs font-medium px-2.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-600">
               AST Scanned
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
             {[
               { dept: 'Computer Science (CS)', gap: 'Modern Reactive UI & SSR', score: '78% Ready', level: 'High' },
               { dept: 'Information Tech (IT)', gap: 'System Concurrency & Async', score: '62% Ready', level: 'Medium' },
               { dept: 'Data Science & AI', gap: 'Production Microservice APIs', score: '72% Ready', level: 'High' },
               { dept: 'Electronics (ECE)', gap: 'Web Backend & DB Indexing', score: '44% Ready', level: 'Remedial' },
             ].map((d) => (
-              <div key={d.dept} className="p-3 rounded-md bg-zinc-50 border border-zinc-200 space-y-0.5">
+              <div key={d.dept} className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 space-y-1">
                 <div className="font-semibold text-zinc-900">{d.dept}</div>
-                <div className="text-zinc-500 text-[11px]">Gap: {d.gap}</div>
+                <div className="text-zinc-500 text-xs">Gap: {d.gap}</div>
                 <div className="flex items-center justify-between pt-1">
                   <span className="font-mono font-semibold text-zinc-900">{d.score}</span>
-                  <span className="text-[10px] text-zinc-400">[{d.level}]</span>
+                  <span className="text-xs text-zinc-400">[{d.level}]</span>
                 </div>
               </div>
             ))}
@@ -272,29 +272,29 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
       </div>
 
       {/* Cohort Student Directory & Intervention Trigger */}
-      <div className="bg-white rounded-xl border border-zinc-200/90 p-5 sm:p-6 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 pb-3">
+      <div className="bg-white rounded-xl border border-zinc-200/90 p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 pb-4">
           <div>
-            <h2 className="text-sm font-bold text-zinc-900">Cohort Student Roster & Live Interventions</h2>
-            <p className="text-xs text-zinc-500">Sort by readiness, inspect skill gaps, and deploy targeted bridges</p>
+            <h2 className="text-lg font-semibold text-zinc-900">Cohort Student Roster & Live Interventions</h2>
+            <p className="text-sm text-zinc-600 mt-0.5">Sort by readiness, inspect skill gaps, and deploy targeted bridges</p>
           </div>
 
           {/* Search & Filter */}
           <div className="flex gap-2 flex-wrap">
             <div className="relative">
-              <Search size={13} strokeWidth={1.75} className="text-zinc-400 absolute left-2.5 top-2" />
+              <Search size={14} strokeWidth={1.75} className="text-zinc-400 absolute left-2.5 top-2.5" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search student or branch..."
-                className="pl-7 pr-2.5 py-1.5 bg-zinc-50 border border-zinc-200 rounded-md text-xs text-zinc-900 focus:bg-white focus:outline-none"
+                className="pl-8 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-md text-xs text-zinc-900 focus:bg-white focus:outline-none"
               />
             </div>
             <select
               value={filterTrack}
               onChange={(e) => setFilterTrack(e.target.value)}
-              className="px-2.5 py-1.5 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-700"
+              className="px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-700"
             >
               <option value="all">All Cohort</option>
               <option value="high">Readiness &ge; 70%</option>
@@ -307,31 +307,31 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 text-zinc-400 uppercase tracking-wider text-[10px]">
-                <th onClick={() => toggleSort('name')} className="pb-2.5 cursor-pointer hover:text-zinc-700">
+              <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-wider text-xs font-semibold">
+                <th onClick={() => toggleSort('name')} className="pb-3 cursor-pointer hover:text-zinc-900">
                   <div className="flex items-center gap-1">Student & Branch <SortIcon col="name" sortKey={sortKey} sortAsc={sortAsc} /></div>
                 </th>
-                <th className="pb-2.5">Verified Skills</th>
-                <th className="pb-2.5">Critical Skill Gaps</th>
-                <th onClick={() => toggleSort('readiness')} className="pb-2.5 cursor-pointer hover:text-zinc-700">
+                <th className="pb-3">Verified Skills</th>
+                <th className="pb-3">Critical Skill Gaps</th>
+                <th onClick={() => toggleSort('readiness')} className="pb-3 cursor-pointer hover:text-zinc-900">
                   <div className="flex items-center gap-1">Readiness <SortIcon col="readiness" sortKey={sortKey} sortAsc={sortAsc} /></div>
                 </th>
-                <th className="pb-2.5 text-right">Dean Action</th>
+                <th className="pb-3 text-right">Dean Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200">
               {sorted.map((st) => (
-                <tr key={st.id} className="hover:bg-zinc-50 transition-colors">
-                  <td className="py-3 pr-4">
-                    <div className="font-semibold text-zinc-900 text-xs">{st.name}</div>
-                    <div className="text-[11px] text-zinc-500">{st.dept}</div>
+                <tr key={st.id} className="hover:bg-zinc-50/70 transition-colors">
+                  <td className="py-3.5 pr-4">
+                    <div className="font-semibold text-zinc-900 text-sm">{st.name}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5">{st.dept}</div>
                   </td>
-                  <td className="py-3 pr-4">
-                    <div className="flex flex-wrap gap-1">
+                  <td className="py-3.5 pr-4">
+                    <div className="flex flex-wrap gap-1.5">
                       {st.verifiedSkills.map((sk, i) => (
                         <span
                           key={i}
-                          className="px-1.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700 text-[10px]"
+                          className="px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700 text-xs font-medium"
                         >
                           {sk}
                         </span>
@@ -343,7 +343,7 @@ export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProp
                       {st.missingSkills.map((gap, i) => (
                         <span
                           key={i}
-                          className="px-1.5 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700 text-[10px]"
+                          className="px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700 text-xs font-medium"
                         >
                           {gap}
                         </span>

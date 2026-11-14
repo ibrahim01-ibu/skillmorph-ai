@@ -61,7 +61,7 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
     <svg
       width={size}
       height={size}
-      viewBox="-55 -20 350 260"
+      viewBox="-60 -25 360 270"
       className="select-none overflow-visible max-w-full"
     >
       {/* Background Polygon Web */}
@@ -69,8 +69,8 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
         <path
           key={i}
           d={d}
-          fill={i === gridPolygons.length - 1 ? '#f8fafc' : 'none'}
-          stroke="#e2e8f0"
+          fill={i === gridPolygons.length - 1 ? '#fafafa' : 'none'}
+          stroke="#e4e4e7"
           strokeWidth="1"
         />
       ))}
@@ -83,7 +83,7 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
           y1={cy}
           x2={pt.x}
           y2={pt.y}
-          stroke="#e2e8f0"
+          stroke="#e4e4e7"
           strokeWidth="1"
         />
       ))}
@@ -97,11 +97,11 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
         strokeDasharray="4,4"
       />
 
-      {/* Current Skill Vector (Apple Royal Blue Polygon) */}
+      {/* Current Skill Vector (Dark Neutral Polygon) */}
       <path
         d={pointsToPath(currentPoints)}
-        fill="rgba(37, 99, 235, 0.12)"
-        stroke="#2563eb"
+        fill="rgba(24, 24, 27, 0.08)"
+        stroke="#18181b"
         strokeWidth="2.25"
       />
 
@@ -125,28 +125,28 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
             cx={pt.x}
             cy={pt.y}
             r={4}
-            fill="#2563eb"
+            fill="#18181b"
             stroke="#ffffff"
             strokeWidth="1.5"
           />
           {/* Numeric Badge */}
           <rect
-            x={pt.x + (pt.x > cx ? 6 : pt.x < cx ? -26 : -10)}
-            y={pt.y + (pt.y > cy ? 5 : pt.y < cy ? -15 : -5)}
-            width={20}
-            height={12}
+            x={pt.x + (pt.x > cx ? 6 : pt.x < cx ? -28 : -12)}
+            y={pt.y + (pt.y > cy ? 5 : pt.y < cy ? -16 : -5)}
+            width={24}
+            height={14}
             rx={4}
-            fill="#eff6ff"
-            stroke="#bfdbfe"
+            fill="#f4f4f5"
+            stroke="#e4e4e7"
             strokeWidth="0.75"
           />
           <text
-            x={pt.x + (pt.x > cx ? 16 : pt.x < cx ? -16 : 0)}
-            y={pt.y + (pt.y > cy ? 14 : pt.y < cy ? -6 : 4)}
+            x={pt.x + (pt.x > cx ? 18 : pt.x < cx ? -16 : 0)}
+            y={pt.y + (pt.y > cy ? 15 : pt.y < cy ? -6 : 5)}
             textAnchor="middle"
-            fontSize="8"
-            fill="#1d4ed8"
-            fontWeight="700"
+            fontSize="9.5"
+            fill="#18181b"
+            fontWeight="600"
           >
             {data[i].current}%
           </text>
@@ -163,12 +163,12 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
             y={pt.y}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize="9.5"
-            fill="#475569"
+            fontSize="11"
+            fill="#27272a"
             fontWeight="600"
           >
             {lines.map((line, li) => (
-              <tspan key={li} x={pt.x} dy={li === 0 ? 0 : 11}>
+              <tspan key={li} x={pt.x} dy={li === 0 ? 0 : 12}>
                 {line}
               </tspan>
             ))}
@@ -177,15 +177,15 @@ export function SkillRadar({ data, size = 240 }: SkillRadarProps) {
       })}
 
       {/* Center Origin Dot */}
-      <circle cx={cx} cy={cy} r={2.5} fill="#94a3b8" />
+      <circle cx={cx} cy={cy} r={2.5} fill="#a1a1aa" />
 
       {/* Legend Badge */}
       <g transform={`translate(${cx - 55}, ${size - 5})`}>
-        <rect x={0} y={0} width={110} height={18} rx={9} fill="#ffffff" stroke="#e2e8f0" />
-        <circle cx={14} cy={9} r={3.5} fill="#2563eb" />
-        <text x={22} y={12} fontSize="8" fill="#334155" fontWeight="500">Current</text>
+        <rect x={0} y={0} width={110} height={18} rx={9} fill="#ffffff" stroke="#e4e4e7" />
+        <circle cx={14} cy={9} r={3.5} fill="#18181b" />
+        <text x={22} y={12} fontSize="9" fill="#27272a" fontWeight="500">Current</text>
         <line x1={60} y1={9} x2={72} y2={9} stroke="#059669" strokeWidth="1.5" strokeDasharray="3,2" />
-        <text x={76} y={12} fontSize="8" fill="#334155" fontWeight="500">Target</text>
+        <text x={76} y={12} fontSize="9" fill="#27272a" fontWeight="500">Target</text>
       </g>
     </svg>
   );
