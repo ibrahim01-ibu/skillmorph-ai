@@ -1,35 +1,67 @@
-// src/components/OrgView.tsx — Apple / Fluent Executive University & Talent Cloud
+// src/components/OrgView.tsx — Warm Editorial Enterprise University & Talent Cloud
 import { useState } from 'react';
 import {
   TrendingUp,
   AlertTriangle,
-  CheckCircle2,
   Zap,
   ChevronDown,
   ChevronUp,
   Clock,
   Sparkles,
   Check,
+  Building2,
+  GraduationCap,
+  Search,
 } from 'lucide-react';
 import { COHORT_STUDENTS } from '../data/scenarios';
 import type { CohortStudent } from '../types';
 
 interface OrgViewProps {
   onDeployCohortBridge?: () => void;
+  onSwitchToStudent?: () => void;
 }
 
-export function OrgView({ onDeployCohortBridge }: OrgViewProps) {
+function SortIcon({
+  col,
+  sortKey,
+  sortAsc,
+}: {
+  col: keyof CohortStudent;
+  sortKey: keyof CohortStudent;
+  sortAsc: boolean;
+}) {
+  if (sortKey !== col) return <ChevronDown className="w-3.5 h-3.5 opacity-30" />;
+  return sortAsc ? (
+    <ChevronUp className="w-3.5 h-3.5 text-[#EA580C]" />
+  ) : (
+    <ChevronDown className="w-3.5 h-3.5 text-[#EA580C]" />
+  );
+}
+
+export function OrgView({ onDeployCohortBridge, onSwitchToStudent }: OrgViewProps) {
   const [sortKey, setSortKey] = useState<keyof CohortStudent>('readiness');
   const [sortAsc, setSortAsc] = useState(false);
-  const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [deployed, setDeployed] = useState(false);
+  const [filterTrack, setFilterTrack] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const totalLearners = 342;
   const avgReadiness = 64;
   const bottleneck = '68% of Full Stack aspirants fail Async JS / Node.js concurrency';
   const hoursSaved = '4,820 hrs';
 
-  const sorted = [...COHORT_STUDENTS].sort((a, b) => {
+  const filtered = COHORT_STUDENTS.filter((st) => {
+    const matchesSearch =
+      st.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      st.dept.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTrack =
+      filterTrack === 'all' ||
+      (filterTrack === 'high' && st.readiness >= 70) ||
+      (filterTrack === 'remedial' && st.readiness < 60);
+    return matchesSearch && matchesTrack;
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
     const av = a[sortKey];
     const bv = b[sortKey];
     if (typeof av === 'number' && typeof bv === 'number') return sortAsc ? av - bv : bv - av;
@@ -46,285 +78,296 @@ export function OrgView({ onDeployCohortBridge }: OrgViewProps) {
     }
   }
 
-  function handleDeployBridge() {
+  function handleDeployBridge(studentName = 'Aarav Sharma') {
     setDeployed(true);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cohort_bridge_deployed', 'true');
+      localStorage.setItem('cohort_bridge_target', studentName);
+    }
     if (onDeployCohortBridge) {
       onDeployCohortBridge();
     }
   }
 
-  function SortIcon({ col }: { col: keyof CohortStudent }) {
-    if (sortKey !== col) return <ChevronDown className="w-3 h-3 opacity-30" />;
-    return sortAsc ? <ChevronUp className="w-3 h-3 text-blue-600" /> : <ChevronDown className="w-3 h-3 text-blue-600" />;
-  }
-
   return (
-    <div className="max-w-[1720px] mx-auto space-y-6 pb-12">
+    <div className="max-w-6xl mx-auto space-y-6 pb-16">
       {/* Executive Command Header */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm flex items-center justify-between flex-wrap gap-4">
+      <div className="bg-white rounded-3xl border border-[#E6E4DD] p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-md px-2.5 py-0.5">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="text-xs font-bold text-[#0F766E] bg-[#F0FDFA] border border-[#99F6E4] rounded-md px-2.5 py-0.5">
               Placement Dean & Talent Analytics Console
             </span>
-            <span className="text-xs text-slate-400">· Academic Year 2026-2027</span>
+            <span className="text-xs text-zinc-400">· Academic Year 2026-2027</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-tight">
             Institutional Skill Intelligence & Placement Command
           </h1>
-          <p className="text-xs text-slate-500 mt-1 max-w-3xl">
+          <p className="text-sm text-zinc-500 mt-1 max-w-3xl">
             Real-time cohort skill-gap telemetry, automated curriculum intervention deployment, and cryptographic verification for university placement cells and hiring partners.
           </p>
         </div>
 
-        {/* Live Closed-Loop Intervention Button */}
-        <div className="flex items-center gap-3">
+        {/* Action Controls */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+          {onSwitchToStudent && (
+            <button
+              onClick={onSwitchToStudent}
+              className="px-4 py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3F1EC] border border-[#E6E4DD] text-xs font-bold text-zinc-700 flex items-center gap-2 transition-colors whitespace-nowrap"
+            >
+              <GraduationCap className="w-4 h-4 text-[#EA580C]" />
+              <span>Switch to Student View</span>
+            </button>
+          )}
+
           <button
-            onClick={handleDeployBridge}
+            onClick={() => handleDeployBridge('Aarav Sharma')}
             disabled={deployed}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm whitespace-nowrap ${
               deployed
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
-                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-blue-500/20'
+                ? 'bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]'
+                : 'bg-[#EA580C] hover:bg-[#C2410C] text-white shadow-md shadow-[#EA580C]/20'
             }`}
           >
             {deployed ? (
               <>
-                <Check className="w-4 h-4 text-emerald-600" />
+                <Check className="w-4 h-4 text-[#0F766E]" />
                 <span>Intervention Deployed to Aarav&apos;s Active Path!</span>
               </>
             ) : (
               <>
                 <Zap className="w-4 h-4 text-white" />
-                <span>⚡ Deploy Cohort Bridge Module to Aarav&apos;s Path</span>
+                <span>⚡ Push Personalized Curriculum to Aarav</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-            Total Active Enrollees
+      {/* 4 Top KPI Summary Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* KPI 1 */}
+        <div className="bg-white rounded-3xl border border-[#E6E4DD] p-5 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-zinc-500 font-semibold">
+            <span>Cohort Enrolled</span>
+            <Building2 className="w-4 h-4 text-zinc-400" />
           </div>
-          <div className="text-3xl font-extrabold text-slate-900">{totalLearners}</div>
-          <div className="text-xs text-emerald-700 font-semibold flex items-center gap-1 mt-2">
-            <TrendingUp className="w-3.5 h-3.5" /> +12 new learners this week
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-            Cohort Job-Readiness
-          </div>
-          <div className="text-3xl font-extrabold text-blue-600">{avgReadiness}%</div>
-          <div className="w-full h-2 bg-slate-100 rounded-full mt-3 overflow-hidden">
-            <div className="h-full bg-blue-600 rounded-full" style={{ width: `${avgReadiness}%` }} />
+          <div className="text-2xl sm:text-3xl font-bold text-[#18181B] font-mono">{totalLearners}</div>
+          <div className="text-xs text-[#0F766E] font-medium flex items-center gap-1">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>98.2% Active on Skill-DAG</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-amber-200 p-5 shadow-sm bg-amber-50/20">
-          <div className="text-[11px] font-bold text-amber-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-            <AlertTriangle className="w-3.5 h-3.5" /> Primary Bottleneck Alert
+        {/* KPI 2 */}
+        <div className="bg-white rounded-3xl border border-[#E6E4DD] p-5 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-zinc-500 font-semibold">
+            <span>Average Readiness</span>
+            <Sparkles className="w-4 h-4 text-[#EA580C]" />
           </div>
-          <div className="text-xs text-amber-950 font-bold leading-tight mt-1">{bottleneck}</div>
-          <div className="text-[11px] text-emerald-700 font-semibold mt-2">
-            Auto-remedy: Python asyncio analogy
+          <div className="text-2xl sm:text-3xl font-bold text-[#0F766E] font-mono">{avgReadiness}%</div>
+          <div className="text-xs text-[#0F766E] font-medium flex items-center gap-1">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>+14% since polyglot sprints</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-indigo-600" /> Polyglot Efficiency
+        {/* KPI 3 */}
+        <div className="bg-white rounded-3xl border border-[#E6E4DD] p-5 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-zinc-500 font-semibold">
+            <span>Primary Bottleneck</span>
+            <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
-          <div className="text-3xl font-extrabold text-indigo-600">{hoursSaved}</div>
-          <div className="text-xs text-slate-500 font-medium mt-2">Saved vs. conventional tutorial hell</div>
+          <div className="text-sm font-bold text-amber-900 leading-snug line-clamp-2">
+            Async JS & Promises
+          </div>
+          <div className="text-xs text-zinc-500">
+            68% of cohort trigger rescue routing
+          </div>
         </div>
-      </div>
 
-      {/* Department & Track Breakdown Progress Bars */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
-        <h2 className="text-sm font-bold text-slate-900 mb-4">Department & Track Readiness Distribution</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-800">Full Stack Engineering Track</span>
-              <span className="text-blue-600 font-bold">68% Avg Readiness</span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-blue-600 rounded-full" style={{ width: '68%' }} />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">184 active aspirants · 128 verified</div>
+        {/* KPI 4 */}
+        <div className="bg-white rounded-3xl border border-[#E6E4DD] p-5 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-zinc-500 font-semibold">
+            <span>Faculty Time Saved</span>
+            <Clock className="w-4 h-4 text-indigo-500" />
           </div>
-
-          <div>
-            <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-800">AI/ML Systems Track</span>
-              <span className="text-indigo-600 font-bold">62% Avg Readiness</span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-indigo-600 rounded-full" style={{ width: '62%' }} />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">96 active aspirants · 59 verified</div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-800">Cloud & DevOps Track</span>
-              <span className="text-emerald-600 font-bold">54% Avg Readiness</span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-emerald-600 rounded-full" style={{ width: '54%' }} />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">62 active aspirants · 33 verified</div>
-          </div>
+          <div className="text-2xl sm:text-3xl font-bold text-indigo-600 font-mono">{hoursSaved}</div>
+          <div className="text-xs text-zinc-500">Autonomous Socratic mentoring</div>
         </div>
       </div>
 
-      {/* Cohort Skill Gap Matrix Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between flex-wrap gap-2 bg-slate-50/50">
-          <div>
-            <h2 className="text-sm font-bold text-slate-900">Live Cohort Skill Gap Matrix</h2>
-            <p className="text-xs text-slate-500">
-              Interactive telemetry of enrolled students, certified AST proofs, and automated AI interventions
-            </p>
+      {/* Track Readiness Distribution & Department Breakdown */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Track Readiness Distribution */}
+        <div className="bg-white rounded-3xl border border-[#E6E4DD] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-[#18181B]">Track Readiness Distribution</h2>
+              <p className="text-xs text-zinc-500">Live readiness benchmarks across target industry roles</p>
+            </div>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[#FAF8F5] border border-[#E6E4DD] text-zinc-600">
+              3 Active Tracks
+            </span>
           </div>
-          <div className="text-xs text-slate-400">Click any candidate row to view detailed skill breakdown</div>
+
+          <div className="space-y-3.5 pt-2">
+            {[
+              { track: 'Full Stack Web Developer', readiness: 48, students: 142, color: 'bg-[#EA580C]' },
+              { track: 'AI/ML Systems Engineer', readiness: 71, students: 110, color: 'bg-indigo-600' },
+              { track: 'Cloud Backend Architect', readiness: 59, students: 90, color: 'bg-[#0F766E]' },
+            ].map((t) => (
+              <div key={t.track} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-semibold">
+                  <span className="text-zinc-800">{t.track}</span>
+                  <span className="font-mono text-zinc-500">
+                    <strong className="text-zinc-900">{t.readiness}%</strong> avg readiness ({t.students} students)
+                  </span>
+                </div>
+                <div className="h-2.5 w-full bg-[#FAF8F5] border border-[#E6E4DD] rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${t.color} rounded-full transition-all duration-500`}
+                    style={{ width: `${t.readiness}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E6E4DD] text-xs text-zinc-600 leading-relaxed mt-2">
+            <strong>Key Dean Finding:</strong> {bottleneck}. Triggering batch polyglot transfer modules reduces remedial latency from 3 weeks to 90 seconds.
+          </div>
         </div>
 
+        {/* Department Skill-Gap Heatmap */}
+        <div className="bg-white rounded-3xl border border-[#E6E4DD] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-[#18181B]">Department Skill-Gap Heatmap</h2>
+              <p className="text-xs text-zinc-500">Competency saturation by engineering branch</p>
+            </div>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[#FAF8F5] border border-[#E6E4DD] text-zinc-600">
+              AST Scanned
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
+            {[
+              { dept: 'Computer Science (CS)', gap: 'Modern Reactive UI & SSR', score: '78% Ready', level: 'High' },
+              { dept: 'Information Tech (IT)', gap: 'System Concurrency & Async', score: '62% Ready', level: 'Medium' },
+              { dept: 'Data Science & AI', gap: 'Production Microservice APIs', score: '72% Ready', level: 'High' },
+              { dept: 'Electronics (ECE)', gap: 'Web Backend & DB Indexing', score: '44% Ready', level: 'Remedial' },
+            ].map((d) => (
+              <div key={d.dept} className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E6E4DD] space-y-1">
+                <div className="font-bold text-zinc-800">{d.dept}</div>
+                <div className="text-zinc-500 text-[11px]">Gap: {d.gap}</div>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="font-mono font-bold text-[#0F766E]">{d.score}</span>
+                  <span className="text-[10px] font-semibold text-zinc-400">[{d.level}]</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Cohort Student Directory & Intervention Trigger */}
+      <div className="bg-white rounded-3xl border border-[#E6E4DD] p-6 sm:p-8 shadow-sm space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E6E4DD] pb-4">
+          <div>
+            <h2 className="text-lg font-bold text-[#18181B]">Cohort Student Roster & Live Interventions</h2>
+            <p className="text-xs text-zinc-500">Sort by readiness, inspect skill gaps, and deploy targeted bridges</p>
+          </div>
+
+          {/* Search & Filter */}
+          <div className="flex gap-2 flex-wrap">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search student or branch..."
+                className="pl-8 pr-3 py-1.5 bg-[#FAF8F5] border border-[#E6E4DD] rounded-xl text-xs text-zinc-800 focus:bg-white focus:outline-none"
+              />
+            </div>
+            <select
+              value={filterTrack}
+              onChange={(e) => setFilterTrack(e.target.value)}
+              className="px-3 py-1.5 bg-[#FAF8F5] border border-[#E6E4DD] rounded-xl text-xs font-semibold text-zinc-700"
+            >
+              <option value="all">All Cohort</option>
+              <option value="high">Readiness &ge; 70%</option>
+              <option value="remedial">Readiness &lt; 60%</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Student Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
+          <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider select-none">
-                {[
-                  { key: 'name' as keyof CohortStudent, label: 'Student' },
-                  { key: 'dept' as keyof CohortStudent, label: 'Enrolled Track' },
-                  { key: 'verifiedSkills' as keyof CohortStudent, label: 'Verified Skills' },
-                  { key: 'missingSkills' as keyof CohortStudent, label: 'Identified Skill Gaps' },
-                  { key: 'assessmentVelocity' as keyof CohortStudent, label: 'Velocity' },
-                  { key: 'readiness' as keyof CohortStudent, label: 'Placement Readiness' },
-                ].map((col) => (
-                  <th
-                    key={col.key}
-                    onClick={() => toggleSort(col.key)}
-                    className="px-6 py-3.5 cursor-pointer hover:text-slate-900 transition-colors"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <span>{col.label}</span>
-                      <SortIcon col={col.key} />
-                    </div>
-                  </th>
-                ))}
+              <tr className="border-b border-[#E6E4DD] text-zinc-400 uppercase tracking-wider text-[10px]">
+                <th onClick={() => toggleSort('name')} className="pb-3 cursor-pointer hover:text-zinc-700">
+                  <div className="flex items-center gap-1">Student & Branch <SortIcon col="name" sortKey={sortKey} sortAsc={sortAsc} /></div>
+                </th>
+                <th className="pb-3">Verified Skills</th>
+                <th className="pb-3">Critical Skill Gaps</th>
+                <th onClick={() => toggleSort('readiness')} className="pb-3 cursor-pointer hover:text-zinc-700">
+                  <div className="flex items-center gap-1">Readiness <SortIcon col="readiness" sortKey={sortKey} sortAsc={sortAsc} /></div>
+                </th>
+                <th className="pb-3 text-right">Dean Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {sorted.map((student) => (
-                <>
-                  <tr
-                    key={student.id}
-                    onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
-                    className={`cursor-pointer transition-colors ${
-                      expandedRow === student.id ? 'bg-blue-50/40' : 'hover:bg-slate-50/80'
-                    }`}
-                  >
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-slate-900">{student.name}</div>
-                      <div className="text-[10px] text-slate-400">ID: {student.id.toUpperCase()}</div>
-                    </td>
-                    <td className="px-6 py-4 font-medium text-slate-600">{student.dept}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {student.verifiedSkills.slice(0, 3).map((s) => (
-                          <span
-                            key={s}
-                            className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                        {student.verifiedSkills.length > 3 && (
-                          <span className="text-[10px] text-slate-400 font-medium">
-                            +{student.verifiedSkills.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {student.missingSkills.slice(0, 2).map((s) => (
-                          <span
-                            key={s}
-                            className="text-[10px] px-2 py-0.5 rounded-md bg-red-50 text-red-700 border border-red-200 font-medium"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                        {student.missingSkills.length > 2 && (
-                          <span className="text-[10px] text-slate-400 font-medium">
-                            +{student.missingSkills.length - 2}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-slate-700">
-                      {student.assessmentVelocity.toFixed(1)}/5
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-20 h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${
-                              student.readiness >= 70
-                                ? 'bg-emerald-600'
-                                : student.readiness >= 50
-                                ? 'bg-blue-600'
-                                : 'bg-amber-500'
-                            }`}
-                            style={{ width: `${student.readiness}%` }}
-                          />
-                        </div>
-                        <span className="font-bold text-slate-900">{student.readiness}%</span>
-                      </div>
-                    </td>
-                  </tr>
-
-                  {/* Expanded Detail View */}
-                  {expandedRow === student.id && (
-                    <tr key={`${student.id}-expanded`} className="bg-slate-50/70">
-                      <td colSpan={6} className="px-8 py-5">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                              Certified Skills Portfolio
-                            </div>
-                            <div className="flex flex-wrap gap-1.5 mb-3">
-                              {student.verifiedSkills.map((s) => (
-                                <span
-                                  key={s}
-                                  className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1 font-semibold"
-                                >
-                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> {s}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                            <div className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                              <Sparkles className="w-3.5 h-3.5" /> AI Recommended Curriculum Action
-                            </div>
-                            <div className="text-xs text-slate-700 font-medium leading-relaxed">
-                              {student.aiIntervention}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </>
+            <tbody className="divide-y divide-[#E6E4DD]">
+              {sorted.map((st) => (
+                <tr key={st.id} className="hover:bg-[#FAF8F5] transition-colors">
+                  <td className="py-3.5 pr-4">
+                    <div className="font-bold text-[#18181B] text-sm">{st.name}</div>
+                    <div className="text-[11px] text-zinc-500">{st.dept}</div>
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <div className="flex flex-wrap gap-1">
+                      {st.verifiedSkills.map((sk, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-0.5 rounded-md bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4] text-[10px] font-medium"
+                        >
+                          {sk}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <div className="flex flex-wrap gap-1">
+                      {st.missingSkills.map((gap, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-0.5 rounded-md bg-orange-50 text-[#EA580C] border border-orange-200 text-[10px] font-medium"
+                        >
+                          {gap}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <div className="font-mono font-bold text-sm text-[#0F766E]">{st.readiness}%</div>
+                    <div className="h-1.5 w-16 bg-[#E6E4DD] rounded-full overflow-hidden mt-1">
+                      <div
+                        className="h-full bg-[#0F766E] rounded-full"
+                        style={{ width: `${st.readiness}%` }}
+                      />
+                    </div>
+                  </td>
+                  <td className="py-3.5 text-right">
+                    <button
+                      onClick={() => handleDeployBridge(st.name)}
+                      className="px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3F1EC] border border-[#E6E4DD] text-xs font-bold text-zinc-800 hover:text-[#EA580C] transition-colors"
+                    >
+                      Push Bridge
+                    </button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>

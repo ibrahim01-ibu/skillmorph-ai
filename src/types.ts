@@ -6,8 +6,22 @@ export type SkillLevel = 'Foundation' | 'Intermediate' | 'Advanced' | 'Expert';
 export type NodeStatus = 'mastered' | 'active' | 'locked' | 'remedial';
 export type AgentStatus = 'idle' | 'thinking' | 'mutating';
 export type ViewMode = 'learner' | 'org';
+export type StudentTab = 'profile' | 'roadmap' | 'studio' | 'agents';
 export type CareerPath = 'fullstack' | 'aiml' | 'cloud';
 export type SprintTab = 'braindiff' | 'resources' | 'assessment';
+
+export interface UserProfile {
+  id: string;
+  type: 'student' | 'institution';
+  name: string;
+  email: string;
+  institution: string;
+  roleTitle?: string; // e.g. "Final Year CS" or "Head of Career Cell"
+  bio?: string;
+  githubUsername?: string;
+  certifications: string[];
+  pastProjects: string[];
+}
 
 export interface Skill {
   id: string;

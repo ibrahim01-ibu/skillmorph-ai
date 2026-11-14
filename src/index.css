@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #f5f7fa;
+  --color-canvas: #FAF8F5;
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 }
@@ -12,14 +12,14 @@
 
 body {
   margin: 0;
-  background-color: #f5f7fa;
-  color: #0f172a;
+  background-color: #FAF8F5;
+  color: #18181B;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apple / Fluent Scrollbars */
+/* Warm Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -28,34 +28,26 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #D4D4D8;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #A1A1AA;
 }
 
-/* Ambient Elevations */
+/* Crisp Editorial Cards */
 .card-surface {
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid #E6E4DD;
   border-radius: 1rem;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 1px 3px 0 rgba(24, 24, 27, 0.04);
 }
 
 .card-elevated {
   background: #ffffff;
-  border: 1px solid rgba(203, 213, 225, 0.8);
+  border: 1px solid #DCD9D0;
   border-radius: 1.25rem;
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-}
-
-/* Glass Header */
-.glass-header {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -4px rgba(24, 24, 27, 0.06), 0 2px 6px -1px rgba(24, 24, 27, 0.02);
 }
 
 /* Flowing SVG Path Animation */
@@ -69,16 +61,16 @@ body {
   animation: dash-flow 1.5s linear infinite;
 }
 
-/* Pulse Glow & Shimmers */
-@keyframes shimmer-light {
+/* Shimmer animation */
+@keyframes shimmer-warm {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
 .shimmer-badge {
-  background: linear-gradient(90deg, rgba(238,242,255,1) 0%, rgba(224,231,255,1) 50%, rgba(238,242,255,1) 100%);
+  background: linear-gradient(90deg, rgba(243,241,236,1) 0%, rgba(230,228,221,1) 50%, rgba(243,241,236,1) 100%);
   background-size: 200% 100%;
-  animation: shimmer-light 2.5s infinite;
+  animation: shimmer-warm 2.5s infinite;
 }
 
 @keyframes slide-in-up {
